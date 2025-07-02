@@ -9,6 +9,7 @@ export const Button = ({
   type,
   isdisabled = false,
   classname,
+  onclick,
 }: ButtonPropos) => {
   return href ? (
     <Link
@@ -23,6 +24,7 @@ export const Button = ({
     </Link>
   ) : (
     <button
+      onClick={onclick}
       type={type ? type : "button"}
       className={
         primary

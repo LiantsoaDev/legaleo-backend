@@ -1,11 +1,13 @@
 import LogoGoogle from "@/assets/images/logo_google.png";
 import LogoMicrosoft from "@/assets/images/logo_microsoft.png";
+import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { Button } from "../Button";
 import { Form, Input } from "../Form";
 import { Logo } from "../Logo/Logo";
 import { Separator } from "../Separator";
 import { Paragraphe, Title } from "../Typography";
+
 export const LoginLeft = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -62,6 +64,7 @@ export const LoginLeft = () => {
         <Button
           primary={false}
           classname="rounded-sm flex flex-row items-center justify-center border-gray gap-3"
+          onclick={() => signIn("google")}
         >
           <Image src={LogoGoogle} alt="Logo google" /> Continuer avec Google
         </Button>

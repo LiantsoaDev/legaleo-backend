@@ -1,7 +1,7 @@
 export interface ButtonPropos {
   primary?: boolean;
   children: React.ReactNode;
-  onClick?: () => void;
+  onclick?: () => void;
   type?: "submit" | "button";
   href?: string;
   isdisabled?: boolean;
