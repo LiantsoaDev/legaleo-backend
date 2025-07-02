@@ -5,22 +5,21 @@
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  --color-primary: #087f83;
+  --color-secondary: #1f120e;
+  --color-accent: #645c5a;
+  --color-gray: #8c8783;
+  --color-danger: red;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-manrope);
+}
+.font-manrope {
+  font-family: var(--font-manrope);
+}
+
+.font-fraunces {
+  font-family: var(--font-fraunces);
 }
