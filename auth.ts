@@ -5,6 +5,7 @@ import { prisma } from "./lib/prisma";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
+  secret: process.env.NEXTAUTH_SECRET, // 🔥 Obligatoire ici
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID ?? "",
@@ -13,7 +14,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async redirect() {
-      return "/dashboard";
+      return "/onboarding"; // 🔄 Redirige vers la page d'onboarding après la connexion
     },
   },
+  debug: process.env.NODE_ENV === "development", // 🔍 Active le log en dev
 });

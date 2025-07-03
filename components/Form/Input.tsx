@@ -1,7 +1,13 @@
 "use client";
 
 import { getErrorMessage, getInputValue } from "@/utils/functions";
-import { InputProps } from "@/utils/types";
+import {
+  CheckBoxProps,
+  InputFilesProps,
+  InputProps,
+  MultiSelectGroupProps,
+  RadioProps,
+} from "@/utils/types";
 import { useEffect, useState } from "react";
 
 export const Input = ({
@@ -55,6 +61,111 @@ export const Input = ({
           {getErrorMessage(type, value)}
         </span>
       )}
+    </div>
+  );
+};
+
+export const CheckBox = ({
+  value,
+  id,
+  isSelected,
+  onSelect,
+  name,
+  type,
+}: CheckBoxProps) => {
+  return (
+    <div>
+      <label
+        htmlFor={id}
+        className={`py-3 px-5 font-manrope border border-gray select-none ${
+          isSelected ? "bg-primary text-white border-none" : "bg-transparent"
+        } text-2xl cursor-pointer text-gray rounded-md uppercase`}
+      >
+        {value}
+      </label>
+      <input
+        type={type}
+        checked={isSelected}
+        onChange={onSelect}
+        className="hidden"
+        name={name}
+        id={id}
+        value={value}
+      />
+    </div>
+  );
+};
+
+export const RadioGroup = ({ name, options }: RadioProps) => {
+  const [selectedValue, setSelectedValue] = useState<string>("");
+  return (
+    <div className="flex gap-4">
+      {options.map((option, index) => (
+        <CheckBox
+          key={index}
+          id={`radio-${index}`}
+          value={option}
+          isSelected={selectedValue === option}
+          onSelect={() => setSelectedValue(option)}
+          name={name}
+          type="radio"
+        />
+      ))}
+    </div>
+  );
+};
+
+export const MultiSelectGroup = ({ options }: MultiSelectGroupProps) => {
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+
+  const handleSelect = (option: string) => {
+    if (selectedOptions.includes(option)) {
+      // On retire l'option si elle est déjà sélectionnée
+      setSelectedOptions(selectedOptions.filter((item) => item !== option));
+    } else {
+      // On l'ajoute sinon
+      setSelectedOptions([...selectedOptions, option]);
+    }
+  };
+  return (
+    <div className="flex gap-4">
+      {options.map((option, index) => (
+        <CheckBox
+          key={index}
+          id={`checkbox-${index}`}
+          value={option}
+          isSelected={selectedOptions.includes(option)}
+          onSelect={() => handleSelect(option)}
+          type="checkbox"
+        />
+      ))}
+    </div>
+  );
+};
+
+export const InputFiles = ({
+  label,
+  name,
+  accept,
+  isrequired,
+  id,
+}: InputFilesProps) => {
+  return (
+    <div className="w-full">
+      <label
+        htmlFor={id}
+        className="py-8 px-8 border-4 border-[#A7B0FF] border-dashed font-semibold text-xl cursor-pointer rounded-2xl w-full"
+      >
+        {label}
+      </label>
+      <input
+        type="file"
+        className="hidden"
+        name={name}
+        id={id}
+        required={isrequired}
+        accept={accept}
+      />
     </div>
   );
 };
