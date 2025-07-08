@@ -6,11 +6,12 @@
 }
 
 @theme {
-  --color-primary: #087f83;
+  --color-primary: #62e7eb;
   --color-secondary: #1f120e;
   --color-accent: #645c5a;
   --color-gray: #8c8783;
   --color-danger: red;
+  --color-blue: #3300ff;
 }
 
 body {

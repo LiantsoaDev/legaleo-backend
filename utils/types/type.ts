@@ -11,9 +11,10 @@ export interface ButtonPropos {
 export interface InputProps {
   type: "textarea" | "text" | "email" | "password" | "number";
   placeholder: string;
-  label: string;
+  label?: string;
   isrequired?: boolean;
   name: string;
+  classname?: string;
 }
 
 export interface CheckBoxProps {
@@ -23,15 +24,18 @@ export interface CheckBoxProps {
   onSelect?: () => void;
   name?: string;
   type: "checkbox" | "radio";
+  showLogo?: boolean;
 }
 
 export interface RadioProps {
   options: string[];
   name: string;
+  showLogo?: boolean;
 }
 
 export interface MultiSelectGroupProps {
   options: string[];
+  showLogo?: boolean;
 }
 
 export interface InputFilesProps {
@@ -40,4 +44,74 @@ export interface InputFilesProps {
   isrequired?: boolean;
   accept?: string;
   id: string;
+}
+
+export interface SelectProps {
+  options: string[];
+  name: string;
+  id: string;
+  isMultiple?: boolean;
+}
+
+// Type générique pour chaque étape
+export interface OnboardingStep {
+  id: number;
+  title: string;
+  description: string;
+  onboarding: OnboardingContent;
+}
+
+// Type pour chaque contenu d'onboarding possible
+export type OnboardingContent =
+  | OnboardingWelcome
+  | OnboardingInput
+  | OnboardingSelect
+  | OnboardingFranchise
+  | OnboardingObjectives
+  | OnboardingFiles;
+
+// Cas 1 : Étape de bienvenue
+interface OnboardingWelcome {
+  title: string;
+  description: string;
+  duration: string;
+}
+
+// Cas 2 : Étape avec input simple
+interface OnboardingInput {
+  placeholder: string;
+  tips: string;
+}
+
+// Cas 3 : Étape avec options sélectionnables
+interface OnboardingSelect {
+  placeholder: string;
+  options: string[];
+}
+
+// Cas 4 : Étape avec nombre de franchisés
+interface OnboardingFranchise {
+  now: string[];
+  prevision: string[];
+}
+
+// Cas 5 : Étape avec choix multiples d’objectifs
+interface OnboardingObjectives {
+  optionsMultiples: string[];
+}
+
+// Cas 6 : Étape avec upload de fichiers
+interface OnboardingFiles {
+  files: FileUpload[];
+}
+
+interface FileUpload {
+  name: string;
+  accept: string;
+  placeholder: string;
+}
+
+// Structure finale
+export interface OnboardingData {
+  step: OnboardingStep[];
 }

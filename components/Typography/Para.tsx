@@ -5,7 +5,7 @@ interface ParaProps {
 
 export const Paragraphe = ({ children, className }: ParaProps) => {
   return (
-    <p className={`text-base font-manrope font-medium leading-6 ${className}`}>
+    <p className={`font-manrope font-medium leading-6 ${className}`}>
       {children}
     </p>
   );

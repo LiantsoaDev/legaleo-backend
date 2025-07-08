@@ -71,6 +71,7 @@ export const LoginLeft = () => {
         <Button
           primary={false}
           classname="rounded-sm flex flex-row items-center justify-center border-gray gap-3"
+          onclick={() => signIn("azure-ad")}
         >
           <Image src={LogoMicrosoft} alt="Logo google" /> Continuer avec
           Microsoft

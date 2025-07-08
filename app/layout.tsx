@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Fraunces, Manrope } from "next/font/google";
 import "./globals.css";
 
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css"; // Import obligatoire
+config.autoAddCss = false; // 🔥 Important pour éviter les bugs de CSS avec Next.js
+
 const manrope = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],
