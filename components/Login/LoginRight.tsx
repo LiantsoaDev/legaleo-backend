@@ -1,3 +1,5 @@
+import logo_partner from "@/assets/images/logo_ipsum.png";
+import Image from "next/image";
 import { Paragraphe } from "../Typography";
 
 export const LoginRight = () => {
@@ -9,6 +11,7 @@ export const LoginRight = () => {
       </Paragraphe>
       <Paragraphe className="text-white text-center font-bold text-base mt-10">
         Ils nous ont fait confiance :
+        <Image src={logo_partner} alt="Logo partner" className="mt-9 mx-auto" />
       </Paragraphe>
     </div>
   );

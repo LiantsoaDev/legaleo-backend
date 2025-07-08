@@ -1,7 +1,7 @@
 export interface ButtonPropos {
   primary?: boolean;
   children: React.ReactNode;
-  onclick?: () => void;
+  onclick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   type?: "submit" | "button";
   href?: string;
   isdisabled?: boolean;

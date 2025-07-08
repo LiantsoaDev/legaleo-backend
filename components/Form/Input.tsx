@@ -37,8 +37,8 @@ export const Input = ({
       </label>
       {type === "textarea" ? (
         <textarea
-          className={`w-full border border-gray rounded-md px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black ${
-            error ? "border-red" : "border-gray"
+          className={`w-full border rounded-md px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black ${
+            error ? "border-danger" : "border-gray"
           } bg-transparent placeholder:capitalize`}
           placeholder={placeholder}
           name={name}
@@ -49,14 +49,15 @@ export const Input = ({
         />
       ) : (
         <input
-          className={`w-full border border-opacity-60 border-gray rounded-sm px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black ${
-            error ? "border-red" : "border-gray"
+          className={`w-full border border-opacity-60 rounded-sm px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black ${
+            error ? "border-danger" : "border-gray"
           } bg-transparent ${classname}`}
           type={type}
           placeholder={placeholder}
           name={name}
           required={isrequired}
           id={name}
+          formNoValidate
           value={value}
           onChange={(e) => getInputValue(e, setValue, setError)}
         />
