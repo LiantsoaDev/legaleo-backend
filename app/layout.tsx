@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${manrope.variable} ${fraunces.variable} antialiased`}>
+      <body className={`${manrope.variable} ${fraunces.variable} antialiased `}>
         {children}
         <ToastContainer />
       </body>

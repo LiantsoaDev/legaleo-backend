@@ -1,17 +1,58 @@
 "use client";
 import { createUser, handleSubmit } from "@/utils/functions";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { Button } from "../Button";
 import { Form, Input } from "../Form";
 import { Paragraphe, Title } from "../Typography";
 
 export const LoginRegister = () => {
   const [showCreateUser, setShowCreateUser] = useState<boolean>(false);
+  const router = useRouter();
 
   const handleShowRegister = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setShowCreateUser(!showCreateUser);
   };
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const formData = new FormData(e.currentTarget);
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
+
+      // Solution temporaire : vérifiez les valeurs avant l'appel
+      if (!email || !password) {
+        throw new Error("Email et mot de passe requis");
+      }
+
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        toast.error("Identifiants invalides. Veuillez réessayer.", {
+          position: "top-right",
+          theme: "colored",
+        });
+      } else {
+        router.push("/onboarding");
+      }
+    } catch (error) {
+      console.error("Erreur d'authentification:", error);
+      toast.error("Une erreur technique est survenue", {
+        position: "top-right",
+        theme: "colored",
+      });
+    }
+  };
+
   return (
     <>
       {showCreateUser ? (
@@ -66,7 +107,7 @@ export const LoginRegister = () => {
               Connecter vous à votre compte Legaleo
             </Paragraphe>
           </div>
-          <Form onSubmit={(e) => handleSubmit(e, () => console.log("mandona"))}>
+          <Form onSubmit={handleLogin}>
             <Input
               type="email"
               placeholder="email@email.com"

@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error: any) {
+    console.log(error);
     return new Response(
       JSON.stringify({
         success: 0,
