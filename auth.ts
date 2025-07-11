@@ -18,6 +18,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     MicrosoftEntraID({
       clientId: process.env.AUTH_MICROSOFT_ENTRA_ID_ID,
       clientSecret: process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET,
+      issuer: process.env.AUTH_MICROSOFT_ENTRA_ID_ISSUER,
       authorization: {
         params: {
           scope: "openid email profile User.Read",
@@ -43,7 +44,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         // Comparez les mots de passe hachés
         if (hashedPassword === user.password) {
-          console.log("yes ai", user);
           return {
             id: user.id,
             name: user.name,
@@ -63,11 +63,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (url.startsWith(baseUrl)) return url;
       return baseUrl + "/onboarding";
     },
-    async jwt({ token, user, account }) {
-      if (account?.provider === "google") {
-        console.log("**************", account?.provider);
-        return { ...token, ...user };
-      }
+    async jwt({ token, user }) {
       // Ajoutez les données utilisateur au token JWT
       if (user) {
         token.id = user.id;
@@ -78,6 +74,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     async session({ session, token }) {
       // Ajoutez les données du token à la session
+
       if (token && session.user) {
         session.user.id = token.id as string;
         session.user.name = token.name as string;

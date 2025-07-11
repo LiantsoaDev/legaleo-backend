@@ -2,13 +2,18 @@
 import { createUser, handleSubmit } from "@/utils/functions";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { toast } from "react-toastify";
 import { Button } from "../Button";
 import { Form, Input } from "../Form";
 import { Paragraphe, Title } from "../Typography";
 
-export const LoginRegister = () => {
+interface LoginRegisterProps {
+  isLoading?: boolean;
+  setIsLoading: React.Dispatch<SetStateAction<boolean>>;
+}
+
+export const LoginRegister = ({ setIsLoading }: LoginRegisterProps) => {
   const [showCreateUser, setShowCreateUser] = useState<boolean>(false);
   const router = useRouter();
 
@@ -19,7 +24,7 @@ export const LoginRegister = () => {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    setIsLoading(true);
     try {
       const formData = new FormData(e.currentTarget);
       const email = formData.get("email") as string;
@@ -50,6 +55,8 @@ export const LoginRegister = () => {
         position: "top-right",
         theme: "colored",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
