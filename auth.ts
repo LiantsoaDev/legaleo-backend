@@ -10,6 +10,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
   basePath: "/api/auth",
+  session: {
+    strategy: "jwt",
+  },
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID ?? "",
@@ -23,6 +26,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         params: {
           scope: "openid email profile User.Read",
         },
+      },
+      profile(profile) {
+        return {
+          id: profile.oid || profile.sub, // Microsoft utilise souvent 'oid' ou 'sub' pour l'ID
+          name: profile.name,
+          email: profile.email,
+          // image: profile.picture,
+        };
       },
     }),
     Credentials({

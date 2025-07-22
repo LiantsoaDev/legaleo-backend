@@ -1,6 +1,6 @@
-import { MultiSelectGroup } from "../Form";
-import { Paragraphe, Title } from "../Typography";
-import { Notices } from "../Typography/Tips";
+import { MultiSelectGroup } from "../../Form";
+import { Paragraphe, Title } from "../../Typography";
+import { Notices } from "../../Typography/Tips";
 
 const options = [
   "1-10",

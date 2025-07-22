@@ -6,6 +6,7 @@ export interface ButtonPropos {
   href?: string;
   isdisabled?: boolean;
   classname?: string;
+  isLink?: boolean;
 }
 
 export interface InputProps {

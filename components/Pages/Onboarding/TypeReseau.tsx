@@ -1,6 +1,6 @@
-import { Input, RadioGroup } from "../Form";
-import { Title } from "../Typography";
-import { Notices } from "../Typography/Tips";
+import { Input, RadioGroup } from "../../Form";
+import { Title } from "../../Typography";
+import { Notices } from "../../Typography/Tips";
 
 const options = [
   "Franchise",

@@ -1,6 +1,6 @@
-import { Select } from "../Form";
-import { Title } from "../Typography";
-import { Notices } from "../Typography/Tips";
+import { Select } from "../../Form";
+import { Title } from "../../Typography";
+import { Notices } from "../../Typography/Tips";
 
 const options = ["Lorem", "Lorem ipsum", "Lor ipsum"];
 

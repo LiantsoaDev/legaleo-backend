@@ -1,6 +1,6 @@
-import { InputFiles } from "../Form";
-import { Paragraphe, Title } from "../Typography";
-import { Notices } from "../Typography/Tips";
+import { InputFiles } from "../../Form";
+import { Paragraphe, Title } from "../../Typography";
+import { Notices } from "../../Typography/Tips";
 
 export const Documents = () => {
   return (

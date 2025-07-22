@@ -1,13 +1,13 @@
-import { Button } from "../Button";
-import { Logo } from "../Logo/Logo";
-import { Paragraphe, Title } from "../Typography";
-import { Notices } from "../Typography/Tips";
+import { Button } from "../../Button";
+import { Logo } from "../../Logo/Logo";
+import { Paragraphe, Title } from "../../Typography";
+import { Notices } from "../../Typography/Tips";
 
 export const Welcome = () => {
   return (
-    <div className="flex flex-col px-32 py-20 justify-center h-screen max-w-4xl">
+    <div className="flex flex-col px-32 py-20 justify-center items-center h-screen max-w-4xl">
       <Logo className="w-52 h-16 filter grayscale mb-20" />
-      <Title className="font-manrope font-bold text-4xl leading-[48px] text-[#1F120E] mb-5">
+      <Title className="font-manrope font-bold text-4xl leading-[80px] text-[#1F120E] mb-5">
         Bienvenue sur Legaleo ! 👋
       </Title>
       <Paragraphe className="font-normal text-2xl leading-8 mb-10">

@@ -6,7 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { OnboardingCard } from "../Card";
+import { OnboardingCard } from "../../Card";
 import { Activite } from "./Activite";
 import { Documents } from "./Documents";
 import { Finalisation } from "./Finalisation";
@@ -55,9 +55,9 @@ export const Onboarding = () => {
 
   return (
     <div className="flex flex-row">
-      <div className="w-2/3 justify-between flex flex-col relative select-none">
+      <div className="w-2/3 justify-between flex flex-col items-center relative select-none">
         {renderStep()}
-        <div className="absolute bottom-0 left-1/2 translate-[-50%] bg-blue px-5 py-5 rounded-full flex gap-10 text-white text-2xl">
+        <div className="fixed bottom-0 left-1/2 translate-[-50%] bg-blue px-5 py-5 rounded-full flex gap-10 text-white text-2xl">
           <FontAwesomeIcon
             icon={faLongArrowLeft}
             onClick={handlePrevStep}

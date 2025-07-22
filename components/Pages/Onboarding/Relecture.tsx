@@ -1,6 +1,6 @@
-import { RadioGroup } from "../Form";
-import { Paragraphe, Title } from "../Typography";
-import { Notices } from "../Typography/Tips";
+import { RadioGroup } from "../../Form";
+import { Paragraphe, Title } from "../../Typography";
+import { Notices } from "../../Typography/Tips";
 
 const options = [
   "✅ Oui, je souhaite un accompagnement personnalisé",

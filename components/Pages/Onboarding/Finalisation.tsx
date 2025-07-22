@@ -1,6 +1,6 @@
-import { Button } from "../Button";
-import { Paragraphe, Title } from "../Typography";
-import { Notices } from "../Typography/Tips";
+import { Button } from "../../Button";
+import { Paragraphe, Title } from "../../Typography";
+import { Notices } from "../../Typography/Tips";
 
 export const Finalisation = () => {
   return (
@@ -19,8 +19,10 @@ export const Finalisation = () => {
         Vos infos sont stockées en toute sécurité.
       </Notices>
       <Button
+        href="/dashboard"
+        isLink={true}
         primary={false}
-        classname="!bg-primary !border-primary hover:!bg-transparent hover:!text-secondary w-fit text-2xl font-semibold mt-16 transition-colors"
+        classname="!bg-primary !border-primary hover:!bg-transparent hover:!text-secondary w-fit !text-2xl !text-secondary font-semibold mt-16 transition-colors !p-5 "
       >
         Explorer mon tableau de bord
       </Button>

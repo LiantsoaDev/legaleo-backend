@@ -1,6 +1,6 @@
-import { Input } from "../Form";
-import { Title } from "../Typography";
-import { Notices } from "../Typography/Tips";
+import { Input } from "../../Form";
+import { Title } from "../../Typography";
+import { Notices } from "../../Typography/Tips";
 
 export const ReseauFranchise = () => {
   return (

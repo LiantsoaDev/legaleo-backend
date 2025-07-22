@@ -10,15 +10,16 @@ export const Button = ({
   isdisabled = false,
   classname,
   onclick,
+  isLink,
 }: ButtonPropos) => {
   return href ? (
     <Link
       href={href}
-      className={
-        primary
-          ? `font-semibold font-manrope text-base ${classname}`
-          : "btn-secondary"
-      }
+      className={`${
+        isLink
+          ? `bg-secondary text-white px-5 py-3 font-manrope font-bold border-secondary rounded-full hover:bg-white hover:text-black text-base md:text-xl lg:text-base transition ease-in-out duration-500 hover:border-secondary hover:border disabled:opacity-90 disabled:cursor-not-allowed ${classname}`
+          : "font-semibold hover:underline !p-0 !bg-white !text-secondary cursor-pointer !border-0 !appearance-none !hover:border-0"
+      }`}
     >
       {children}
     </Link>

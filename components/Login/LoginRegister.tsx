@@ -148,9 +148,8 @@ export const LoginRegister = ({ setIsLoading }: LoginRegisterProps) => {
         </Button>
       </div>
       <Button
-        href="/register"
         primary
-        classname="font-semibold hover:underline mb-7 mt-3"
+        classname="font-semibold hover:underline !p-0 !bg-white !text-secondary cursor-pointer !border-0 !appearance-none !hover:border-0 mt-5 mb-10"
       >
         Mot de passe oublié ?
       </Button>
