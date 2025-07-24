@@ -8,7 +8,7 @@ interface NoticesProps {
 export const Notices = ({ children, classname }: NoticesProps) => {
   return (
     <span
-      className={`text-xl font-manrope flex flex-row gap-3 items-center font-normal text-blue ${classname}`}
+      className={`text-md font-manrope flex flex-row gap-3 items-center font-normal text-blue ${classname}`}
     >
       {" "}
       <svg

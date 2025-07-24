@@ -14,11 +14,11 @@ export const UserPictureWithName = ({
       <Image
         src={pictureUrl}
         alt="user profil"
-        className="rounded-full w-10 h-10"
+        className="rounded-full w-8 h-8"
         width={100}
         height={100}
       />
-      <span className="ml-2 text-lg font-semibold">{username}</span>
+      <span className="ml-2 text-sm font-semibold">{username}</span>
     </div>
   );
 };

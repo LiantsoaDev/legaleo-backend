@@ -7,7 +7,7 @@ const options = ["Lorem", "Lorem ipsum", "Lor ipsum"];
 export const Activite = () => {
   return (
     <div className="flex flex-col min-h-screen justify-center px-32 py-20 max-w-4xl">
-      <Title className="font-bold text-4xl leading-[100%] mb-8">
+      <Title className="font-bold text-2xl w-3/5 leading-[100%] mb-8">
         Quel est le secteur d’activité de votre réseau ?
       </Title>
       <div className="flex flex-col gap-5 w-full flex-wrap">
@@ -15,7 +15,7 @@ export const Activite = () => {
           id="reseau_activity"
           options={options}
           name="activity"
-          isMultiple
+          // isMultiple
         />
       </div>
       <Notices classname="mt-5">

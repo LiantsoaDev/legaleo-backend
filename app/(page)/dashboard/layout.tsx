@@ -1,11 +1,17 @@
+"use client";
+
+import { WelcomeCard } from "@/components/Card";
 import { HeaderDashboard } from "@/components/Header";
 import { Left } from "@/components/Pages/Dashboard";
+import { useState } from "react";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [showWelcomeCard, setShowWelcomeCard] = useState(true);
+
   return (
     <div className="flex min-h-screen flex-col gap-0 bg-dark-green pb-5 pr-8">
       <HeaderDashboard />
@@ -15,6 +21,9 @@ export default function DashboardLayout({
           {children}
         </div>
       </div>
+      {showWelcomeCard && (
+        <WelcomeCard setShowWelcomeCard={setShowWelcomeCard} />
+      )}
     </div>
   );
 }

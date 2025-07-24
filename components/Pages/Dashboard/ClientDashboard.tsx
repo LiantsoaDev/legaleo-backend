@@ -3,7 +3,11 @@ import { ProjectCard } from "@/components/Card";
 import { Notifications } from "@/components/Notifications";
 import { Title } from "@/components/Typography";
 import { Videos } from "@/components/Video";
-import { faDownload, faFile } from "@fortawesome/free-solid-svg-icons";
+import {
+  faDownload,
+  faFile,
+  faSignature,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { OnboardingFinalisation } from "../Onboarding";
 import { LastProject } from "./Project";
@@ -14,7 +18,7 @@ export const ClientDashboard = () => {
       <div className="w-3/5 flex flex-col gap-7">
         <div className="flex flex-row gap-5 items-center">
           <div className="w-15 h-15 bg-accent rounded-full" />
-          <Title level={2} className="text-black font-semibold text-2xl">
+          <Title level={2} className="text-black font-semibold text-xl">
             Bonjour <span>User</span>
           </Title>
         </div>
@@ -23,7 +27,7 @@ export const ClientDashboard = () => {
             icon={
               <FontAwesomeIcon
                 icon={faFile}
-                className="text-primary text-2xl"
+                className="text-primary !text-xl"
               />
             }
             title="Nouveau projet"
@@ -31,8 +35,17 @@ export const ClientDashboard = () => {
           <ProjectCard
             icon={
               <FontAwesomeIcon
+                icon={faSignature}
+                className="text-primary !text-xl"
+              />
+            }
+            title="Signer un document"
+          />
+          <ProjectCard
+            icon={
+              <FontAwesomeIcon
                 icon={faDownload}
-                className="text-primary text-2xl"
+                className="text-primary !text-xl"
               />
             }
             title="Importer un document"

@@ -13,13 +13,13 @@ const options = [
 export const TypeReseau = () => {
   return (
     <div className="flex flex-col min-h-screen justify-center px-32 py-20 max-w-4xl">
-      <Title className="font-bold text-4xl leading-[100%] mb-8">
+      <Title className="font-bold text-xl leading-[100%] mb-8">
         Quel est le type de réseau que vous développez ?
       </Title>
       <div className="flex flex-col gap-5 w-full mt-10">
         <RadioGroup showLogo options={options} name="type_reseau" />
       </div>
-      <div className="flex gap-3 mt-10 text-accent font-medium text-2xl">
+      <div className="flex gap-3 mt-10 text-accent font-medium text-lg">
         <div className="flex items-center">
           Autre:
           <Input

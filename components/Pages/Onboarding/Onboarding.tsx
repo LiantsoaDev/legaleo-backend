@@ -57,7 +57,7 @@ export const Onboarding = () => {
     <div className="flex flex-row">
       <div className="w-2/3 justify-between flex flex-col items-center relative select-none">
         {renderStep()}
-        <div className="fixed bottom-0 left-1/2 translate-[-50%] bg-blue px-5 py-5 rounded-full flex gap-10 text-white text-2xl">
+        <div className="fixed bottom-0 left-1/2 translate-[-50%] bg-blue px-5 py-5 rounded-full flex gap-10 text-white text-xl">
           <FontAwesomeIcon
             icon={faLongArrowLeft}
             onClick={handlePrevStep}

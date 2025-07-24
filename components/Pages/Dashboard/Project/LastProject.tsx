@@ -4,7 +4,7 @@ import { ProjectListCard } from "./ProjectListCard";
 export const LastProject = () => {
   return (
     <div className="flex flex-col gap-5 w-full">
-      <Title className="font-bold text-2xl" level={2}>
+      <Title className="font-bold text-xl" level={2}>
         Mes derniers projets
       </Title>
       <div className="flex flex-row justify-between flex-wrap gap-5 w-full">

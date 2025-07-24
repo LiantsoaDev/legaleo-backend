@@ -11,7 +11,7 @@ export const Videos = () => {
         </Paragraphe>
         <Button
           primary={false}
-          classname="rounded-md !border-[#087F83] !text-[#087F83] w-fit"
+          classname="rounded-md !border-[#087F83] !text-[#087F83] w-fit hover:!text-white hover:!border-black"
         >
           Regarder la vidéo
         </Button>

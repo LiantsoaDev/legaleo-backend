@@ -7,7 +7,7 @@ interface ProjectCardProps {
 export const ProjectCard = ({ icon, title, onclick }: ProjectCardProps) => {
   return (
     <div
-      className="border border-gray py-5 flex flex-col justify-center items-center gap-2.5 w-full text-base font-semibold rounded-md cursor-pointer hover:bg-gray-100 transition-colors"
+      className="border border-gray py-5 flex flex-col justify-center items-center gap-2.5 w-full text-xs font-semibold rounded-md cursor-pointer hover:bg-gray-100 transition-colors"
       onClick={onclick}
     >
       {icon}

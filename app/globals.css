@@ -53,3 +53,7 @@ body {
   display: none;
   height: 0;
 }
+
+.fill-available {
+  height: webkit-fill-available;
+}

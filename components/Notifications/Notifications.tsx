@@ -13,14 +13,11 @@ export const Notifications = () => {
           <Notification
             hasNotifications
             icon={
-              <FontAwesomeIcon
-                icon={faBell}
-                className="text-primary text-3xl"
-              />
+              <FontAwesomeIcon icon={faBell} className="text-primary text-xl" />
             }
             className="!text-primary"
           />
-          <Title level={3} className="text-black font-bold text-2xl">
+          <Title level={3} className="text-black font-bold text-xl">
             Mes notifications
           </Title>
         </div>

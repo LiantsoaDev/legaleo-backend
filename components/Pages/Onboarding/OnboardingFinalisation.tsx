@@ -8,13 +8,15 @@ export const OnboardingFinalisation = () => {
       <div className="flex flex-col gap-2.5 w-3/4">
         <Title
           level={3}
-          className="font-manrope text-black text-2xl font-semibold"
+          className="font-manrope text-black text-xl font-semibold"
         >
           Mes premiers pas sur Legaleo
         </Title>
         <CurrentOnboardingStep />
       </div>
-      <Button classname="rounded-sm w-1/4 cursor-pointer">Commencer</Button>
+      <Button classname="rounded-sm w-1/4 cursor-pointer !text-base">
+        Commencer
+      </Button>
     </div>
   );
 };

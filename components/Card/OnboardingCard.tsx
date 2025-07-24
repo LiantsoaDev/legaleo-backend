@@ -17,13 +17,13 @@ export const OnboardingCard = ({
   isLast,
 }: OnboardingCardProps) => {
   return (
-    <div className="flex flex-row gap-10 items-center">
+    <div className="flex flex-row gap-8 items-center">
       <div
-        className={`flex justify-center items-center font-manrope text-2xl font-medium ${
+        className={`flex justify-center items-center font-manrope text-xl font-medium ${
           isActive || isCompleted
             ? "bg-primary text-secondary"
             : "bg-[#413734] text-[#8C8C8C]"
-        }  w-14 h-14 rounded-full relative ${
+        }  w-13 h-13 rounded-full relative ${
           isActive || isCompleted ? "after:bg-primary" : "after:bg-[#413734]"
         } ${
           isLast
@@ -38,7 +38,7 @@ export const OnboardingCard = ({
           isActive || isCompleted ? "opacity-100" : "opacity-50"
         }`}
       >
-        <Title level={3} className="text-white font-bold text-xl capitalize">
+        <Title level={3} className="text-white font-bold text-md capitalize">
           {title}
         </Title>
       </div>

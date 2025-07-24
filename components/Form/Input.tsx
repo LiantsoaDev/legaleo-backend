@@ -9,7 +9,6 @@ import {
   RadioProps,
   SelectProps,
 } from "@/utils/types";
-import { faCircle } from "@fortawesome/free-solid-svg-icons/faCircle";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
@@ -84,11 +83,17 @@ export const CheckBox = ({
     <div>
       <label
         htmlFor={id}
-        className={`py-3 px-5 font-manrope border border-gray select-none ${
+        className={`py-3 px-5 font-manrope border border-[#8C8783] select-none ${
           isSelected ? "bg-primary text-white border-none" : "bg-transparent"
-        } text-2xl flex items-center gap-2.5 cursor-pointer text-gray rounded-md`}
+        } text-xl flex items-center gap-2.5 cursor-pointer text-[#8C8783] rounded-md`}
       >
-        {showLogo && <FontAwesomeIcon icon={faCircle} className="text-base" />}
+        {showLogo &&
+          (isSelected ? (
+            <div className="w-5 h-5 bg-white border border-gray rounded-full" />
+          ) : (
+            <div className="w-5 h-5 bg-transparent border border-[#8C8783] rounded-full" />
+          ))}
+        {/* {showLogo && <FontAwesomeIcon icon={faCircle} className="text-base" />} */}
         {value}
       </label>
       <input
@@ -175,7 +180,7 @@ export const InputFiles = ({
     <div className="w-full">
       <label
         htmlFor={id}
-        className="flex flex-row gap-2.5 py-4 px-8 border-4 border-[#A7B0FF] border-dashed font-semibold text-xl cursor-pointer rounded-2xl w-full"
+        className="flex flex-row gap-2.5 py-4 px-8 border-4 border-[#A7B0FF] border-dashed font-semibold text-md cursor-pointer rounded-2xl w-full"
       >
         <svg
           width="30"
@@ -258,7 +263,7 @@ export const Select = ({
           </select>
           {isMultiple && index === selects.length - 1 && (
             <button
-              className="appearance-none text-2xl ml-3 text-accent cursor-pointer"
+              className="appearance-none text-lg ml-3 text-accent cursor-pointer"
               onClick={addSelect}
             >
               <FontAwesomeIcon icon={faPlus} />

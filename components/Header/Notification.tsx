@@ -20,7 +20,7 @@ export const Notification = ({
       {hasNotifications && (
         <FontAwesomeIcon
           icon={faCircle}
-          className="text-md text-orange absolute top-0 left-3.5"
+          className="text-xs text-orange absolute top-0 left-3.5"
         />
       )}
     </div>

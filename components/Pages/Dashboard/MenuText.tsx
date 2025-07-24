@@ -25,7 +25,7 @@ export const MenuText = ({
     >
       <Link
         href={href}
-        className={`flex flex-row items-center justify-start gap-5 text-lg py-5 rounded-xl hover:bg-[#D9FDFB33] px-5 w-full ${className}`}
+        className={`flex flex-row items-center justify-start gap-5 text-sm py-5 rounded-xl hover:bg-[#D9FDFB33] px-5 w-full ${className}`}
       >
         {icon && <span>{icon}</span>}
         {children}

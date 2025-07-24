@@ -5,7 +5,7 @@ import { MenuText } from "./MenuText";
 
 export const Left = () => {
   return (
-    <div className="w-1/5 h-full px-5 py-0 flex flex-col justify-between">
+    <div className="w-1/5 fill-available px-5 py-0 flex flex-col justify-between">
       <div className="flex flex-col gap-0">
         {/* Add your menu items here */}
         {/* Example: */}

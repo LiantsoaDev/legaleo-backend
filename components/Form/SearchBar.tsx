@@ -7,7 +7,7 @@ export const SearchBar = () => {
       <input
         type="text"
         placeholder="Rechercher..."
-        className="w-[90%] focus:outiline-none outline-none bg-transparent text-black placeholder:text-dark-green"
+        className="w-[90%] focus:outiline-none outline-none bg-transparent text-black placeholder:text-dark-green text-sm"
       />
       <button type="submit" className="cursor-pointer">
         <FontAwesomeIcon icon={faSearch} className="text-dark-green text-2xl" />
