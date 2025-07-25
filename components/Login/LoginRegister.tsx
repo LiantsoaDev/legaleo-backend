@@ -15,11 +15,13 @@ interface LoginRegisterProps {
 
 export const LoginRegister = ({ setIsLoading }: LoginRegisterProps) => {
   const [showCreateUser, setShowCreateUser] = useState<boolean>(false);
+  const [showForgotPassword, setShowForgotPassword] = useState<boolean>(false);
   const router = useRouter();
 
   const handleShowRegister = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setShowCreateUser(!showCreateUser);
+    setShowForgotPassword(false);
   };
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -62,7 +64,54 @@ export const LoginRegister = ({ setIsLoading }: LoginRegisterProps) => {
 
   return (
     <>
-      {showCreateUser ? (
+      {showForgotPassword ? (
+        <>
+          <div className="flex flex-col justify-center items-center gap-4 mb-10">
+            <Title level={1} className="font-bold text-3xl font-fraunces">
+              Mot de passe oublier ?
+            </Title>
+            <Paragraphe className="text-[#555351]">
+              Recuperer votre compte en entrant votre email ci-dessous:
+            </Paragraphe>
+          </div>
+          <Form
+            onSubmit={(e) =>
+              handleSubmit(e, () => {
+                e.preventDefault();
+                setIsLoading(true);
+                const emailValue = e.currentTarget.email;
+                console.log(
+                  "Recuperation de mot de passe pour l'email:",
+                  emailValue
+                );
+                // Simulate
+                console.log(
+                  "Recuperation de mot de passe pour l'email:",
+                  e.currentTarget.email.value
+                );
+                toast.success("Une email a été envoyer", {
+                  position: "top-right",
+                  theme: "colored",
+                });
+                if (emailValue) {
+                  emailValue.value = "";
+                }
+                setIsLoading(false);
+              })
+            }
+          >
+            <Input
+              type="email"
+              placeholder="email@email.com"
+              label="Adresse email"
+              name="email"
+            />
+            <Button classname="cursor-pointer" type="submit">
+              Recuperer mon compte
+            </Button>
+          </Form>
+        </>
+      ) : showCreateUser ? (
         <>
           <div className="flex flex-col justify-center items-center gap-4 mb-10">
             <Title level={1} className="font-bold text-3xl font-fraunces">
@@ -150,6 +199,7 @@ export const LoginRegister = ({ setIsLoading }: LoginRegisterProps) => {
       <Button
         primary
         classname="font-semibold hover:underline !p-0 !bg-white !text-secondary cursor-pointer !border-0 !appearance-none !hover:border-0 mt-5 mb-10"
+        onclick={() => setShowForgotPassword(true)}
       >
         Mot de passe oublié ?
       </Button>
