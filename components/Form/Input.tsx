@@ -9,6 +9,7 @@ import {
   RadioProps,
   SelectProps,
 } from "@/utils/types";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
@@ -23,8 +24,11 @@ export const Input = ({
 }: InputProps) => {
   const [value, setValue] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const computedType =
+    type === "password" ? (showPassword ? "text" : "password") : type;
 
-  useEffect(() => {}, [value, error]);
+  useEffect(() => {}, [value, error, showPassword]);
 
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -47,19 +51,28 @@ export const Input = ({
           onChange={(e) => getInputValue(e, setValue, setError)}
         />
       ) : (
-        <input
-          className={`w-full border border-opacity-60 rounded-sm px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black ${
-            error ? "border-danger" : "border-gray"
-          } bg-transparent ${classname}`}
-          type={type}
-          placeholder={placeholder}
-          name={name}
-          required={isrequired}
-          id={name}
-          formNoValidate
-          value={value}
-          onChange={(e) => getInputValue(e, setValue, setError)}
-        />
+        <div className="relative">
+          <input
+            className={`w-full border border-opacity-60 rounded-sm px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black ${
+              error ? "border-danger" : "border-gray"
+            } bg-transparent ${classname}`}
+            type={computedType}
+            placeholder={placeholder}
+            name={name}
+            required={isrequired}
+            id={name}
+            formNoValidate
+            value={value}
+            onChange={(e) => getInputValue(e, setValue, setError)}
+          />
+          {type === "password" && (
+            <FontAwesomeIcon
+              icon={showPassword ? faEyeSlash : faEye}
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-[50%] translate-y-[-50%] transform cursor-pointer"
+            />
+          )}
+        </div>
       )}
       {error && (
         <span className="text-danger text-sm md:text-lg lg:text-sm mt-1">
@@ -243,6 +256,7 @@ export const Select = ({
       {selects.map((index) => (
         <div className="flex flex-row w-full" key={index}>
           <select
+            defaultValue={""}
             name={name}
             id={id}
             className="w-[80%] border border-gray relative rounded-md px-8 py-5 bg-white text-black focus:outline-none appearance-none after:content-['']"
@@ -252,7 +266,7 @@ export const Select = ({
               appearance: "none",
             }}
           >
-            <option defaultValue="" disabled>
+            <option value="" disabled>
               Sélectionnez une option
             </option>
             {options.map((option, index) => (

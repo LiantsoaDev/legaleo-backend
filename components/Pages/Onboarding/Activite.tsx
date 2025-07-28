@@ -2,7 +2,17 @@ import { Select } from "../../Form";
 import { Title } from "../../Typography";
 import { Notices } from "../../Typography/Tips";
 
-const options = ["Lorem", "Lorem ipsum", "Lor ipsum"];
+const options = [
+  "Restauration",
+  "Commerce de détail",
+  "Services à la personne",
+  "Bâtiment / Habitat",
+  "Beauté / Bien-être",
+  "Automobile",
+  "Fitness / Sport",
+  "Santé",
+  "Immobilier",
+];
 
 export const Activite = () => {
   return (

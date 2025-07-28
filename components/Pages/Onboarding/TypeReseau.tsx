@@ -19,7 +19,7 @@ export const TypeReseau = () => {
       <div className="flex flex-col gap-5 w-full mt-10">
         <RadioGroup showLogo options={options} name="type_reseau" />
       </div>
-      <div className="flex gap-3 mt-10 text-accent font-medium text-lg">
+      <div className="flex gap-3 mt-10 text-black font-medium text-lg">
         <div className="flex items-center">
           Autre:
           <Input
