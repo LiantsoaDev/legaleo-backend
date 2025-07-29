@@ -116,3 +116,28 @@ interface FileUpload {
 export interface OnboardingData {
   step: OnboardingStep[];
 }
+
+export interface Project {
+  status:
+    | "Validé avocat"
+    | "Modifications requises"
+    | "En relecture"
+    | "Non assigné";
+
+  name: string;
+  dateCreated: string;
+  dateUpdated?: string;
+  description?: string;
+  teamMembers?: string[];
+  commentaires?: number;
+}
+
+export interface Contrat {
+  status:
+    | "brouillon"
+    | "relecture interne"
+    | "relecture avocat"
+    | "en cours de signature"
+    | "Modifications requises";
+  projects: Project[];
+}

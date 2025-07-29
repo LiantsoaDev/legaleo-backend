@@ -8,6 +8,14 @@ interface MenuTextProps {
   isActive?: boolean;
 }
 
+interface ProjectActionProps {
+  className?: string;
+  children: React.ReactNode;
+  icon: React.ReactNode;
+  href: string;
+  disabled?: boolean;
+}
+
 export const MenuText = ({
   className,
   children,
@@ -31,5 +39,25 @@ export const MenuText = ({
         {children}
       </Link>
     </div>
+  );
+};
+
+export const ProjectAction = ({
+  className,
+  children,
+  icon,
+  href,
+  disabled = false,
+}: ProjectActionProps) => {
+  return (
+    <Link
+      href={href}
+      className={`flex flex-row gap-2.5 items-center ${
+        disabled ? "text-gray" : "text-[#087F83]"
+      } font-medium text-xs hover:opacity-85 transition-all duration-300 hover:underline  ${className}`}
+    >
+      {icon && <span>{icon}</span>}
+      <span className={className}>{children}</span>
+    </Link>
   );
 };
