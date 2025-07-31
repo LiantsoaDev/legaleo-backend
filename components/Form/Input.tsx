@@ -9,7 +9,11 @@ import {
   RadioProps,
   SelectProps,
 } from "@/utils/types";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronDown,
+  faEye,
+  faEyeSlash,
+} from "@fortawesome/free-solid-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
@@ -244,6 +248,8 @@ export const Select = ({
   name,
   options,
   isMultiple = false,
+  classname = "",
+  isFilter = false,
 }: SelectProps) => {
   const [selects, setSelects] = useState([0]);
 
@@ -255,26 +261,35 @@ export const Select = ({
     <div className="w-full flex flex-col gap-5 items-center justify-between">
       {selects.map((index) => (
         <div className="flex flex-row w-full" key={index}>
-          <select
-            defaultValue={""}
-            name={name}
-            id={id}
-            className="w-[80%] border border-gray relative rounded-md px-8 py-5 bg-white text-black focus:outline-none appearance-none after:content-['']"
-            style={{
-              WebkitAppearance: "none",
-              MozAppearance: "none",
-              appearance: "none",
-            }}
-          >
-            <option value="" disabled>
-              Sélectionnez une option
-            </option>
-            {options.map((option, index) => (
-              <option key={index} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+          <div className="relative w-full">
+            <select
+              defaultValue={""}
+              name={name}
+              id={id}
+              className={`w-[80%] border border-gray relative rounded-md px-8 py-5 bg-white text-black focus:outline-none appearance-none after:content-[''] ${classname}`}
+              style={{
+                WebkitAppearance: "none",
+                MozAppearance: "none",
+                appearance: "none",
+              }}
+            >
+              {!isFilter && (
+                <option value="" disabled>
+                  Sélectionnez une option
+                </option>
+              )}
+
+              {options.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+            <FontAwesomeIcon
+              icon={faChevronDown}
+              className="absolute top-[50%] translate-y-[-50%] z-10 right-[10px] text-xs text-[#86A2A3]"
+            />
+          </div>
           {isMultiple && index === selects.length - 1 && (
             <button
               className="appearance-none text-lg ml-3 text-accent cursor-pointer"

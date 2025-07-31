@@ -28,7 +28,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "assets/SVG/SVG.js",
-    "utils/data/data.js"
+    "utils/data/data.ts"
   ],
   "exclude": ["node_modules"]
 }

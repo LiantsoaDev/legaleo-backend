@@ -1,6 +1,7 @@
 "use client";
 
 import { Title } from "@/components/Typography";
+import { formatDate } from "@/utils/functions";
 import {
   faArchive,
   faAssistiveListeningSystems,
@@ -8,7 +9,6 @@ import {
   faClone,
   faEllipsisVertical,
   faGavel,
-  faMessage,
   faPen,
   faReplyAll,
   faShare,
@@ -36,21 +36,10 @@ export const ProjectListCard = ({
   nom,
   date,
   commentaire,
-  key,
   status = "Non assigné",
   classname = "",
 }: ProjectListCardProps) => {
   const [showActions, setShowActions] = useState(false);
-
-  const formatDate = (inputDate?: string) => {
-    if (!inputDate) return "";
-
-    const d = new Date(inputDate);
-    const day = d.getDate().toString().padStart(2, "0");
-    const month = (d.getMonth() + 1).toString().padStart(2, "0"); // Janvier = 0
-
-    return `${day}/${month}`;
-  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -91,10 +80,7 @@ export const ProjectListCard = ({
 
   return (
     <div className={`relative ${classname}`}>
-      <div
-        key={key}
-        className="border border-gray rounded-xl flex flex-col gap-0 p-4 w-full bg-white shadow-lg"
-      >
+      <div className="border border-gray rounded-xl flex flex-col gap-0 p-4 w-full bg-white shadow-lg">
         <div className="flex flex-col gap-3 pb-3">
           {getStatusColor(status)}
           <span className="font-semibold text-xs text-[#828282]">
@@ -119,7 +105,51 @@ export const ProjectListCard = ({
             } py-1 px-1.5 flex flex-row items-center gap-1 rounded-full w-fit text-white font-normal cursor-pointer`}
           >
             <span>{commentaire}</span>
-            <FontAwesomeIcon icon={faMessage} />
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 12 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4 4.5H6"
+                stroke="white"
+                strokeWidth="0.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M1.5 3C1.5 2.17157 2.17157 1.5 3 1.5H9C9.82843 1.5 10.5 2.17157 10.5 3V10.2496C10.5 10.3405 10.4507 10.4242 10.3712 10.4683C10.2917 10.5123 10.1946 10.5098 10.1175 10.4616L8.57895 9.5H3C2.17157 9.5 1.5 8.82843 1.5 8V3Z"
+                stroke="white"
+                strokeWidth="0.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M8 4.5H7.5"
+                stroke="white"
+                strokeWidth="0.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M8 6.5H6"
+                stroke="white"
+                strokeWidth="0.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M4 6.5H4.5"
+                stroke="white"
+                strokeWidth="0.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </div>
           <div
             className="flex flex-row items-center gap-1 rounded-full w-1/2 justify-end text-[#828282] font-normal text-xl"

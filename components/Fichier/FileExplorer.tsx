@@ -1,0 +1,102 @@
+"use client";
+import { faFolder } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons/faChevronDown";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
+
+const FileExplorer = () => {
+  const [isOpen, setIsOpen] = useState(true);
+
+  return (
+    <div className="flex flex-col">
+      <div
+        className="flex justify-between text-[#86A2A3] py-3 px-2.5 bg-gray rounded-xs cursor-pointer"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <div className="flex flex-row gap-3.5 items-center text-sm">
+          <FontAwesomeIcon icon={faFolder} />
+          Tout
+        </div>
+        <FontAwesomeIcon icon={faChevronDown} />
+      </div>
+      {isOpen && (
+        <div className="flex flex-col gap-0 px-3.5">
+          <div className="flex flex-row gap-3.5 px-3.5 py-3.5 font-semibold text-sm text-[#86A2A3] cursor-pointer">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4.16667 3.33337H7.5L10 5.83337H15.8333C16.2754 5.83337 16.6993 6.00897 17.0118 6.32153C17.3244 6.63409 17.5 7.05801 17.5 7.50004V14.1667C17.5 14.6087 17.3244 15.0327 17.0118 15.3452C16.6993 15.6578 16.2754 15.8334 15.8333 15.8334H4.16667C3.72464 15.8334 3.30072 15.6578 2.98816 15.3452C2.67559 15.0327 2.5 14.6087 2.5 14.1667V5.00004C2.5 4.55801 2.67559 4.13409 2.98816 3.82153C3.30072 3.50897 3.72464 3.33337 4.16667 3.33337Z"
+                stroke="#86A2A3"
+                strokeWidth="1.66667"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            Dossier
+          </div>
+          <div className="flex flex-row gap-3.5 px-3.5 py-3.5 font-semibold text-sm text-[#86A2A3] cursor-pointer">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4.16667 3.33337H7.5L10 5.83337H15.8333C16.2754 5.83337 16.6993 6.00897 17.0118 6.32153C17.3244 6.63409 17.5 7.05801 17.5 7.50004V14.1667C17.5 14.6087 17.3244 15.0327 17.0118 15.3452C16.6993 15.6578 16.2754 15.8334 15.8333 15.8334H4.16667C3.72464 15.8334 3.30072 15.6578 2.98816 15.3452C2.67559 15.0327 2.5 14.6087 2.5 14.1667V5.00004C2.5 4.55801 2.67559 4.13409 2.98816 3.82153C3.30072 3.50897 3.72464 3.33337 4.16667 3.33337Z"
+                stroke="#86A2A3"
+                strokeWidth="1.66667"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            Dossier
+          </div>
+          <div className="flex flex-row gap-3.5 px-3.5 py-3.5 font-semibold text-sm text-[#86A2A3] cursor-pointer">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4.16667 3.33337H7.5L10 5.83337H15.8333C16.2754 5.83337 16.6993 6.00897 17.0118 6.32153C17.3244 6.63409 17.5 7.05801 17.5 7.50004V14.1667C17.5 14.6087 17.3244 15.0327 17.0118 15.3452C16.6993 15.6578 16.2754 15.8334 15.8333 15.8334H4.16667C3.72464 15.8334 3.30072 15.6578 2.98816 15.3452C2.67559 15.0327 2.5 14.6087 2.5 14.1667V5.00004C2.5 4.55801 2.67559 4.13409 2.98816 3.82153C3.30072 3.50897 3.72464 3.33337 4.16667 3.33337Z"
+                stroke="#86A2A3"
+                strokeWidth="1.66667"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            Dossier
+          </div>
+          <div className="flex flex-row gap-3.5 px-3.5 py-3.5 font-semibold text-sm text-[#86A2A3] cursor-pointer">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4.16667 3.33337H7.5L10 5.83337H15.8333C16.2754 5.83337 16.6993 6.00897 17.0118 6.32153C17.3244 6.63409 17.5 7.05801 17.5 7.50004V14.1667C17.5 14.6087 17.3244 15.0327 17.0118 15.3452C16.6993 15.6578 16.2754 15.8334 15.8333 15.8334H4.16667C3.72464 15.8334 3.30072 15.6578 2.98816 15.3452C2.67559 15.0327 2.5 14.6087 2.5 14.1667V5.00004C2.5 4.55801 2.67559 4.13409 2.98816 3.82153C3.30072 3.50897 3.72464 3.33337 4.16667 3.33337Z"
+                stroke="#86A2A3"
+                strokeWidth="1.66667"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            Dossier
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default FileExplorer;

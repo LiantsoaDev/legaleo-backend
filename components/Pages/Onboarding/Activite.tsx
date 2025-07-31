@@ -25,6 +25,7 @@ export const Activite = () => {
           id="reseau_activity"
           options={options}
           name="activity"
+          classname="w-full"
           // isMultiple
         />
       </div>

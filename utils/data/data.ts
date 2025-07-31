@@ -6,9 +6,10 @@ export const onboardingData = {
       description: "Lorem ipsum dolor sit amet.",
       onboarding: {
         title: "Bienvenue sur Legaleo",
-        description: "En quelques étapes, nous allons créer votre espace réseau.",
+        description:
+          "En quelques étapes, nous allons créer votre espace réseau.",
         duration: "~7 min",
-      }
+      },
     },
     {
       id: 1,
@@ -17,7 +18,7 @@ export const onboardingData = {
       onboarding: {
         placeholder: "Nom du réseau",
         tips: "Ce nom s’affichera dans votre dashboard",
-      }
+      },
     },
     {
       id: 2,
@@ -26,7 +27,7 @@ export const onboardingData = {
       onboarding: {
         placeholder: "Secteur d’activité",
         options: ["lorem ipsum", "dolor sit amet", "consectetur adipiscing"],
-      }
+      },
     },
     {
       id: 3,
@@ -35,15 +36,19 @@ export const onboardingData = {
       onboarding: {
         now: ["1-10", "11-50", "51-100", "101-500", "501+"],
         prevision: ["1-10", "11-50", "51-100", "101-500", "501+"],
-      }
+      },
     },
     {
       id: 4,
       title: "Type de réseau",
       description: "Lorem ipsum dolor sit amet.",
       onboarding: {
-        optionsMultiples: ["🔐 Sécuriser juridiquement le réseau", "⌚️ Gagner du temps sur les documents", "🗂️ Internationaliser"],
-      }
+        optionsMultiples: [
+          "🔐 Sécuriser juridiquement le réseau",
+          "⌚️ Gagner du temps sur les documents",
+          "🗂️ Internationaliser",
+        ],
+      },
     },
     {
       id: 5,
@@ -66,9 +71,9 @@ export const onboardingData = {
             name: "Pacte d’associés ( PDF OU DOCX)",
             accept: ".pdf,.docx",
             placeholder: "Pacte d’associés ( PDF OU DOCX)",
-          }
+          },
         ],
-      }
+      },
     },
     {
       id: 6,
@@ -91,9 +96,9 @@ export const onboardingData = {
             name: "Pacte d’associés ( PDF OU DOCX)",
             accept: ".pdf,.docx",
             placeholder: "Pacte d’associés ( PDF OU DOCX)",
-          }
+          },
         ],
-      }
+      },
     },
     {
       id: 7,
@@ -116,9 +121,9 @@ export const onboardingData = {
             name: "Pacte d’associés ( PDF OU DOCX)",
             accept: ".pdf,.docx",
             placeholder: "Pacte d’associés ( PDF OU DOCX)",
-          }
+          },
         ],
-      }
+      },
     },
     {
       id: 8,
@@ -141,9 +146,9 @@ export const onboardingData = {
             name: "Pacte d’associés ( PDF OU DOCX)",
             accept: ".pdf,.docx",
             placeholder: "Pacte d’associés ( PDF OU DOCX)",
-          }
+          },
         ],
-      }
-    }
+      },
+    },
   ],
 };

@@ -52,6 +52,8 @@ export interface SelectProps {
   name: string;
   id: string;
   isMultiple?: boolean;
+  classname?: string;
+  isFilter?: boolean;
 }
 
 // Type générique pour chaque étape
@@ -141,3 +143,10 @@ export interface Contrat {
     | "Modifications requises";
   projects: Project[];
 }
+
+export type FileNode = {
+  id: string;
+  name: string;
+  type: "folder" | "file";
+  children?: FileNode[]; // uniquement si type === 'folder'
+};

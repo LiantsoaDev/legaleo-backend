@@ -1,5 +1,9 @@
+"use client";
+import { Filter, SearchBar } from "@/components/Form";
+import { Title } from "@/components/Typography";
 import { Contrat, Project } from "@/utils/types";
-import { ContratState } from "./ContratState";
+import { useState } from "react";
+import { Contrats } from "./Contrats";
 
 {
   /* <ProjectListCard
@@ -49,11 +53,15 @@ const contrats: Contrat[] = [
 ];
 
 export const ContratEnCours = () => {
+  const [showListView, setShowListView] = useState(false);
   return (
-    <div className="flex flex-row gap-5">
-      {contrats.map((contrat, index) => (
-        <ContratState key={index} contratState={contrat} />
-      ))}
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-3.5 mb-6">
+        <Title className="font-semibold text-2xl">Contrat en cours</Title>
+        <SearchBar classname="border-gray border !shadow-none !w-1/2" />
+      </div>
+      <Filter setShowListView={setShowListView} showListView={showListView} />
+      <Contrats setShowListView={setShowListView} showListView={showListView} />
     </div>
   );
 };
