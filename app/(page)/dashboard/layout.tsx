@@ -17,7 +17,7 @@ export default function DashboardLayout({
       <HeaderDashboard />
       <div className="flex h-full flex-row gap-0">
         <Left />
-        <div className="w-4/5 bg-white rounded-2xl py-8 px-10 shadow-md">
+        <div className="w-4/5 bg-white rounded-2xl py-8 px-10 shadow-md relative">
           {children}
         </div>
       </div>
