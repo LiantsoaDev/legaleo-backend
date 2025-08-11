@@ -18,7 +18,7 @@ interface FilterProps {
 export const Filter = ({
   showListView,
   setShowListView,
-  hasListFilter = false,
+  hasListFilter = true,
 }: FilterProps) => {
   // const [showListView, setShowListView] = useState(true);
 

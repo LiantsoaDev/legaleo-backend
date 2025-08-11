@@ -60,7 +60,11 @@ export const ContratEnCours = () => {
         <Title className="font-semibold text-2xl">Contrat en cours</Title>
         <SearchBar classname="border-gray border !shadow-none !w-1/2" />
       </div>
-      <Filter setShowListView={setShowListView} showListView={showListView} />
+      <Filter
+        setShowListView={setShowListView}
+        showListView={showListView}
+        hasListFilter={true}
+      />
       <Contrats setShowListView={setShowListView} showListView={showListView} />
     </div>
   );

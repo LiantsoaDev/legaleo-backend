@@ -54,7 +54,7 @@ export const ContratDetails = ({
   };
 
   return (
-    <div className="w-96 flex flex-col gap-4 bg-white py-20 px-6 absolute top-0 right-0 bottom-0 shadow-2xl h-full z-10 rounded-2xl overflow-y-auto overflow-x-hidden">
+    <div className="w-96 flex flex-col gap-4 bg-white py-8 px-6 absolute top-0 right-0 bottom-0 shadow-2xl h-full z-10 rounded-2xl overflow-y-auto overflow-x-hidden">
       <FontAwesomeIcon
         icon={faXmark}
         className="font-medium text-3xl text-black absolute top-5 right-5 cursor-pointer hover:opacity-60"
