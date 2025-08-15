@@ -1,5 +1,5 @@
 "use client";
-import { faFolder } from "@fortawesome/free-solid-svg-icons";
+import { faFolder, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons/faChevronDown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
@@ -10,7 +10,7 @@ const FileExplorer = () => {
   return (
     <div className="flex flex-col">
       <div
-        className="flex justify-between text-[#86A2A3] py-3 px-2.5 bg-gray rounded-xs cursor-pointer"
+        className="flex justify-between text-[#86A2A3] py-3 px-2.5 bg-[#F2F8F8] rounded-xs cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex flex-row gap-3.5 items-center text-sm">
@@ -95,6 +95,16 @@ const FileExplorer = () => {
           </div>
         </div>
       )}
+      <form className="rounded-sm border border-[#86A2A3] flex flex-row items-center px-5 ">
+        <input
+          type="text"
+          placeholder="Nouveau dossier"
+          className="py-3.5 outline-none focus:outline-none w-11/12"
+        />
+        <button type="submit">
+          <FontAwesomeIcon icon={faPlus} className="text-[#86A2A3]" />
+        </button>
+      </form>
     </div>
   );
 };

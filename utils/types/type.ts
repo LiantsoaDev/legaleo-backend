@@ -26,12 +26,17 @@ export interface CheckBoxProps {
   name?: string;
   type: "checkbox" | "radio";
   showLogo?: boolean;
+  classLabel?: string;
+  classSelected?: string;
 }
 
 export interface RadioProps {
   options: string[];
   name: string;
   showLogo?: boolean;
+  classLabel?: string;
+  classSelected?: string;
+  classContainer?: string;
 }
 
 export interface MultiSelectGroupProps {

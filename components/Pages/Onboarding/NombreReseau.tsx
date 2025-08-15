@@ -17,17 +17,17 @@ const options = [
 
 export const NombreReseau = () => {
   return (
-    <div className="flex flex-col min-h-screen justify-center px-32 py-20 max-w-4xl">
-      <Title className="font-bold text-2xl leading-[100%] mb-8">
+    <div className="flex flex-col min-h-screen justify-center px-32 py-20 w-full">
+      <Title className="font-bold text-4xl leading-[100%] mb-8">
         Combien de franchisés composent actuellement votre réseau ?
       </Title>
-      <Paragraphe className="text-xl font-manrope font-normal leading-7">
+      <Paragraphe className="text-2xl font-manrope font-normal leading-7">
         📊 Réponse estimée acceptable : même une fourchette suffit !
       </Paragraphe>
       <div className="flex flex-col gap-5 w-full mt-10">
         <MultiSelectGroup showLogo={true} options={options} />
       </div>
-      <Notices classname="mt-10">
+      <Notices classname="mt-10 !text-xl">
         Cette information nous aide à vous proposer les bons outils.
       </Notices>
     </div>

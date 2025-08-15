@@ -25,15 +25,17 @@ export const MenuText = ({
 }: MenuTextProps) => {
   return (
     <div
-      className={`flex items-center relative after:content-[""] after:absolute after:left-0 ${
-        isActive && "after:w-2"
-      }  after:rounded-2xl  after:h-20 after:bg-white ${
-        isActive ? "after:w-2 border-l-2 rounded-4xl border-white" : ""
+      className={`flex items-center relative after:content-[""] after:absolute after:left-[-20px] ${
+        isActive && "after:w-[2px]"
+      }  after:rounded-2xl  after:h-12 after:bg-white ${
+        isActive ? "after:w-[1px]" : ""
       }`}
     >
       <Link
         href={href}
-        className={`flex flex-row items-center justify-start gap-5 text-sm py-5 rounded-xl hover:bg-[#D9FDFB33] px-5 w-full ${className}`}
+        className={`flex flex-row items-center justify-start font-semibold gap-5 text-sm py-5 rounded-xl ${
+          isActive && "bg-[#D9FDFB33]"
+        } hover:bg-[#D9FDFB33] px-5 w-full ${className}`}
       >
         {icon && <span>{icon}</span>}
         {children}

@@ -5,7 +5,6 @@ import { formatDate } from "@/utils/functions";
 import {
   faArchive,
   faAssistiveListeningSystems,
-  faCalendar,
   faClone,
   faEllipsisVertical,
   faGavel,
@@ -46,7 +45,7 @@ export const ProjectListCard = ({
       case "Non assigné":
         return (
           <span
-            className={`bg-[#E6F2F2] px-2 py-1 text-xs text-[#86A2A3] font-semibold rounded-md w-fit`}
+            className={`bg-[#E6F2F2] px-2 py-1 text-xs text-[#86A2A3] font-semibold rounded-xs w-fit`}
           >
             {status}
           </span>
@@ -54,7 +53,7 @@ export const ProjectListCard = ({
       case "Validé avocat":
         return (
           <span
-            className={`bg-[#E4FF71] px-2 py-1 text-xs text-[#5A892B] font-semibold rounded-md w-fit`}
+            className={`bg-[#E4FF71] px-2 py-1 text-xs text-[#5A892B] font-semibold rounded-xs w-fit`}
           >
             {status}
           </span>
@@ -62,7 +61,7 @@ export const ProjectListCard = ({
       case "Modifications requises":
         return (
           <span
-            className={`bg-[#FFE1DA] px-2 py-1 text-xs text-[#A3310F] font-semibold rounded-md w-fit`}
+            className={`bg-[#FFE1DA] px-2 py-1 text-xs text-[#A3310F] font-semibold rounded-xs w-fit`}
           >
             {status}
           </span>
@@ -70,7 +69,7 @@ export const ProjectListCard = ({
       case "En relecture":
         return (
           <span
-            className={`bg-[#E4E7FF] px-2 py-1 text-xs text-[#545FFF] font-semibold rounded-md w-fit`}
+            className={`bg-[#E4E7FF] px-2 py-1 text-xs text-[#545FFF] font-semibold rounded-xs w-fit`}
           >
             {status}
           </span>
@@ -91,14 +90,28 @@ export const ProjectListCard = ({
               {nom}
             </Title>
           </Link>
-          <div className="flex flex-row items-center gap-2 text-[#828282] text-xs">
-            <FontAwesomeIcon icon={faCalendar} />
+          <div className="flex flex-row items-center gap-1 text-[#828282] text-xs">
+            <svg
+              width="16"
+              height="17"
+              viewBox="0 0 16 17"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10.6666 2.12915V4.79582M5.33329 2.12915V4.79582M2.66663 7.46248H13.3333M2.66663 4.79582C2.66663 4.44219 2.8071 4.10306 3.05715 3.85301C3.3072 3.60296 3.64634 3.46248 3.99996 3.46248H12C12.3536 3.46248 12.6927 3.60296 12.9428 3.85301C13.1928 4.10306 13.3333 4.44219 13.3333 4.79582V12.7958C13.3333 13.1494 13.1928 13.4886 12.9428 13.7386C12.6927 13.9887 12.3536 14.1291 12 14.1291H3.99996C3.64634 14.1291 3.3072 13.9887 3.05715 13.7386C2.8071 13.4886 2.66663 13.1494 2.66663 12.7958V4.79582ZM5.33329 10.1292H6.66663V11.4625H5.33329V10.1292Z"
+                stroke="#828282"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+
             <span>Crée le </span>
             {date && <span>{formatDate(date)}</span>}
           </div>
         </div>
-        <div className="w-full h-0.5 bg-[#E3E3E3]" />
-        <div className="px-3 py-3 flex flex-row items-center text-xs text-[#828282] justify-between">
+        <div className="w-full h-[1px] bg-[#E3E3E3]" />
+        <div className="pt-3 flex flex-row items-center text-xs text-[#828282] justify-between">
           <div
             className={`${
               commentaire > 0 ? "bg-[#087F83]" : "bg-[#828282]"

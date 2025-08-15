@@ -37,11 +37,11 @@ export const FilterView = () => {
       </div>
       {showFilter && (
         <div className="flex flex-col gap-0 mt-5">
-          <div className="flex flex-row gap-3.5 items-center text-[#86A2A3] px-2.5 py-3 cursor-pointer">
+          <div className="flex flex-row gap-3.5 items-center text-[#86A2A3] px-2.5 py-3 cursor-pointer text-sm">
             <FontAwesomeIcon icon={faCircleUser} className="text-2xl" />
             Expirés
           </div>
-          <div className="flex flex-row gap-3.5 items-center text-[#86A2A3] px-2.5 py-3 cursor-pointer">
+          <div className="flex flex-row gap-3.5 items-center text-[#86A2A3] px-2.5 py-3 cursor-pointer text-sm">
             <svg
               width="25"
               height="25"
@@ -56,21 +56,21 @@ export const FilterView = () => {
             </svg>
             À renouveler ce trimestre
           </div>
-          <div className="flex flex-row gap-3.5 items-center text-[#86A2A3] px-2.5 py-3 cursor-pointer">
+          <div className="flex flex-row gap-3.5 items-center text-[#86A2A3] px-2.5 py-3 cursor-pointer text-sm">
             <FontAwesomeIcon
               icon={faTriangleExclamation}
               className="text-2xl"
             />
             En cours de validation
           </div>
-          <div className="flex flex-row gap-3.5 items-center text-[#86A2A3] px-2.5 py-3 cursor-pointer">
+          <div className="flex flex-row gap-3.5 items-center text-[#86A2A3] px-2.5 py-3 cursor-pointer text-sm">
             <FontAwesomeIcon
               icon={faTriangleExclamation}
               className="text-2xl"
             />
             Assignés à mon avocat
           </div>
-          <div className="flex flex-row gap-3.5 items-center text-[#86A2A3] px-2.5 py-3 cursor-pointer">
+          <div className="flex flex-row gap-3.5 items-center text-[#86A2A3] px-2.5 py-3 cursor-pointer text-sm">
             <FontAwesomeIcon icon={faStar} className="text-2xl" />
             Favoris
           </div>

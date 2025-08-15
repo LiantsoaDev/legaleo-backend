@@ -20,7 +20,7 @@ export const Contratheque = () => {
         <div className="flex flex-row gap-0">
           <div className="w-1/5 py-0 border-r border-r-gray fill-available pr-3.5">
             <Navigateur />
-            <div className="h-0.5 bg-gray w-full mt-8" />
+            <div className="h-[1px] bg-gray w-full mt-8" />
             <FilterView />
             <div className="h-0.5 bg-gray w-full mt-8 mb-8" />
             <div className="flex flex-row gap-3.5 items-center text-[#86A2A3] px-2.5 py-3 cursor-pointer">
@@ -31,13 +31,14 @@ export const Contratheque = () => {
           <div className="w-4/5 flex flex-col px-7 gap-6">
             <div className="flex items-center justify-between">
               <SearchBar classname="border-gray border !shadow-none !w-1/2" />
-              <Button classname="flex gap-2 items-center justify-center py-5 !font-semibold rounded-md !bg-primary !text-black hover:border-none cursor-pointer hover:opacity-85 transition-all duration-300">
+              <Button classname="flex gap-2 items-center !py-3 !text-sm justify-center !font-semibold rounded-md !bg-primary !text-black hover:border-none cursor-pointer hover:opacity-85 transition-all duration-300">
                 <FontAwesomeIcon icon={faPlus} /> Créer un contrat
               </Button>
             </div>
             <Filter
               setShowListView={setShowListView}
               showListView={showListView}
+              hasListFilter={false}
             />
             <Tables
               selectedContrat={selectedContrat}

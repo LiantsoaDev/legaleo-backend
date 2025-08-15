@@ -4,11 +4,11 @@ import { Notices } from "../../Typography/Tips";
 
 export const Documents = () => {
   return (
-    <div className="flex flex-col min-h-screen justify-center px-32 py-20 max-w-5xl">
-      <Title className="font-bold text-2xl leading-9 mb-8">
+    <div className="flex flex-col min-h-screen justify-center px-32 py-20w-full">
+      <Title className="font-bold text-4xl leading-9 mb-8">
         Déposez vos documents pour générer automatiquement vos contrats
       </Title>
-      <Paragraphe className="text-xl font-manrope font-normal leading-7">
+      <Paragraphe className="text-2xl font-manrope font-normal leading-8">
         Ces documents nous permettent de personnaliser vos modèles de contrats
         et de centraliser vos informations juridiques dans un espace sécurisé.
       </Paragraphe>
@@ -32,14 +32,14 @@ export const Documents = () => {
           accept=".pdf, .docx"
         />
       </div>
-      <Paragraphe className="text-md font-manrope font-semibold text-[#313131] mt-10 text-right hover:underline cursor-pointer">
+      <Paragraphe className="text-xl font-manrope font-semibold text-[#313131] mt-10 text-right underline cursor-pointer">
         Je le ferai plus tard
       </Paragraphe>
-      <Notices classname="mt-10">
+      <Notices classname="mt-10 text-2xl">
         Toutes vos données sont stockées en France et protégées selon les normes
         RGPD.
       </Notices>
-      <Notices classname="mt-5">
+      <Notices classname="mt-5 text-2xl">
         Vous pourrez les modifier ou les compléter plus tard si besoin.
       </Notices>
     </div>

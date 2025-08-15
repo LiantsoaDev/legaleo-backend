@@ -4,7 +4,6 @@ import {
   faArchive,
   faClone,
   faDownload,
-  faEllipsisVertical,
   faFile,
   faGavel,
   faPen,
@@ -26,7 +25,7 @@ interface Contract {
 }
 
 interface ContractRowProps {
-  contract: Contract;
+  contract: any;
   index: number;
   isSelected: boolean;
   onToggleSelect: () => void;
@@ -43,41 +42,6 @@ export const TableRow = ({
   const [showActions, setShowActions] = useState(false);
   const [position, setPosition] = useState<"top" | "bottom">("bottom");
   const tdRef = useRef<HTMLTableRowElement>(null);
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "brouillon":
-        return (
-          <span className="px-2 py-2 bg-[#9CA3AF] uppercase text-xs text-white font-bold rounded-md">
-            {status}
-          </span>
-        );
-      case "relecture interne":
-        return (
-          <span className="px-2 py-2 bg-[#FACC15] uppercase text-xs text-white font-bold rounded-md">
-            {status}
-          </span>
-        );
-      case "relecture avocat":
-        return (
-          <span className="px-2 py-2 bg-[#C500DB] uppercase text-xs text-white font-bold rounded-md">
-            {status}
-          </span>
-        );
-      case "en cours de signature":
-        return (
-          <span className="px-2 py-2 bg-[#00A5EB] uppercase text-xs text-white font-bold rounded-md">
-            {status}
-          </span>
-        );
-      case "Modifications requises":
-        return (
-          <span className="px-2 py-2 bg-[#A3310F] uppercase text-xs text-white font-bold rounded-md">
-            {status}
-          </span>
-        );
-    }
-  };
 
   useEffect(() => {
     if (showActions && tdRef.current) {
@@ -97,7 +61,7 @@ export const TableRow = ({
     <>
       <tr
         key={index}
-        className="border-b border-gray hover:bg-gray z-10 cursor-pointer"
+        className="border-b border-gray hover:bg-gray z-10 cursor-pointer text-black text-sm font-semibold px-2 py-1 "
         ref={tdRef}
       >
         <td className="px-4 py-5 cursor-pointer">
@@ -114,34 +78,52 @@ export const TableRow = ({
           {contract.name}
         </td>
         <td className="px-4 py-5 whitespace-nowrap">
-          <span className="inline-block rounded bg-[#F2F2F2] px-2 py-1 text-xs text-[#828282] font-semibold">
-            {contract.type}
+          <span className="inline-block px-2 py-1 text-xs text-gray-800">
+            {contract.form_juridique}
           </span>
         </td>
         <td className="px-4 py-5 flex items-center gap-2 ">
-          <div className="flex items-center justify-center w-6 h-6 rounded-full bg-teal-100 text-teal-700 font-semibold">
-            {contract.coContractor[0]}
-          </div>
-          <span>{contract.coContractor}</span>
+          {contract.nom_representant}
         </td>
         <td className="px-4 py-5 items-center gap-2 whitespace-nowrap">
-          {getStatusColor(contract.status)}
+          {contract.email}
         </td>
         <td className="px-4 py-5 items-center gap-2 ">
-          <span>{contract.echeance}</span>
-        </td>
-        <td className="px-4 py-5 flex items-center gap-2 whitespace-nowrap ">
-          <div className="flex items-center justify-center w-6 h-6 rounded-full bg-teal-100 text-teal-700 font-semibold">
-            {contract.proprietaire[0]}
-          </div>
-          <span>{contract.proprietaire}</span>
+          <span>{contract.telephone}</span>
         </td>
         <td className="px-4 py-5 items-center gap-2 relative">
           <span onClick={() => setShowActions(!showActions)}>
-            <FontAwesomeIcon
-              icon={faEllipsisVertical}
-              className="cursor-pointer"
-            />
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M12.0002 21V21C7.02924 21 3.00024 16.971 3.00024 12V12C3.00024 7.029 7.02924 3 12.0002 3V3C16.9712 3 21.0002 7.029 21.0002 12V12C21.0002 16.971 16.9712 21 12.0002 21Z"
+                stroke="#86A2A3"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M12.0002 17V12H11.0002"
+                stroke="#86A2A3"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M11.7492 8C11.6112 8 11.4992 8.112 11.5002 8.25C11.5002 8.388 11.6122 8.5 11.7502 8.5C11.8882 8.5 12.0002 8.388 12.0002 8.25C12.0002 8.112 11.8882 8 11.7492 8"
+                stroke="#86A2A3"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </span>
           {showActions && (
             <div
@@ -222,11 +204,6 @@ export const TableRow = ({
             </div>
           )}
         </td>
-        {/* <td colSpan={5}>
-          <div className="w-[500px] fixed top-0 bottom-0">
-            Contenu détaillé ici
-          </div>
-        </td> */}
       </tr>
     </>
   );

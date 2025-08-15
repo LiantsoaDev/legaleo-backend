@@ -104,7 +104,7 @@ export const Filter = ({
           <div className="flex flex-row items-center gap-2">
             <label
               htmlFor="tableau"
-              className={`cursor-pointer border border-[#86A2A3] px-2 py-1 rounded-md ${
+              className={`cursor-pointer border border-[#86A2A3] px-2 py-1 rounded-xs ${
                 showListView
                   ? "text-[#86A2A3] hover:bg-[#F2F8F8]"
                   : "text-[#F2F8F8] bg-[#86A2A3]"
@@ -126,7 +126,7 @@ export const Filter = ({
             </label>
             <label
               htmlFor="liste"
-              className={`cursor-pointer border border-[#86A2A3] px-2 py-1 rounded-md ${
+              className={`cursor-pointer border border-[#86A2A3] px-2 py-1 rounded-xs ${
                 showListView
                   ? "text-[#F2F8F8] bg-[#86A2A3]"
                   : "text-[#86A2A3] hover:bg-[#F2F8F8]"

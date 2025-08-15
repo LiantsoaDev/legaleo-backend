@@ -22,31 +22,31 @@ export const ContratDetails = ({
     switch (status) {
       case "brouillon":
         return (
-          <span className="px-2 py-2 bg-[#9CA3AF] text-white  w-fit capitalize text-xs font-bold rounded-md">
+          <span className="px-2 py-1 bg-[#9CA3AF] text-white  w-fit capitalize text-xs font-bold rounded-md">
             {status}
           </span>
         );
       case "relecture interne":
         return (
-          <span className="px-2 py-2 bg-[#FACC15] text-white w-fit capitalize text-xs font-bold rounded-md">
+          <span className="px-2 py-1 bg-[#FACC15] text-white w-fit capitalize text-xs font-bold rounded-md">
             {status}
           </span>
         );
       case "relecture avocat":
         return (
-          <span className="px-2 py-2 bg-[#C500DB] text-white w-fit capitalize text-xs font-bold rounded-md">
+          <span className="px-2 py-1 bg-[#C500DB] text-white w-fit capitalize text-xs font-bold rounded-md">
             {status}
           </span>
         );
       case "en cours de signature":
         return (
-          <span className="px-2 py-2 bg-[#3B82F61A] text-[#00A5EB] w-fit capitalize text-xs font-bold rounded-md">
+          <span className="px-2 py-1 bg-[#3B82F61A] text-[#00A5EB] w-fit capitalize text-xs font-bold rounded-md">
             {status}
           </span>
         );
       case "Modifications requises":
         return (
-          <span className="px-2 py-2 bg-[#A3310F] text-white w-fit capitalize text-xs font-bold rounded-md">
+          <span className="px-2 py-1 bg-[#A3310F] text-white w-fit capitalize text-xs font-bold rounded-md">
             {status}
           </span>
         );

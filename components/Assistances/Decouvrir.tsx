@@ -20,7 +20,7 @@ export const Decouvrir = () => {
       <Title level={2} className="font-bold text-base text-white">
         Découvrez notre assistant IA
       </Title>
-      <Paragraphe className="text-sm text-white text-center mt-2 w-3/4">
+      <Paragraphe className="text-sm text-white text-center mt-1 w-3/4">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor...{" "}
       </Paragraphe>

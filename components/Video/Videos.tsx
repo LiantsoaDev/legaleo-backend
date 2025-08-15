@@ -1,3 +1,5 @@
+import { faPlay } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "../Button";
 import { Paragraphe } from "../Typography";
 
@@ -11,8 +13,9 @@ export const Videos = () => {
         </Paragraphe>
         <Button
           primary={false}
-          classname="rounded-md !border-[#087F83] !text-[#087F83] w-fit hover:!text-white hover:!border-black"
+          classname="rounded-md !border-[#087F83] !text-xs !text-[#087F83] w-fit hover:!text-white hover:!border-black flex flex-row gap-2 items-center"
         >
+          <FontAwesomeIcon icon={faPlay} />
           Regarder la vidéo
         </Button>
       </div>

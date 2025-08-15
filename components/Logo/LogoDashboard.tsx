@@ -12,12 +12,12 @@ import { Logo } from "./Logo";
 export const LogoDashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="flex flex-col px-2.5 py-1 relative">
+    <div className="flex flex-col g px-2.5 py-1 relative w-[19.5em]">
       <div
-        className="flex flex-row items-center justify-around w-full cursor-pointer"
+        className="flex flex-row gap-12 items-center justify-between w-full cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <Logo className="w-50 h-10 invert" />
+        <Logo className="w-50 h-14 invert" />
         <FontAwesomeIcon icon={faChevronDown} className="text-white text-xl" />
       </div>
       {isOpen && (

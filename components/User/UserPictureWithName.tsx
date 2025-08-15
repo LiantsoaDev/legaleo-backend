@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 interface UserPictureWithNameProps {
-  username: string;
+  username?: string;
   pictureUrl?: string;
 }
 
@@ -18,7 +18,9 @@ export const UserPictureWithName = ({
         width={100}
         height={100}
       />
-      <span className="ml-2 text-sm font-semibold">{username}</span>
+      {username ? null : (
+        <span className="ml-2 text-sm font-semibold">{username}</span>
+      )}
     </div>
   );
 };

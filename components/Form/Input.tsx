@@ -95,14 +95,18 @@ export const CheckBox = ({
   name,
   type,
   showLogo,
+  classLabel = "",
+  classSelected,
 }: CheckBoxProps) => {
   return (
     <div>
       <label
         htmlFor={id}
-        className={`py-3 px-5 font-manrope border border-[#8C8783] select-none ${
-          isSelected ? "bg-primary text-white border-none" : "bg-transparent"
-        } text-xl flex items-center gap-2.5 cursor-pointer text-[#8C8783] rounded-md`}
+        className={`py-3 px-5 font-manrope border border-[#8C8783] select-none text-xl flex items-center gap-2.5 cursor-pointer text-[#8C8783] rounded-md ${classLabel} ${
+          isSelected
+            ? `bg-primary text-white border-none ${classSelected}`
+            : "bg-transparent"
+        }`}
       >
         {showLogo &&
           (isSelected ? (
@@ -126,10 +130,17 @@ export const CheckBox = ({
   );
 };
 
-export const RadioGroup = ({ name, options, showLogo = false }: RadioProps) => {
+export const RadioGroup = ({
+  name,
+  options,
+  showLogo = false,
+  classContainer,
+  classLabel,
+  classSelected,
+}: RadioProps) => {
   const [selectedValue, setSelectedValue] = useState<string>("");
   return (
-    <div className="flex gap-4 flex-wrap">
+    <div className={`flex gap-4 flex-wrap ${classContainer}`}>
       {options.map((option, index) => (
         <CheckBox
           showLogo={showLogo}
@@ -140,6 +151,8 @@ export const RadioGroup = ({ name, options, showLogo = false }: RadioProps) => {
           onSelect={() => setSelectedValue(option)}
           name={name}
           type="radio"
+          classLabel={classLabel}
+          classSelected={classSelected}
         />
       ))}
     </div>
@@ -197,7 +210,7 @@ export const InputFiles = ({
     <div className="w-full">
       <label
         htmlFor={id}
-        className="flex flex-row gap-2.5 py-4 px-8 border-4 border-[#A7B0FF] border-dashed font-semibold text-md cursor-pointer rounded-2xl w-full"
+        className="flex flex-row gap-2.5 py-4 px-8 border-[3px] border-[#A7B0FF] border-dashed font-semibold text-md cursor-pointer rounded-2xl w-full text-xl"
       >
         <svg
           width="30"
@@ -228,7 +241,8 @@ export const InputFiles = ({
             strokeLinejoin="round"
           />
         </svg>
-        {label} {fileName && <span className="text-gray-600">{fileName}</span>}
+        {label}{" "}
+        {fileName && <span className="text-gray-600 text-xl">{fileName}</span>}
       </label>
       <input
         type="file"

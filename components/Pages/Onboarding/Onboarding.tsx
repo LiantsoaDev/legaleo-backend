@@ -5,6 +5,7 @@ import {
   faLongArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import { useState } from "react";
 import { OnboardingCard } from "../../Card";
 import { Activite } from "./Activite";
@@ -57,7 +58,7 @@ export const Onboarding = () => {
     <div className="flex flex-row">
       <div className="w-2/3 justify-between flex flex-col items-center relative select-none">
         {renderStep()}
-        <div className="fixed bottom-0 left-1/2 translate-[-50%] bg-blue px-5 py-5 rounded-full flex gap-10 text-white text-xl">
+        <div className="fixed bottom-0 items-center left-[33%] translate-[-50%] bg-blue px-5 py-5 rounded-full flex gap-10 text-white text-xl">
           <FontAwesomeIcon
             icon={faLongArrowLeft}
             onClick={handlePrevStep}
@@ -67,15 +68,24 @@ export const Onboarding = () => {
                 : "opacity-100"
             }`}
           />
-          <FontAwesomeIcon
-            icon={faLongArrowRight}
-            onClick={handleNextStep}
-            className={`cursor-pointer transition ${
-              onboardingStep === onboardingData.step.length - 1
-                ? "opacity-40 pointer-events-none"
-                : "opacity-100"
-            }`}
-          />
+          {onboardingStep === onboardingData.step.length - 1 ? (
+            <Link href="/dashboard">
+              <FontAwesomeIcon
+                icon={faLongArrowRight}
+                className={`cursor-pointer transition `}
+              />
+            </Link>
+          ) : (
+            <FontAwesomeIcon
+              icon={faLongArrowRight}
+              onClick={handleNextStep}
+              className={`cursor-pointer transition ${
+                onboardingStep === onboardingData.step.length - 1
+                  ? "opacity-40 pointer-events-none"
+                  : "opacity-100"
+              }`}
+            />
+          )}
         </div>
       </div>
       <div className="bg-[#1F120E] w-1/3 rounded-l-4xl h-full p-8 flex flex-col gap-7 justify-center overflow-y-auto select-none">

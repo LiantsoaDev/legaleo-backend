@@ -125,30 +125,5 @@ export const onboardingData = {
         ],
       },
     },
-    {
-      id: 8,
-      title: "Bienvenue sur Legaleo",
-      description: "Lorem ipsum dolor sit amet.",
-      onboarding: {
-        tips: "Vous pourrez modifier ces infos plus tard",
-        files: [
-          {
-            name: "Statuts de la société",
-            accept: ".pdf,.docx",
-            placeholder: "Statuts de la société ( PDF OU DOCX)",
-          },
-          {
-            name: "Kbis ou équivalent",
-            accept: ".pdf",
-            placeholder: "Kbis ou équivalent ( PDF )",
-          },
-          {
-            name: "Pacte d’associés ( PDF OU DOCX)",
-            accept: ".pdf,.docx",
-            placeholder: "Pacte d’associés ( PDF OU DOCX)",
-          },
-        ],
-      },
-    },
   ],
 };
