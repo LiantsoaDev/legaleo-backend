@@ -104,7 +104,7 @@ export const Models = () => {
         classLabel="!py-2 text-xs bg-[#F2F8F8] text-[#86A2A3] border-none"
         classSelected="!bg-[#86A2A3]"
       />
-      <div className="flex flex-row gap-5 flex-wrap justify-between w-full">
+      <div className="flex flex-row gap-5 flex-wrap justify-start w-full">
         {modelContrats.map((contrat, index) => (
           <ModelContrat
             key={index}
