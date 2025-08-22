@@ -7,7 +7,7 @@ import { Notification } from "./Notification";
 
 export const HeaderDashboard = () => {
   return (
-    <div className="flex flex-row items-center justify-between w-full py-6 px-8">
+    <div className="flex flex-row items-center justify-between w-full px-8 h-[10%]">
       <LogoDashboard />
       <SearchBar />
       <div className="flex flex-row items-center gap-5">

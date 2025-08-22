@@ -13,11 +13,11 @@ export default function DashboardLayout({
   const [showWelcomeCard, setShowWelcomeCard] = useState(true);
 
   return (
-    <div className="flex min-h-screen flex-col gap-0 bg-dark-green pb-5 pr-8">
+    <div className="flex h-screen flex-col gap-0 bg-dark-green pb-5 pr-8">
       <HeaderDashboard />
-      <div className="flex h-full flex-row gap-0">
+      <div className="flex h-[85%] flex-row gap-0">
         <Left />
-        <div className="w-4/5 bg-white rounded-2xl py-8 px-10 shadow-md relative">
+        <div className="w-4/5 bg-white rounded-2xl py-8 px-10 shadow-md relative overflow-y-auto scrollable">
           {children}
         </div>
       </div>
