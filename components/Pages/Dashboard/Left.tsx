@@ -40,23 +40,16 @@ export const Left = () => {
         <MenuText
           href="/dashboard/revision"
           className="text-white"
-          isActive={pathname === "/dashboard/revision"}
+          isActive={pathname === "/dashboard/documentation"}
         >
           Documentation
         </MenuText>
         <MenuText
-          href="/dashboard/revision"
+          href="/dashboard/aide"
           className="text-white"
-          isActive={pathname === "/dashboard/revision"}
+          isActive={pathname === "/dashboard/aide"}
         >
-          Supports
-        </MenuText>
-        <MenuText
-          href="/dashboard/revision"
-          className="text-white"
-          isActive={pathname === "/dashboard/revision"}
-        >
-          Privacy & Légal
+          Aide
         </MenuText>
       </div>
     </div>
