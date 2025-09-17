@@ -32,6 +32,61 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  onboardingAnswers OnboardingAnswer[]
+}
+
+model Onboarding {
+  id    String @id @default(cuid())
+  title String
+
+  steps   OnboardingStep[]
+  answers OnboardingAnswer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OnboardingStep {
+  id               String     @id @default(cuid())
+  stepNumber       Int
+  title            String?
+  description      String?
+  duration         String?
+  placeholder      String?
+  tips             String?
+  options          String[]
+  now              String[]
+  prevision        String[]
+  optionsMultiples String[]
+  onboardingId     String
+  onboarding       Onboarding @relation(fields: [onboardingId], references: [id], onDelete: Cascade)
+  File             File[]
+}
+
+model OnboardingAnswer {
+  id        String   @id @default(cuid())
+  value     Json // réponse (texte, choix, fichiers, etc.)
+  createdAt DateTime @default(now())
+
+  // relations
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  onboarding_id String
+  onboarding    Onboarding @relation(fields: [onboarding_id], references: [id])
+
+  @@unique([userId, onboarding_id], name: "userId_onboarding_id")
+}
+
+model File {
+  id           Int            @id @default(autoincrement())
+  name         String
+  accept       String
+  placeholder  String
+  content      String? // contenu du fichier (base64, url, etc.)
+  onboardingId String
+  onboarding   OnboardingStep @relation(fields: [onboardingId], references: [id])
 }
 
 model Account {

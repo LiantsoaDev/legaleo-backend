@@ -38,7 +38,7 @@ export const OnboardingCard = ({
           isActive || isCompleted ? "opacity-100" : "opacity-50"
         }`}
       >
-        <Title level={3} className="text-white font-bold text-md capitalize">
+        <Title level={3} className="text-white font-bold text-md">
           {title}
         </Title>
       </div>

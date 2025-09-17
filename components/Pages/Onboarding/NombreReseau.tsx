@@ -25,7 +25,11 @@ export const NombreReseau = () => {
         📊 Réponse estimée acceptable : même une fourchette suffit !
       </Paragraphe>
       <div className="flex flex-col gap-5 w-full mt-10">
-        <MultiSelectGroup showLogo={true} options={options} />
+        <MultiSelectGroup
+          showLogo={true}
+          options={options}
+          name="nombre_franchise"
+        />
       </div>
       <Notices classname="mt-10 !text-xl">
         Cette information nous aide à vous proposer les bons outils.

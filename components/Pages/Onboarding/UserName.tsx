@@ -2,6 +2,10 @@ import { Input } from "../../Form";
 import { Title } from "../../Typography";
 import { Notices } from "../../Typography/Tips";
 
+interface UserNameProps {
+  onUpdate: (data: any) => void;
+}
+
 export const UserName = () => {
   return (
     <div className="flex flex-col min-h-screen justify-center px-32 py-20 w-full">

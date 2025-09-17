@@ -1,6 +1,8 @@
+"use client";
 import { Button } from "@/components/Button";
 import { Paragraphe, Title } from "@/components/Typography";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 interface ModelContratProps {
   type: string;
@@ -16,7 +18,7 @@ export const ModelContrat = ({
   logo,
 }: ModelContratProps) => {
   return (
-    <div className="py-2.5 px-3.5 border border-[#E3E3E3] rounded-lg w-[306px]">
+    <div className="py-2.5 px-3.5 border border-[#E3E3E3] rounded-lg w-[280px]">
       <div className="flex flex-row justify-between items-center">
         <span className="py-1 px-2 bg-[#E6F2F2] text-[#087F83] text-[10px] font-semibold">
           {type}
@@ -119,7 +121,10 @@ export const ModelContrat = ({
             {description}
           </Paragraphe>
         </div>
-        <Button classname="w-full rounded-sm !bg-[#087F83] cursor-pointer hover:border-none font-semibold text-sm">
+        <Button
+          classname="w-full rounded-sm !bg-[#087F83] cursor-pointer hover:border-none font-semibold text-sm"
+          onclick={() => redirect("/projets/nouveau/models/2/personnaliser")}
+        >
           Commencer
         </Button>
       </div>

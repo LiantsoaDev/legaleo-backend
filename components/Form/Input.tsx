@@ -44,9 +44,9 @@ export const Input = ({
       </label>
       {type === "textarea" ? (
         <textarea
-          className={`w-full border rounded-md px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black ${
+          className={`w-full border rounded-md px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black resize-none ${
             error ? "border-danger" : "border-gray"
-          } bg-transparent placeholder:capitalize`}
+          } bg-transparent placeholder:capitalize ${classname}`}
           placeholder={placeholder}
           name={name}
           required={isrequired}
@@ -162,6 +162,7 @@ export const RadioGroup = ({
 export const MultiSelectGroup = ({
   options,
   showLogo,
+  name,
 }: MultiSelectGroupProps) => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
@@ -185,6 +186,7 @@ export const MultiSelectGroup = ({
           isSelected={selectedOptions.includes(option)}
           onSelect={() => handleSelect(option)}
           type="checkbox"
+          name={name}
         />
       ))}
     </div>

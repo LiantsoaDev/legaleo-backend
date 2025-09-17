@@ -11,7 +11,7 @@ export const SearchBar = ({
   classname = "",
 }: SearchBarProps) => {
   return (
-    <form
+    <div
       className={`flex flex-row items-center justify-start gap-2.5 bg-white w-1/3 py-3 px-5 rounded-full focus-within:shadow-2xl ${classname}`}
     >
       <input
@@ -22,6 +22,6 @@ export const SearchBar = ({
       <button type="submit" className="cursor-pointer">
         <FontAwesomeIcon icon={faSearch} className="text-[#828282] text-2xl" />
       </button>
-    </form>
+    </div>
   );
 };

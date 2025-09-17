@@ -1,6 +1,11 @@
+import { OnboardingStep } from "@/app/generated/prisma";
 import { Input } from "../../Form";
 import { Title } from "../../Typography";
 import { Notices } from "../../Typography/Tips";
+
+interface UserNameProps {
+  onboardingStep?: OnboardingStep;
+}
 
 export const ReseauFranchise = () => {
   return (

@@ -10,7 +10,7 @@ export const CurrentOnboardingStep = () => {
         1. Lorem ipsum
       </Title>
       <div className="flex flex-col gap-2.5">
-        <div className="w-[300px] bg-white h-[12px] relative rounded-full after:absolute after:left-0 after:bg-primary after:w-1/6 after:content-[''] after:block after:h-[12px] after:rounded-full" />
+        <div className="w-[300px] bg-white h-[6px] relative rounded-full after:absolute after:left-0 after:bg-primary after:w-1/6 after:content-[''] after:block after:h-[6px] after:rounded-full" />
         <Paragraphe className="font-medium text-xs">0/6 terminés</Paragraphe>
       </div>
     </div>

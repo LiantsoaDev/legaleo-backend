@@ -1,3 +1,4 @@
+"use client";
 import { Decouvrir } from "@/components/Assistances";
 import { ProjectCard } from "@/components/Card";
 import { Notifications } from "@/components/Notifications";
@@ -44,6 +45,7 @@ export const ClientDashboard = () => {
               />
             }
             title="Nouveau projet"
+            href="/projets/nouveau"
           />
           <ProjectCard
             icon={
@@ -53,6 +55,7 @@ export const ClientDashboard = () => {
               />
             }
             title="Signer un document"
+            href="#"
           />
           <ProjectCard
             icon={
@@ -62,6 +65,7 @@ export const ClientDashboard = () => {
               />
             }
             title="Importer un document"
+            href="#"
           />
         </div>
         <OnboardingFinalisation />

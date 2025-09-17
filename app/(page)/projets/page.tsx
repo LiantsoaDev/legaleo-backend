@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { Onboardings } from "@/components/Pages/Onboarding/Onboarding";
+import { ClientDashboard } from "@/components/Pages/Dashboard";
 import { redirect } from "next/navigation";
 
 const page = async () => {
@@ -8,12 +8,7 @@ const page = async () => {
   if (!session?.user) {
     redirect("/");
   }
-
-  return (
-    <div className=" h-screen flex flex-col gap-7">
-      <Onboardings user={session.user} />
-    </div>
-  );
+  return <ClientDashboard />;
 };
 
 export default page;

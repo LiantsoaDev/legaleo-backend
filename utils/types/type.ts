@@ -1,3 +1,5 @@
+import React from "react";
+
 export interface ButtonPropos {
   primary?: boolean;
   children: React.ReactNode;
@@ -7,6 +9,7 @@ export interface ButtonPropos {
   isdisabled?: boolean;
   classname?: string;
   isLink?: boolean;
+  ref?: React.Ref<HTMLInputElement | HTMLTextAreaElement>;
 }
 
 export interface InputProps {
@@ -16,6 +19,8 @@ export interface InputProps {
   isrequired?: boolean;
   name: string;
   classname?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface CheckBoxProps {
@@ -42,6 +47,7 @@ export interface RadioProps {
 export interface MultiSelectGroupProps {
   options: string[];
   showLogo?: boolean;
+  name?: string;
 }
 
 export interface InputFilesProps {
