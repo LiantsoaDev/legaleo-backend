@@ -31,7 +31,7 @@ export const Logo = ({ className }: LogoProps) => {
         fontSize="34"
         dominantBaseline="middle"
       >
-        Legaleo
+        IndianaCafe
       </text>
     </svg>
   );
