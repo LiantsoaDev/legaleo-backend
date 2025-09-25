@@ -42,7 +42,7 @@ export function Plugins() {
       {/* toolbar plugins */}
       <ToolbarPlugin>
         {({ blockType }) => (
-          <div className="rounded-full bg-[#E6F2F2] text-[#087F83] vertical-align-middle sticky top-0 z-10 flex gap-5 overflow-auto p-3 mb-5">
+          <div className="rounded-full bg-[#E6F2F2] text-[#087F83] vertical-align-middle sticky top-0 z-10 flex gap-5 overflow-auto p-2 mb-5">
             <HistoryToolbarPlugin />
             <Separator orientation="vertical" className="!h-7" />
             <BlockFormatDropDown>
