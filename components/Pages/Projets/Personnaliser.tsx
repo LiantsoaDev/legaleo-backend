@@ -105,6 +105,8 @@ export const Personnaliser = ({
         </div>
         <Button
           type="submit"
+          isLink
+          href="/projets/1"
           classname="w-fit mx-auto rounded-sm !bg-[#087F83] !text-sm !font-semibold hover:!border-none hover:!text-white cursor-pointer hover:opacity-85"
         >
           Commencer 🚀

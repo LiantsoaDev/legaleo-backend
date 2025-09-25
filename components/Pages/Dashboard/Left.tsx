@@ -22,7 +22,11 @@ export const Left = () => {
       <div className="flex flex-col gap-0">
         {/* Add your menu items here */}
         {/* Example: */}
-        <Button classname="flex gap-1 mb-10 items-center justify-center py-5 rounded-sm !bg-primary !text-black hover:border-none cursor-pointer hover:opacity-85 transition-all duration-300">
+        <Button
+          isLink
+          href="/projets/nouveau"
+          classname="flex gap-1 mb-10 items-center justify-center py-5 rounded-sm !bg-primary !text-black hover:border-none cursor-pointer hover:opacity-85 transition-all duration-300"
+        >
           <FontAwesomeIcon icon={faPlus} /> Nouveau projet
         </Button>
         {navMenu.map((item) => (
