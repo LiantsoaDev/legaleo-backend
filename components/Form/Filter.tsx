@@ -47,28 +47,28 @@ export const Filter = ({
           options={options}
           name="status"
           id="status"
-          classname="text-xs font-semibold !p-3 !bg-[#F2F8F8] !text-[#86A2A3] w-full border-0 !rounded-none"
+          classname="text-xs font-semibold !p-3 !bg-[#F2F8F8] !text-[#86A2A3] w-full border-0"
           isFilter={true}
         />
         <Select
           options={options}
           name="status"
           id="status"
-          classname="text-xs font-semibold !p-3 !bg-[#F2F8F8] !text-[#86A2A3] w-full border-0 !rounded-none"
+          classname="text-xs font-semibold !p-3 !bg-[#F2F8F8] !text-[#86A2A3] w-full border-0"
           isFilter={true}
         />
         <Select
           options={options}
           name="status"
           id="status"
-          classname="text-xs font-semibold !p-3 !bg-[#F2F8F8] !text-[#86A2A3] w-full border-0 !rounded-none"
+          classname="text-xs font-semibold !p-3 !bg-[#F2F8F8] !text-[#86A2A3] w-full border-0"
           isFilter={true}
         />
         <Select
           options={options}
           name="status"
           id="status"
-          classname="text-xs font-semibold !p-3 !bg-[#F2F8F8] !text-[#86A2A3] w-full border-0 !rounded-none"
+          classname="text-xs font-semibold !p-3 !bg-[#F2F8F8] !text-[#86A2A3] w-full border-0"
           isFilter={true}
         />
       </div>

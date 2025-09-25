@@ -17,6 +17,9 @@ import {
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
+import { Button } from "../Button";
+import { WorkspaceItem } from "../Pages/MonCompte";
+import { SearchBar } from "./SearchBar";
 
 export const Input = ({
   type,
@@ -25,6 +28,7 @@ export const Input = ({
   isrequired,
   name,
   classname,
+  nombreCaractere,
 }: InputProps) => {
   const [value, setValue] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
@@ -75,6 +79,11 @@ export const Input = ({
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-[50%] translate-y-[-50%] transform cursor-pointer"
             />
+          )}
+          {nombreCaractere && (
+            <div className="flex justify-end text-xs text-[#828282] mt-2">
+              {value.length} / {nombreCaractere}
+            </div>
           )}
         </div>
       )}
@@ -316,6 +325,50 @@ export const Select = ({
           )}
         </div>
       ))}
+    </div>
+  );
+};
+
+export const SelectWithSearch = () => {
+  const [showOptions, setShowOptions] = useState(false);
+  return (
+    <div className="relative z-20">
+      <div
+        className="flex gap-2 items-center relative bg-[#F2F8F8] text-[#86A2A3] text-xs font-semibold rounded-md px-3 py-2.5 w-fit cursor-pointer"
+        onClick={() => setShowOptions(!showOptions)}
+      >
+        Workspace
+        <FontAwesomeIcon
+          icon={faChevronDown}
+          className="text-xs text-[#86A2A3]"
+        />
+      </div>
+      {showOptions && (
+        <div className="w-80 h-80 rounded-md py-3.5 bg-white border border-[#E3E3E3] absolute top-9 left-0">
+          <div className="px-5 border-b border-b-gray pb-3.5">
+            <SearchBar
+              classname="w-full focus-within:shadow-none border border-gray"
+              iconClassname="text-xl"
+            />
+          </div>
+          <div className="px-5 h-[60%] py-3.5">
+            <WorkspaceItem name="workspace" />
+          </div>
+          <div className="border-t border-t-gray py-3.5 px-5">
+            <div className="flex flex-row justify-between items-center">
+              <Button
+                classname="!bg-[#F2F2F2] !py-2 !px-4 !rounded-sm !text-sm !font-bold !cursor-pointer !text-[#828282] hover:!bg-[#E0E0E0] !transition hover:!border-none !w-fit"
+                onclick={() => setShowOptions(false)}
+              >
+                Annuler
+              </Button>
+              <Button classname="!bg-[#087F83] !py-2 !px-4 !rounded-sm !text-sm !font-bold !cursor-pointer !text-white hover:!bg-[#087F83] hover:opacity-70 !transition hover:!border-none !w-fit">
+                Appliquer
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

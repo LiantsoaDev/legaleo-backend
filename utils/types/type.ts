@@ -21,6 +21,7 @@ export interface InputProps {
   classname?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  nombreCaractere?: number;
 }
 
 export interface CheckBoxProps {
@@ -143,6 +144,17 @@ export interface Project {
   description?: string;
   teamMembers?: string[];
   commentaires?: number;
+}
+
+export interface ContractUsers {
+  name: string;
+  email: string;
+  methode_2fa?: string;
+  workspace?: string;
+  role?: string;
+  documentAssocier?: string;
+  status?: string;
+  date_invitation?: string;
 }
 
 export interface Contrat {

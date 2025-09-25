@@ -8,6 +8,13 @@ interface MenuTextProps {
   isActive?: boolean;
 }
 
+interface MenuAccountTextProps {
+  className?: string;
+  children?: React.ReactNode;
+  icon?: React.ReactNode;
+  href: string;
+}
+
 interface ProjectActionProps {
   className?: string;
   children: React.ReactNode;
@@ -60,6 +67,23 @@ export const ProjectAction = ({
     >
       {icon && <span>{icon}</span>}
       <span className={className}>{children}</span>
+    </Link>
+  );
+};
+
+export const MenuAccountText = ({
+  className,
+  children,
+  icon,
+  href,
+}: MenuAccountTextProps) => {
+  return (
+    <Link
+      href={href}
+      className={`flex flex-row items-center gap-3 text-white py-3.5 px-2 ${className}`}
+    >
+      {icon && icon}
+      <span className="font-medium text-sm font-manrope">{children}</span>
     </Link>
   );
 };

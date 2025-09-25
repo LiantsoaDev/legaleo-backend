@@ -5,3 +5,4 @@ export * from "./Model";
 export * from "./NewProject";
 export * from "./Personnaliser";
 export * from "./ProjectStep";
+export * from "./TextEditor";
