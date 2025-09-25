@@ -109,7 +109,7 @@ export const Onboardings = ({ user }: any) => {
 
     postOnboardingData(dataToSend);
 
-    if (onboardingStep === onboardingSteps.length - 1) {
+    if (onboardingStep === onboardingSteps.length) {
       // Redirection vers le tableau de bord ou une autre page
       window.location.href = "/dashboard";
     }
