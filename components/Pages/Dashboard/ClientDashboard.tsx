@@ -55,7 +55,7 @@ export const ClientDashboard = () => {
               />
             }
             title="Signer un document"
-            href="#"
+            href="/projets/signer-projet"
           />
           <ProjectCard
             icon={

@@ -16,7 +16,7 @@ export const SearchBar = ({
 }: SearchBarProps) => {
   return (
     <div
-      className={`flex flex-row items-center justify-start gap-2.5 bg-white w-1/3 py-3 px-5 rounded-full focus-within:shadow-2xl ${classname}`}
+      className={`flex flex-row items-center justify-start gap-2.5 bg-white w-1/3 py-3 px-5 rounded-full focus-within:shadow-lg ${classname}`}
     >
       <input
         type="text"
