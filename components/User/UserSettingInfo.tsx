@@ -15,7 +15,7 @@ export const UserSettingInfo = ({
   return (
     <Link
       href={link}
-      className="flex flex-row text-[#828282] gap-1.5 items-center hover:underline"
+      className="flex flex-row text-[#828282] gap-1.5 items-center hover:underline px-2 py-2 border border-gray rounded-lg text-xs font-semibold"
     >
       {icon}
       <span>{title}</span>

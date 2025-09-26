@@ -173,3 +173,8 @@ export type FileNode = {
   type: "folder" | "file";
   children?: FileNode[]; // uniquement si type === 'folder'
 };
+
+export interface Recharge {
+  duration: string;
+  prix: string;
+}

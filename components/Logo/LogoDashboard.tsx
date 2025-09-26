@@ -1,11 +1,14 @@
 "use client";
 import {
   faChevronDown,
+  faCircle,
   faGear,
+  faPlus,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import { Button } from "../Button";
 import { UserSettingInfo } from "../User";
 import { Logo } from "./Logo";
 
@@ -21,42 +24,62 @@ export const LogoDashboard = () => {
         <FontAwesomeIcon icon={faChevronDown} className="text-white text-xl" />
       </div>
       {isOpen && (
-        <div className="py-3.5 px-3.5 flex flex-col gap-0 bg-white shadow-lg rounded-2xl absolute top-20 w-[20rem] z-5">
+        <div className="py-5 px-5 flex flex-col gap-0 bg-white shadow-lg rounded-2xl absolute top-20 w-[365px] z-5">
           <div className="flex flex-row gap-2.5 items-center">
             <div className="w-8 h-8 bg-[#FFE9BD] rounded-sm" />
             <div className="flex flex-col justify-between">
               <div className="text-sm font-semibold text-black">
                 Nom du groupe
               </div>
-              <div className="text-xs text-gray-500">X membres</div>
+              <div className="text-xs text-gray-500 flex items-center gap-1">
+                Plan en cours{" "}
+                <FontAwesomeIcon icon={faCircle} className="text-[3px]" /> X
+                membres
+              </div>
             </div>
           </div>
           <div className="flex flex-col gap-3 mt-5">
-            <span className="text-gray text-xs">Gérer</span>
-            <div className="flex flex-col gap-2.5">
+            {/* <span className="text-gray text-xs">Gérer</span> */}
+            <div className="flex flex-row gap-2.5">
               <UserSettingInfo
                 icon={<FontAwesomeIcon icon={faGear} />}
-                link="/setting"
+                link="/mon-compte/general"
                 title="Paramètres"
               />
               <UserSettingInfo
                 icon={<FontAwesomeIcon icon={faUsers} />}
-                link="/invite"
+                link="/mon-compte/equipe"
                 title="Inviter des membres"
               />
             </div>
           </div>
           <div className="w-full h-[1px] bg-gray mt-5" />
           <div className="py-3.5 px-3.5">
-            <span className="text-gray text-xs">Changer d’environment</span>
+            <span className="text-gray text-xs">
+              Changer d’environnment de travail
+            </span>
             <div className="flex flex-col gap-2.5 mt-3">
               <div className="flex flex-row items-center gap-2.5 cursor-pointer">
-                <div className="w-8 h-8 bg-[#D9FDFB] rounded-sm" />
+                <div className="w-5 h-5 bg-gray rounded-sm" />
+                <span className="font-medium text-xs text-black">
+                  Nom du groupe
+                </span>
+              </div>
+              <div className="flex flex-row items-center gap-2.5 cursor-pointer">
+                <div className="w-5 h-5 bg-gray rounded-sm" />
                 <span className="font-medium text-xs text-black">
                   Nom du groupe
                 </span>
               </div>
             </div>
+            <Button
+              isLink
+              href="/mon-compte/workspace"
+              classname="!bg-transparent !border !border-black !text-black !rounded-xl !text-xs mt-5 flex items-center gap-1"
+            >
+              <FontAwesomeIcon icon={faPlus} />
+              Créer un nouvel environnement de travail
+            </Button>
           </div>
         </div>
       )}

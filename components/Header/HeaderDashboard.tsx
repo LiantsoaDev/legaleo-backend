@@ -1,3 +1,4 @@
+"use client";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SearchBar } from "../Form";
@@ -5,12 +6,23 @@ import { LogoDashboard } from "../Logo";
 import { User } from "../User";
 import { Notification } from "./Notification";
 
-export const HeaderDashboard = () => {
+interface HeaderDashboardProps {
+  showCredit: boolean;
+  setShowCreditCard: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const HeaderDashboard = ({
+  showCredit,
+  setShowCreditCard,
+}: HeaderDashboardProps) => {
   return (
     <div className="flex flex-row items-center justify-between w-full px-8 h-[10%]">
       <LogoDashboard />
       <SearchBar />
-      <div className="flex flex-row items-center gap-5">
+      <div
+        className="flex flex-row items-center gap-5"
+        onClick={() => setShowCreditCard(!showCredit)}
+      >
         <div className="flex flex-row gap-2 py-2 px-3 items-center bg-[#62E7EB33] cursor-pointer text-white rounded-sm">
           <svg
             width="18"
