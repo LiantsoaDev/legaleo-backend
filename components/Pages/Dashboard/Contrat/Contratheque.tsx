@@ -31,7 +31,11 @@ export const Contratheque = () => {
           <div className="w-4/5 flex flex-col px-7 gap-6">
             <div className="flex items-center justify-between">
               <SearchBar classname="border-gray border !shadow-none !w-1/2" />
-              <Button classname="flex gap-2 items-center !py-3 !text-sm justify-center !font-semibold rounded-md !bg-primary !text-black hover:border-none cursor-pointer hover:opacity-85 transition-all duration-300">
+              <Button
+                isLink
+                href="/projets/nouveau"
+                classname="flex gap-2 items-center !py-3 !text-sm justify-center !font-semibold rounded-md !bg-primary !text-black hover:border-none cursor-pointer hover:opacity-85 transition-all duration-300"
+              >
                 <FontAwesomeIcon icon={faPlus} /> Créer un contrat
               </Button>
             </div>

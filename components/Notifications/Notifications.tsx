@@ -33,6 +33,7 @@ export const Notifications = () => {
           message="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor..."
           nom_project="Project 1"
           nom_user="User"
+          isRappel
         />
         <NotificationCard
           message="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor..."

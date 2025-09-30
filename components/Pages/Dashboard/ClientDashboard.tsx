@@ -1,6 +1,6 @@
 "use client";
 import { Decouvrir } from "@/components/Assistances";
-import { ProjectCard } from "@/components/Card";
+import { ImportDocument, ProjectCard } from "@/components/Card";
 import { Notifications } from "@/components/Notifications";
 import { Title } from "@/components/Typography";
 import { Videos } from "@/components/Video";
@@ -10,11 +10,13 @@ import {
   faSignature,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
 import { OnboardingFinalisation } from "../Onboarding";
 import { LastProject } from "./Project";
 
 export const ClientDashboard = () => {
   const today = new Date();
+  const [importDocument, setImportDocument] = useState(false);
 
   const formattedDate = today.toLocaleDateString("fr-FR", {
     weekday: "long",
@@ -66,11 +68,13 @@ export const ClientDashboard = () => {
             }
             title="Importer un document"
             href="#"
+            onClick={() => setImportDocument(true)}
           />
         </div>
         <OnboardingFinalisation />
         <LastProject />
       </div>
+      {importDocument && <ImportDocument setShow={setImportDocument} />}
       <div className="w-2/5 bg-[#F2F8F8] p-7 rounded-xl flex flex-col gap-7">
         <Notifications />
         <Videos />

@@ -8,6 +8,7 @@ interface ProjectCardProps {
   classTitle?: string;
   className?: string;
   isRecommanded?: boolean;
+  onClick?: () => void;
 }
 
 export const ProjectCard = ({
@@ -18,11 +19,13 @@ export const ProjectCard = ({
   classTitle,
   className,
   isRecommanded,
+  onClick,
 }: ProjectCardProps) => {
   return (
     <Link
       className={`border border-gray py-5 flex flex-col justify-center items-center gap-2.5 w-full text-xs font-semibold rounded-md cursor-pointer hover:bg-gray-100 transition-colors ${className}`}
       href={href}
+      onClick={onClick}
     >
       <span>{icon}</span>
       <span className={`${classTitle}`}>{title}</span>

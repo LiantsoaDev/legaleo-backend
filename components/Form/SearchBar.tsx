@@ -9,7 +9,7 @@ interface SearchBarProps {
 }
 
 export const SearchBar = ({
-  placeholder = "Rechercher...",
+  placeholder = "Rechercher un projet...",
   classname = "",
   inputClassname,
   iconClassname,
@@ -20,7 +20,7 @@ export const SearchBar = ({
     >
       <input
         type="text"
-        placeholder="Rechercher un projet..."
+        placeholder={placeholder}
         className={`w-[90%] focus:outiline-none outline-none bg-transparent text-black placeholder:text-[#828282] text-sm order-2 ${inputClassname}`}
       />
       <button type="submit" className="cursor-pointer">
