@@ -3,7 +3,11 @@ import { Logo } from "../../Logo/Logo";
 import { Paragraphe, Title } from "../../Typography";
 import { Notices } from "../../Typography/Tips";
 
-export const Welcome = () => {
+interface WelcomeProps {
+  onClick: () => void;
+}
+
+export const Welcome = ({ onClick }: WelcomeProps) => {
   return (
     <div className="flex flex-col px-32 py-20 justify-center items-center min-h-screen max-w-4xl">
       <Logo className="w-52 h-16 filter grayscale mb-14" />
@@ -22,6 +26,7 @@ export const Welcome = () => {
       </Paragraphe>
       <Button
         primary={false}
+        onclick={onClick}
         classname="!bg-primary !border-primary hover:!bg-transparent hover:!text-secondary w-fit text-lg font-semibold mt-10 transition-colors"
       >
         C&apos; est parti !

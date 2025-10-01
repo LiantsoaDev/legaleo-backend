@@ -19,11 +19,11 @@ export const HeaderDashboard = ({
     <div className="flex flex-row items-center justify-between w-full px-8 h-[10%]">
       <LogoDashboard />
       <SearchBar />
-      <div
-        className="flex flex-row items-center gap-5"
-        onClick={() => setShowCreditCard(!showCredit)}
-      >
-        <div className="flex flex-row gap-2 py-2 px-3 items-center bg-[#62E7EB33] cursor-pointer text-white rounded-sm">
+      <div className="flex flex-row items-center gap-5">
+        <div
+          className="flex flex-row gap-2 py-2 px-3 items-center bg-[#62E7EB33] cursor-pointer text-white rounded-sm"
+          onClick={() => setShowCreditCard(!showCredit)}
+        >
           <svg
             width="18"
             height="22"

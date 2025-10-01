@@ -15,14 +15,14 @@ export const UserName = () => {
       <div className="flex flex-row gap-5">
         <Input
           type="text"
-          placeholder="Nom"
-          name="name"
+          placeholder="Prénom"
+          name="last_name"
           classname="!text-2xl !px-7 !py-5"
         />
         <Input
           type="text"
-          placeholder="Prénom"
-          name="last_name"
+          placeholder="Nom"
+          name="name"
           classname="!text-2xl !px-7 !py-5"
         />
       </div>

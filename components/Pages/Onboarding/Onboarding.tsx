@@ -42,7 +42,7 @@ export const Onboardings = ({ user }: any) => {
   const renderStep = () => {
     switch (onboardingStep) {
       case 0:
-        return <Welcome />;
+        return <Welcome onClick={() => handleNextStep()} />;
       case 1:
         return <UserName />;
       case 2:
@@ -109,10 +109,10 @@ export const Onboardings = ({ user }: any) => {
 
     postOnboardingData(dataToSend);
 
-    if (onboardingStep === onboardingSteps.length) {
-      // Redirection vers le tableau de bord ou une autre page
-      window.location.href = "/dashboard";
-    }
+    // if (onboardingStep === onboardingSteps.length - 1) {
+    //   // Redirection vers le tableau de bord ou une autre page
+    //   window.location.href = "/dashboard";
+    // }
   };
 
   const handleNextStep = () => {
@@ -120,6 +120,11 @@ export const Onboardings = ({ user }: any) => {
     setOnboardingStep((prevStep) =>
       prevStep < onboardingSteps.length - 1 ? prevStep + 1 : prevStep
     );
+    console.log("Onboarding step", onboardingStep);
+    if (onboardingStep === 7) {
+      // Redirection vers le tableau de bord ou une autre page
+      window.location.href = "/dashboard";
+    }
   };
 
   const handlePrevStep = () => {
