@@ -97,6 +97,7 @@ export const Onboardings = ({ user }: any) => {
     setFormDataState((prev) => ({ ...prev, ...data }));
     const userId = user.id;
     const onboarding_id = onboardingDatas && onboardingDatas[0]?.id;
+    console.log("onboarding ID", onboarding_id);
     if (!onboarding_id) return;
 
     const dataToSend = {
