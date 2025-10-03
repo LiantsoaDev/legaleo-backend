@@ -180,3 +180,52 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Styles pour CKEditor 5 premium */
+.ck.ck-editor {
+  @apply border-0 shadow-none;
+}
+
+.ck.ck-content {
+  @apply min-h-[500px] text-gray-800 leading-relaxed font-sans text-base;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+}
+
+.ck.ck-toolbar {
+  @apply bg-transparent border-0 border-b border-gray-200 py-3 px-4;
+}
+
+.ck.ck-toolbar .ck-toolbar__items {
+  @apply gap-1;
+}
+
+.ck.ck-button {
+  @apply rounded transition-colors;
+}
+
+.ck.ck-button:not(.ck-disabled):hover {
+  @apply bg-gray-100;
+}
+
+.ck.ck-button.ck-on {
+  @apply bg-blue-50 text-blue-600;
+}
+
+/* Style pour le format painter */
+.ck.ck-button[aria-labelledby="formatPainter"] {
+  @apply bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0;
+}
+
+.ck.ck-button[aria-labelledby="formatPainter"]:hover {
+  @apply from-purple-600 to-pink-600;
+}
+
+/* Statistiques */
+.ck-word-count {
+  @apply text-sm text-gray-500;
+}
+
+.ck-focused {
+  @apply !border-0 !shadow-none;
+}
