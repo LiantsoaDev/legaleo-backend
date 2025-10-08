@@ -1,12 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { Historique } from "./Historique";
 import { RecommandationJuridique } from "./RecommandationJuridique";
 import { Synthese } from "./Synthese";
 
-export const RightBar = () => {
-  const [currentTab, setCurrentTab] = useState(1);
+interface RightBarProps {
+  currentTab: number;
+  setShowTab: React.Dispatch<React.SetStateAction<boolean>>;
+  showTab: boolean;
+  handleShowTab: (
+    showTab: boolean,
+    setShowTab: React.Dispatch<React.SetStateAction<boolean>>,
+    currentTab?: number
+  ) => void;
+}
 
+export const RightBar = ({
+  currentTab,
+  setShowTab,
+  showTab,
+  handleShowTab,
+}: RightBarProps) => {
   useEffect(() => {}, [currentTab]);
 
   const handleGetCurrentTab = () => {
@@ -24,7 +39,7 @@ export const RightBar = () => {
       case 6:
         return <Synthese />;
       case 7:
-        return <Synthese />;
+        return <Historique />;
       default:
         return <Synthese />;
     }
@@ -39,7 +54,8 @@ export const RightBar = () => {
           viewBox="0 0 48 48"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          onClick={() => setCurrentTab(1)}
+          onClick={() => handleShowTab(showTab, setShowTab)}
+          className="cursor-pointer"
         >
           <path
             d="M24 32.5925L16.4196 25.0121C15.8603 24.4528 15.8603 23.546 16.4196 22.9867L24 15.4062"
@@ -60,7 +76,8 @@ export const RightBar = () => {
           viewBox="0 0 48 48"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          onClick={() => setCurrentTab(2)}
+          onClick={() => handleShowTab(showTab, setShowTab, 2)}
+          className="cursor-pointer"
         >
           <path
             d="M16.5615 15.4375C15.9402 15.4375 15.4365 15.9412 15.4365 16.5625C15.4365 17.1838 15.9402 17.6875 16.5615 17.6875H31.4378C32.0591 17.6875 32.5628 17.1838 32.5628 16.5625C32.5628 15.9412 32.0591 15.4375 31.4378 15.4375H16.5615ZM15.4365 26.4797C15.4365 27.1011 15.9402 27.6047 16.5615 27.6047H31.4378C32.0591 27.6047 32.5628 27.1011 32.5628 26.4797C32.5628 25.8584 32.0591 25.3547 31.4378 25.3547H16.5615C15.9402 25.3547 15.4365 25.8584 15.4365 26.4797ZM15.4365 21.5208C15.4365 22.1421 15.9402 22.6458 16.5615 22.6458H31.4378C32.0591 22.6458 32.5628 22.1421 32.5628 21.5208C32.5628 20.8994 32.0591 20.3958 31.4378 20.3958H16.5615C15.9402 20.3958 15.4365 20.8994 15.4365 21.5208ZM15.4365 31.438C15.4365 32.0593 15.9402 32.563 16.5615 32.563H31.4378C32.0591 32.563 32.5628 32.0593 32.5628 31.438C32.5628 30.8167 32.0591 30.313 31.4378 30.313H16.5615C15.9402 30.313 15.4365 30.8167 15.4365 31.438Z"
@@ -73,7 +90,7 @@ export const RightBar = () => {
           viewBox="0 0 48 48"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          onClick={() => setCurrentTab(3)}
+          onClick={() => handleShowTab(showTab, setShowTab, 3)}
           className="cursor-pointer"
         >
           <rect width="48" height="48" rx="24" fill="#087F83" />
@@ -88,7 +105,8 @@ export const RightBar = () => {
           viewBox="0 0 48 48"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          onClick={() => setCurrentTab(4)}
+          onClick={() => handleShowTab(showTab, setShowTab, 4)}
+          className="cursor-pointer"
         >
           <path
             d="M20 17H23V31H20V33H28V31H25V17H28V15H20V17ZM14 19C13.7348 19 13.4804 19.1054 13.2929 19.2929C13.1054 19.4804 13 19.7348 13 20V28C13 28.2652 13.1054 28.5196 13.2929 28.7071C13.4804 28.8946 13.7348 29 14 29H20V27H15V21H20V19H14ZM28 21H33V27H28V29H34C34.2652 29 34.5196 28.8946 34.7071 28.7071C34.8946 28.5196 35 28.2652 35 28V20C35 19.7348 34.8946 19.4804 34.7071 19.2929C34.5196 19.1054 34.2652 19 34 19H28V21Z"
@@ -101,20 +119,32 @@ export const RightBar = () => {
           viewBox="0 0 48 48"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          onClick={() => setCurrentTab(5)}
+          onClick={() => handleShowTab(showTab, setShowTab, 7)}
         >
           <path
-            d="M20 17H23V31H20V33H28V31H25V17H28V15H20V17ZM14 19C13.7348 19 13.4804 19.1054 13.2929 19.2929C13.1054 19.4804 13 19.7348 13 20V28C13 28.2652 13.1054 28.5196 13.2929 28.7071C13.4804 28.8946 13.7348 29 14 29H20V27H15V21H20V19H14ZM28 21H33V27H28V29H34C34.2652 29 34.5196 28.8946 34.7071 28.7071C34.8946 28.5196 35 28.2652 35 28V20C35 19.7348 34.8946 19.4804 34.7071 19.2929C34.5196 19.1054 34.2652 19 34 19H28V21Z"
-            fill="#087F83"
+            d="M31.0716 32.3588H18.8573C18.3458 32.3588 17.8552 32.1557 17.4936 31.794C17.1319 31.4323 16.9287 30.9417 16.9287 30.4302C16.9287 29.9188 17.1319 29.4282 17.4936 29.0665C17.8552 28.7048 18.3458 28.5017 18.8573 28.5017H29.7859C30.1268 28.5017 30.4539 28.3662 30.695 28.1251C30.9361 27.884 31.0716 27.557 31.0716 27.216V16.9302C31.0716 16.5892 30.9361 16.2622 30.695 16.0211C30.4539 15.78 30.1268 15.6445 29.7859 15.6445H18.8573C18.3546 15.6444 17.8717 15.8405 17.5114 16.1911C17.1512 16.5417 16.9421 17.0192 16.9287 17.5217V30.3788"
+            stroke="#087F83"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M29.7861 28.5V32.3571"
+            stroke="#087F83"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
+
         <svg
           width="48"
           height="48"
           viewBox="0 0 48 48"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          onClick={() => setCurrentTab(6)}
+          onClick={() => handleShowTab(showTab, setShowTab, 6)}
+          className="cursor-pointer"
         >
           <path
             d="M20.5385 31.6154L15 33L16.3846 28.8462V16.3846C16.3846 16.0174 16.5305 15.6652 16.7902 15.4055C17.0498 15.1459 17.402 15 17.7692 15H31.6154C31.9826 15 32.3348 15.1459 32.5944 15.4055C32.8541 15.6652 33 16.0174 33 16.3846V30.2308C33 30.598 32.8541 30.9502 32.5944 31.2098C32.3348 31.4694 31.9826 31.6154 31.6154 31.6154H20.5385Z"
@@ -144,7 +174,8 @@ export const RightBar = () => {
           viewBox="0 0 48 48"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          onClick={() => setCurrentTab(7)}
+          onClick={() => handleShowTab(showTab, setShowTab, 7)}
+          className="cursor-pointer"
         >
           <path
             d="M16.2002 15.3008V20.7008C16.2002 21.3373 16.4531 21.9478 16.9031 22.3978C17.3532 22.8479 17.9637 23.1008 18.6002 23.1008C19.2367 23.1008 19.8472 22.8479 20.2973 22.3978C20.7473 21.9478 21.0002 21.3373 21.0002 20.7008V17.1008C21.0002 16.7825 20.8738 16.4773 20.6487 16.2523C20.4237 16.0272 20.1185 15.9008 19.8002 15.9008C19.4819 15.9008 19.1767 16.0272 18.9517 16.2523C18.7266 16.4773 18.6002 16.7825 18.6002 17.1008V21.3008M22.8002 15.9008H30.6002C30.9185 15.9008 31.2237 16.0272 31.4487 16.2523C31.6738 16.4773 31.8002 16.7825 31.8002 17.1008V31.5008C31.8002 31.819 31.6738 32.1243 31.4487 32.3493C31.2237 32.5744 30.9185 32.7008 30.6002 32.7008H18.6002C18.2819 32.7008 17.9767 32.5744 17.7517 32.3493C17.5266 32.1243 17.4002 31.819 17.4002 31.5008V24.9008M28.8002 20.7008H24.0002M28.8002 24.3008H24.0002M28.8002 27.9008H20.4002"
@@ -154,7 +185,13 @@ export const RightBar = () => {
           />
         </svg>
       </div>
-      <div className="w-[338px]">{handleGetCurrentTab()}</div>
+      <div
+        className={`${
+          showTab ? "w-[338px]" : "w-0"
+        } transition-all duration-300`}
+      >
+        {handleGetCurrentTab()}
+      </div>
     </div>
   );
 };

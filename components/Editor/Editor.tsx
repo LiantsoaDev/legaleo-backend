@@ -19,21 +19,6 @@ export default function Editor() {
           autoSave={true}
           documentTitle="Mon Document Premium"
         />
-
-        {/* Preview (optionnel) */}
-        {/* {savedContent && (
-          <div className="mt-8 max-w-4xl mx-auto">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-lg font-semibold mb-4">
-                Aperçu du contenu sauvegardé :
-              </h3>
-              <div
-                className="prose max-w-none"
-                dangerouslySetInnerHTML={{ __html: savedContent }}
-              />
-            </div>
-          </div>
-        )} */}
       </div>
     </main>
   );

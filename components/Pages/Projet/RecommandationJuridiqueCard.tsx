@@ -43,7 +43,7 @@ export const RecommandationJuridiqueCard = () => {
           type="text"
           placeholder="Répondre"
           name="repondre"
-          classname="!rounded-full !bg-[#F2F2F2] !text-[#828282]"
+          classname="!rounded-full !bg-[#F2F2F2] !text-[#828282] !text-xs"
           isrequired={false}
         />
       </div>

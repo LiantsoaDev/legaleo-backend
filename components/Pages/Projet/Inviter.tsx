@@ -11,7 +11,7 @@ interface InviterProps {
 
 export const Inviter = ({ setShow }: InviterProps) => {
   return (
-    <div className="flex flex-col justify-center items-center fixed inset-0 bg-[#00000033]">
+    <div className="flex flex-col justify-center items-center fixed inset-0 bg-[#00000033] z-20">
       <div className="w-[700px] bg-white rounded-md shadow flex flex-col gap-5 p-7 relative">
         <svg
           width="18"

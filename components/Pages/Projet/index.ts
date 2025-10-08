@@ -1,3 +1,5 @@
+export * from "./Envoyer";
+export * from "./Historique";
 export * from "./Inviter";
 export * from "./InviteUser";
 export * from "./RecommandationIA";

@@ -1,9 +1,15 @@
 "use client";
 
 import { Button } from "@/components/Button";
-import { Inviter, RightBar } from "@/components/Pages/Projet";
+import { Envoyer, Inviter, RightBar } from "@/components/Pages/Projet";
 import { Title } from "@/components/Typography";
-import { faFolder, faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faChevronDown,
+  faFolder,
+  faPen,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useMemo, useState } from "react";
 
@@ -17,6 +23,7 @@ export interface TocItem {
 // --- Composant de Table des Matières latérale (SidebarToc) ---
 const SidebarToc = ({ tocItems }: { tocItems: TocItem[] }) => {
   const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null);
+  const [showEditorAction, setShowEditorAction] = useState(false);
 
   // Fonction pour observer le défilement et surligner le titre actif (ScrollSpy)
   useEffect(() => {
@@ -59,6 +66,15 @@ const SidebarToc = ({ tocItems }: { tocItems: TocItem[] }) => {
 
   return (
     <div className="sticky top-0 h-screen overflow-y-auto p-4 ">
+      <div className="flex flex-col bg-[#087F83] text-white gap-2 rounded-full px-5 py-3.5 cursor-pointer">
+        <div className="flex flex-row items-center gap-8">
+          <span className="flex flex-row items-center gap-3.5 font-semibold text-base">
+            {" "}
+            <FontAwesomeIcon icon={faPen} /> Éditer
+          </span>{" "}
+          <FontAwesomeIcon icon={faChevronDown} />
+        </div>
+      </div>
       <h3 className="text-xs font-semibold uppercase text-gray-500 mb-4 pt-10">
         Table des matières
       </h3>
@@ -100,11 +116,29 @@ export default function ProjetLayout({
   children: React.ReactNode;
 }) {
   const [showInviter, setShowInviter] = useState(false);
+  const [showEnvoyer, setShowEnvoyer] = useState(false);
   const [headings, setHeadings] = useState<TocItem[]>([]);
+  const [currentTab, setCurrentTab] = useState(1);
+  const [showTab, setShowTab] = useState(false);
 
   // Fonction de rappel passée à l'éditeur
   const handleHeadingsChange = (newHeadings: TocItem[]) => {
     setHeadings(newHeadings);
+  };
+
+  const handleShowTab = (
+    showTab: boolean,
+    setShowTab: React.Dispatch<React.SetStateAction<boolean>>,
+    tabNumber?: number
+  ) => {
+    if (tabNumber) {
+      setCurrentTab(tabNumber);
+      if (!showTab) {
+        setShowTab(true);
+      }
+    } else {
+      setShowTab(!showTab);
+    }
   };
 
   // Cloner l'élément enfant et injecter la prop de rappel
@@ -138,6 +172,34 @@ export default function ProjetLayout({
         </div>
         <div className="flex flex-row items-center gap-5">
           <div className="flex flex-row gap-5 items-center !mt-5">
+            <svg
+              width="25"
+              height="24"
+              viewBox="0 0 25 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="cursor-pointer"
+              onClick={() => handleShowTab(showTab, setShowTab, 7)}
+            >
+              <path
+                d="M11.333 7.75V12.75H14.333"
+                stroke="#828282"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M4.93848 7.87529C5.89276 6.22228 7.39068 4.95128 9.17701 4.27888C10.9633 3.60648 12.9276 3.57427 14.735 4.18774C16.5424 4.80121 18.0812 6.02241 19.0892 7.64325C20.0971 9.26409 20.5119 11.1843 20.2628 13.0767C20.0137 14.969 19.1162 16.7165 17.7231 18.0213C16.33 19.3261 14.5276 20.1075 12.623 20.2323C10.7184 20.3572 8.82946 19.8178 7.27797 18.706C5.72649 17.5943 4.60849 15.9789 4.11448 14.1353M3.93848 4.12529V8.87529H8.68848"
+                stroke="#828282"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className="flex items-center gap-2.5 px-2 py-1.5 bg-[#EDF4F3] text-[#24856D] font-semibold text-sm rounded-xs">
+              <FontAwesomeIcon icon={faCheck} />
+              Sauvegardé
+            </span>
             <Button
               classname="!rounded-sm !flex gap-2 items-center !bg-transparent !text-black !border !border-black transition"
               onclick={() => setShowInviter(true)}
@@ -145,7 +207,12 @@ export default function ProjetLayout({
               <FontAwesomeIcon icon={faPlus} className="text-sm" />
               Inviter
             </Button>
-            <Button classname="!rounded-sm">Envoyer</Button>
+            <Button
+              classname="!rounded-sm"
+              onclick={() => setShowEnvoyer(true)}
+            >
+              Envoyer
+            </Button>
           </div>
           <div className="flex flex-row pt-5 items-center gap-5">
             <svg
@@ -193,12 +260,20 @@ export default function ProjetLayout({
       </div>
       <div className="flex flex-row justify-between">
         <SidebarToc tocItems={headings} />
-        <div className="w-3/5">{children}</div>
-        <div className="w-fit flex flex-row bg-white shadow">
-          <RightBar />
+        <div className="w-3/5 z-10">{children}</div>
+        <div className="w-fit flex flex-row shadow">
+          <RightBar
+            currentTab={currentTab}
+            setShowTab={setShowTab}
+            showTab={showTab}
+            handleShowTab={handleShowTab}
+          />
         </div>
       </div>
       {showInviter && <Inviter setShow={setShowInviter} />}
+      {showEnvoyer && (
+        <Envoyer setShow={setShowEnvoyer} hasInvalideFields={false} />
+      )}
     </div>
   );
 }
