@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import { Champs } from "./Champs";
+import { Clause } from "./Clause";
 import { Historique } from "./Historique";
 import { RecommandationJuridique } from "./RecommandationJuridique";
 import { Synthese } from "./Synthese";
@@ -33,9 +35,9 @@ export const RightBar = ({
       case 3:
         return <RecommandationJuridique />;
       case 4:
-        return <Synthese />;
+        return <Champs />;
       case 5:
-        return <Synthese />;
+        return <Clause />;
       case 6:
         return <Synthese />;
       case 7:
@@ -119,7 +121,7 @@ export const RightBar = ({
           viewBox="0 0 48 48"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          onClick={() => handleShowTab(showTab, setShowTab, 7)}
+          onClick={() => handleShowTab(showTab, setShowTab, 5)}
         >
           <path
             d="M31.0716 32.3588H18.8573C18.3458 32.3588 17.8552 32.1557 17.4936 31.794C17.1319 31.4323 16.9287 30.9417 16.9287 30.4302C16.9287 29.9188 17.1319 29.4282 17.4936 29.0665C17.8552 28.7048 18.3458 28.5017 18.8573 28.5017H29.7859C30.1268 28.5017 30.4539 28.3662 30.695 28.1251C30.9361 27.884 31.0716 27.557 31.0716 27.216V16.9302C31.0716 16.5892 30.9361 16.2622 30.695 16.0211C30.4539 15.78 30.1268 15.6445 29.7859 15.6445H18.8573C18.3546 15.6444 17.8717 15.8405 17.5114 16.1911C17.1512 16.5417 16.9421 17.0192 16.9287 17.5217V30.3788"

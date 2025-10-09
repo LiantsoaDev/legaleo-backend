@@ -275,6 +275,7 @@ export const Select = ({
   isMultiple = false,
   classname = "",
   isFilter = false,
+  defaultValue = "Sélectionnez une option",
 }: SelectProps) => {
   const [selects, setSelects] = useState([0]);
 
@@ -300,7 +301,7 @@ export const Select = ({
             >
               {!isFilter && (
                 <option value="" disabled>
-                  Sélectionnez une option
+                  {defaultValue}
                 </option>
               )}
 

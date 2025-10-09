@@ -66,6 +66,7 @@ export interface SelectProps {
   isMultiple?: boolean;
   classname?: string;
   isFilter?: boolean;
+  defaultValue?: string;
 }
 
 // Type générique pour chaque étape
