@@ -11,6 +11,7 @@ import { useState } from "react";
 
 export const Synthese = () => {
   const [showInfoG, setShowInfoG] = useState(false);
+  const [showElemCles, setShowElemCles] = useState(false);
   return (
     <div className="flex flex-col gap-0">
       <Title
@@ -123,17 +124,53 @@ export const Synthese = () => {
       <div className="flex flex-col gap-5 border-b border-gray px-5 py-5">
         <div
           className="flex flex-row justify-between items-center cursor-pointer"
-          // onClick={() => setShowInfoG(!showInfoG)}
+          onClick={() => setShowElemCles(!showElemCles)}
         >
           <Title className="font-semibold text-sm text-black">
             Éléments clés du contrat
           </Title>
-          {showInfoG ? (
+          {showElemCles ? (
             <FontAwesomeIcon icon={faChevronUp} className="text-sm" />
           ) : (
             <FontAwesomeIcon icon={faChevronDown} className="text-sm" />
           )}
         </div>
+        {showElemCles && (
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-2.5">
+              <span className="text-xs font-semibold text-[#86A2A3]">
+                Date d’envoi pour signature
+              </span>
+              <span className="font-medium text-sm text-black">01/10/2025</span>
+            </div>
+            <div className="flex flex-col gap-2.5">
+              <span className="text-xs font-semibold text-[#86A2A3]">
+                Date de début du contrat
+              </span>
+              <span className="font-medium text-sm text-black">01/10/2027</span>
+            </div>
+            <div className="flex flex-col gap-2.5">
+              <span className="text-xs font-semibold text-[#86A2A3]">
+                Renouvellement
+              </span>
+              <span className="font-medium text-sm text-black">
+                Indéterminée
+              </span>
+            </div>
+            <div className="flex flex-col gap-2.5">
+              <span className="text-xs font-semibold text-[#86A2A3]">
+                Date d’échéance
+              </span>
+              <span className="font-medium text-sm text-black">01/10/2027</span>
+            </div>
+            <div className="flex flex-col gap-2.5">
+              <span className="text-xs font-semibold text-[#86A2A3]">
+                Durée
+              </span>
+              <span className="font-medium text-sm text-black">Tacite</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
