@@ -1,5 +1,6 @@
 export * from "./Champs";
 export * from "./Clause";
+export * from "./ClauseCard";
 export * from "./DeleteCard";
 export * from "./Dupliquer";
 export * from "./Envoyer";

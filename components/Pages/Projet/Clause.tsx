@@ -2,6 +2,7 @@
 import { RadioGroup, SearchBar } from "@/components/Form";
 import { Title } from "@/components/Typography";
 import { useState } from "react";
+import { ClauseCard } from "./ClauseCard";
 
 const options = ["Tous", "Contrat de franchise"];
 
@@ -48,6 +49,10 @@ export const Clause = () => {
               classLabel="!py-2 text-xs bg-[#F2F8F8] text-[#86A2A3] border-none"
               classSelected="!bg-[#86A2A3]"
             />
+            <div className="flex flex-col gap-5">
+              <ClauseCard />
+              <ClauseCard />
+            </div>
           </div>
         )}
       </div>
