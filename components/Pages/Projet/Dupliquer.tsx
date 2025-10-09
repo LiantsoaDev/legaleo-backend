@@ -30,7 +30,7 @@ export const Dupliquer = ({ setShow }: DupliquerProps) => {
         </Title>
         <Input
           name="file_name"
-          placeholder="nom contrat"
+          placeholder="Nom contrat"
           type="text"
           label="Nom du fichier"
           value="Contrat_annuel.pdf"
