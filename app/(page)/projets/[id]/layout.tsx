@@ -367,7 +367,7 @@ export default function ProjetLayout({
       <div className="flex flex-row justify-between">
         <SidebarToc tocItems={headings} />
         <div className="w-3/5 z-10">{children}</div>
-        <div className="w-fit flex flex-row shadow">
+        <div className="w-fit flex flex-row shadow h-[75%]">
           <RightBar
             currentTab={currentTab}
             setShowTab={setShowTab}
