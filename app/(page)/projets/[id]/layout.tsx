@@ -72,7 +72,7 @@ const SidebarToc = ({ tocItems }: { tocItems: TocItem[] }) => {
   }, [tocItems, activeHeadingId]);
 
   return (
-    <div className="sticky top-0 h-screen overflow-y-auto p-4 ">
+    <div className="sticky top-0 h-screen overflow-y-auto p-4">
       <div className="flex flex-col bg-[#087F83] text-white gap-2 rounded-full px-5 py-3.5 cursor-pointer">
         <div className="flex flex-row items-center gap-8">
           <span className="flex flex-row items-center gap-3.5 font-semibold text-base">
@@ -130,6 +130,7 @@ export default function ProjetLayout({
   const [showAction, setShowAction] = useState(false);
   const [showDupliquer, setShowDupliquer] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
+  const [vueMode, setVueMode] = useState(false);
 
   // Fonction de rappel passée à l'éditeur
   const handleHeadingsChange = (newHeadings: TocItem[]) => {
@@ -162,7 +163,7 @@ export default function ProjetLayout({
   }, [children]);
 
   return (
-    <div className="flex flex-col w-screen overflow-x-hidden">
+    <div className="flex flex-col w-screen overflow-x-hidden h-screen overflow-y-auto bg-gray">
       <div className="flex flex-row justify-between py-5 px-8 bg-white shadow-sm w-full relative">
         <div className="flex flex-col gap-2">
           <Title className="font-bold">Nouveau document</Title>
@@ -231,6 +232,8 @@ export default function ProjetLayout({
               viewBox="0 0 25 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              onClick={() => setVueMode(!vueMode)}
+              className="cursor-pointer"
             >
               <path
                 d="M22.418 12C22.418 14.25 18.053 18.75 12.668 18.75C7.28297 18.75 2.91797 14.25 2.91797 12C2.91797 9.75 7.28297 5.25 12.668 5.25C18.053 5.25 22.418 9.75 22.418 12Z"
@@ -365,16 +368,20 @@ export default function ProjetLayout({
         </div>
       </div>
       <div className="flex flex-row justify-between">
-        <SidebarToc tocItems={headings} />
-        <div className="w-3/5 z-10">{children}</div>
-        <div className="w-fit flex flex-row shadow h-[75%]">
-          <RightBar
-            currentTab={currentTab}
-            setShowTab={setShowTab}
-            showTab={showTab}
-            handleShowTab={handleShowTab}
-          />
+        {!vueMode && <SidebarToc tocItems={headings} />}
+        <div className="w-3/5 mt-10 mx-auto z-10 h-screen bg-gray">
+          {children}
         </div>
+        {!vueMode && (
+          <div className="w-fit flex flex-row shadow h-[82%]">
+            <RightBar
+              currentTab={currentTab}
+              setShowTab={setShowTab}
+              showTab={showTab}
+              handleShowTab={handleShowTab}
+            />
+          </div>
+        )}
       </div>
       {showInviter && <Inviter setShow={setShowInviter} />}
       {showEnvoyer && (

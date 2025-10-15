@@ -49,7 +49,7 @@ export const RightBar = ({
   };
 
   return (
-    <div className="flex flex-row gap-0">
+    <div className="flex flex-row gap-0 bg-white">
       <div className="flex flex-col gap-8 justify-between border-r border-r-gray px-4 py-6">
         <div className="flex flex-col gap-8">
           <svg
