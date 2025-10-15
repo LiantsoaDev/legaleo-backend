@@ -1,30 +1,34 @@
-import { $setBlocksType } from "@lexical/selection"
-import { $createParagraphNode, $getSelection, $isRangeSelection } from "lexical"
+import { $setBlocksType } from "@lexical/selection";
+import {
+  $createParagraphNode,
+  $getSelection,
+  $isRangeSelection,
+} from "lexical";
 
-import { useToolbarContext } from "@/components/editor/context/toolbar-context"
-import { blockTypeToBlockName } from "@/components/editor/plugins/toolbar/block-format/block-format-data"
-import { SelectItem } from "@/components/ui/select"
+import { useToolbarContext } from "@/components/editor/context/toolbar-context";
+import { blockTypeToBlockName } from "@/components/editor/plugins/toolbar/block-format/block-format-data";
+import { SelectItem } from "@/components/ui/select";
 
-const BLOCK_FORMAT_VALUE = "paragraph"
+const BLOCK_FORMAT_VALUE = "paragraph";
 
 export function FormatParagraph() {
-  const { activeEditor } = useToolbarContext()
+  const { activeEditor } = useToolbarContext();
 
   const formatParagraph = () => {
     activeEditor.update(() => {
-      const selection = $getSelection()
+      const selection = $getSelection();
       if ($isRangeSelection(selection)) {
-        $setBlocksType(selection, () => $createParagraphNode())
+        $setBlocksType(selection, () => $createParagraphNode());
       }
-    })
-  }
+    });
+  };
 
   return (
     <SelectItem value={BLOCK_FORMAT_VALUE} onPointerDown={formatParagraph}>
-      <div className="flex items-center gap-1 font-normal">
+      <div className="flex items-center gap-1 font-normal !bg-transparent !border-none text-[#087F83]">
         {blockTypeToBlockName[BLOCK_FORMAT_VALUE].icon}
         {blockTypeToBlockName[BLOCK_FORMAT_VALUE].label}
       </div>
     </SelectItem>
-  )
+  );
 }

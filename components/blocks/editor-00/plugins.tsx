@@ -48,7 +48,10 @@ export function Plugins() {
         {({ blockType }) => (
           <div className="rounded-full bg-[#E6F2F2] text-[#087F83] vertical-align-middle sticky top-0 z-10 flex gap-5 overflow-auto p-2 mb-5">
             <HistoryToolbarPlugin />
-            <Separator orientation="vertical" className="!h-7" />
+            <Separator
+              orientation="vertical"
+              className="!h-7 !bg-[#087F83] !border-none"
+            />
             <BlockFormatDropDown>
               <FormatParagraph />
               <FormatHeading levels={["h1", "h2", "h3"]} />
@@ -57,15 +60,30 @@ export function Plugins() {
               <FormatCheckList />
               <FormatQuote />
             </BlockFormatDropDown>
-            <Separator orientation="vertical" className="!h-7" />
+            <Separator
+              orientation="vertical"
+              className="!h-7 !bg-[#087F83] !border-none"
+            />
             <FontFamilyToolbarPlugin />
-            <Separator orientation="vertical" className="!h-7" />
+            <Separator
+              orientation="vertical"
+              className="!h-7 !bg-[#087F83] !border-none"
+            />
             <FontSizeToolbarPlugin />
-            <Separator orientation="vertical" className="!h-7" />
+            <Separator
+              orientation="vertical"
+              className="!h-7 !bg-[#087F83] !border-none"
+            />
             <FontFormatToolbarPlugin />
-            <Separator orientation="vertical" className="!h-7" />
+            <Separator
+              orientation="vertical"
+              className="!h-7 !bg-[#087F83] !border-none"
+            />
             <ElementFormatToolbarPlugin />
-            <Separator orientation="vertical" className="!h-7" />
+            <Separator
+              orientation="vertical"
+              className="!h-7 !bg-[#087F83] !border-none"
+            />
             <div className="flex flex-row gap-1.5">
               <LinkToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
               {/* <ClearFormattingToolbarPlugin /> */}
