@@ -296,7 +296,7 @@ export function Plugins({
           </div>
           <div className="relative group">
             <span className="bg-[#087F83] px-1.5 py-1 rounded-sm text-white font-medium text-sm opacity-0 group-hover:opacity-100 absolute left-1/2 translate-x-[-120%] top-1/2 -translate-y-1/2 whitespace-nowrap">
-              Insérer un tableau
+              Insérer un champs dynamique
             </span>
             <svg
               width="48"
