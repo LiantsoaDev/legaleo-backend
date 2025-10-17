@@ -26,11 +26,23 @@ import { AutocompletePlugin } from "@/components/editor/plugins/autocomplete-plu
 import { FloatingLinkEditorPlugin } from "@/components/editor/plugins/floating-link-editor-plugin";
 import { FloatingTextFormatToolbarPlugin } from "@/components/editor/plugins/floating-text-format-plugin";
 import { LinkPlugin } from "@/components/editor/plugins/link-plugin";
+import { BlockInsertPlugin } from "@/components/editor/plugins/toolbar/block-insert-plugin";
+import { InsertTable } from "@/components/editor/plugins/toolbar/block-insert/insert-table";
 import { ElementFormatToolbarPlugin } from "@/components/editor/plugins/toolbar/element-format-toolbar-plugin";
 import { LinkToolbarPlugin } from "@/components/editor/plugins/toolbar/link-toolbar-plugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 
-export function Plugins() {
+export function Plugins({
+  currentTab,
+  setShowTab,
+  showTab,
+  handleShowTab,
+}: {
+  currentTab?: number;
+  showTab?: boolean;
+  setShowTab?: React.Dispatch<React.SetStateAction<boolean>>;
+  handleShowTab?: any;
+}) {
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
@@ -42,7 +54,7 @@ export function Plugins() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative pb-10">
       {/* toolbar plugins */}
       <ToolbarPlugin>
         {({ blockType }) => (
@@ -84,8 +96,85 @@ export function Plugins() {
               orientation="vertical"
               className="!h-7 !bg-[#087F83] !border-none"
             />
-            <div className="flex flex-row gap-1.5">
+            <div className="flex flex-row gap-1.5 justify-between items-center">
               <LinkToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
+              <BlockInsertPlugin>
+                <InsertTable />
+              </BlockInsertPlugin>
+              <svg
+                width="22"
+                height="16"
+                viewBox="0 0 22 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11.5884 4.58984H20.1433C20.3496 4.58984 20.5474 4.67178 20.6933 4.81764C20.8391 4.96348 20.921 5.1613 20.921 5.36757V10.0339C20.921 10.2402 20.8391 10.438 20.6933 10.5838C20.5474 10.7297 20.3496 10.8116 20.1433 10.8116H11.5884"
+                  stroke="#087F83"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M3.81108 10.8116H1.47792C1.27165 10.8116 1.07384 10.7297 0.927985 10.5838C0.782133 10.438 0.700195 10.2402 0.700195 10.0339V5.36757C0.700195 5.1613 0.782133 4.96348 0.927985 4.81764C1.07384 4.67178 1.27165 4.58984 1.47792 4.58984H3.81108"
+                  stroke="#087F83"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M6.14453 0.699219H9.25542"
+                  stroke="#087F83"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M6.14453 14.6992H9.25542"
+                  stroke="#087F83"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M7.69971 0.699219V14.6982"
+                  stroke="#087F83"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8.76982 19.1093L3.60059 20.4016L4.89289 16.5246V4.89387C4.89289 4.55112 5.02905 4.22243 5.2714 3.98007C5.51376 3.73772 5.84246 3.60156 6.1852 3.60156H19.1083C19.451 3.60156 19.7798 3.73772 20.0221 3.98007C20.2644 4.22243 20.4006 4.55112 20.4006 4.89387V17.8169C20.4006 18.1597 20.2644 18.4884 20.0221 18.7307C19.7798 18.973 19.451 19.1093 19.1083 19.1093H8.76982Z"
+                  stroke="#087F83"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M8.771 9.41797H16.5248"
+                  stroke="#087F83"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M8.771 13.293H13.9402"
+                  stroke="#087F83"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+
               {/* <ClearFormattingToolbarPlugin /> */}
             </div>
             {/* 
@@ -100,7 +189,7 @@ export function Plugins() {
           </div>
         )}
       </ToolbarPlugin>
-      <div className="relative shadow rounded-md h-screen mt-5 border bg-white">
+      <div className="relative shadow rounded-md min-h-screen mt-5 border bg-white">
         <div className="bg-[#E6F2F2] px-1 py-4 rounded-full flex flex-col gap-0 w-fit absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 z-10">
           <div className="relative group">
             <span className="bg-[#087F83] px-1.5 py-1 rounded-sm text-white font-medium text-sm opacity-0 group-hover:opacity-100 absolute left-1/2 translate-x-[-120%] top-1/2 -translate-y-1/2 whitespace-nowrap">
@@ -129,6 +218,7 @@ export function Plugins() {
               />
             </svg>
           </div>
+
           <div className="relative group">
             <span className="bg-[#087F83] px-1.5 py-1 rounded-sm text-white font-medium text-sm opacity-0 group-hover:opacity-100 absolute left-1/2 translate-x-[-120%] top-1/2 -translate-y-1/2 whitespace-nowrap">
               Insérer une image
@@ -253,6 +343,7 @@ export function Plugins() {
             </svg>
           </div>
         </div>
+        {/* <MenuFlottantEditor /> */}
         <RichTextPlugin
           contentEditable={
             <div className="">

@@ -130,11 +130,19 @@ export function Editor({
   editorSerializedState = defaultSerializedState,
   onChange,
   onSerializedChange,
+  currentTab,
+  showTab,
+  setShowTab,
+  handleShowTab,
 }: {
   editorState?: EditorState;
   editorSerializedState?: SerializedEditorState;
   onChange?: (editorState: EditorState) => void;
   onSerializedChange?: (editorSerializedState: SerializedEditorState) => void;
+  currentTab?: number;
+  showTab?: boolean;
+  setShowTab?: React.Dispatch<React.SetStateAction<boolean>>;
+  handleShowTab?: any;
 }) {
   return (
     <div className="bg-none rounded-lg">

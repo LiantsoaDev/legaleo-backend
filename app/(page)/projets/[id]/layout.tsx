@@ -152,15 +152,34 @@ export default function ProjetLayout({
     }
   };
 
-  // Cloner l'élément enfant et injecter la prop de rappel
   const childrenWithProps = useMemo(() => {
-    if (React.isValidElement(children)) {
-      return React.cloneElement(children as React.ReactElement<any>, {
-        onHeadingsChange: handleHeadingsChange,
+    if (!children) return children;
+
+    if (Array.isArray(children)) {
+      return React.Children.map(children, (child) => {
+        if (React.isValidElement(child)) {
+          return React.cloneElement(child, {
+            currentTab,
+            setShowTab,
+            showTab,
+            handleShowTab,
+          } as any);
+        }
+        return child;
       });
     }
+
+    if (React.isValidElement(children)) {
+      return React.cloneElement(children, {
+        currentTab,
+        setShowTab,
+        showTab,
+        handleShowTab,
+      } as any);
+    }
+
     return children;
-  }, [children]);
+  }, [children, currentTab, setShowTab, showTab, handleShowTab]);
 
   return (
     <div className="flex flex-col w-screen overflow-x-hidden h-screen overflow-y-auto bg-gray">
@@ -370,7 +389,7 @@ export default function ProjetLayout({
       <div className="flex flex-row justify-between">
         {!vueMode && <SidebarToc tocItems={headings} />}
         <div className="w-3/5 mt-10 mx-auto z-10 h-screen bg-gray">
-          {children}
+          {childrenWithProps}
         </div>
         {!vueMode && (
           <div className="w-fit flex flex-row shadow h-[82%]">

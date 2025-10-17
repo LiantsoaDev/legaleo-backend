@@ -2,6 +2,7 @@ import { AutocompleteNode } from "@/components/editor/nodes/autocomplete-node";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
+
 import {
   Klass,
   LexicalNode,
