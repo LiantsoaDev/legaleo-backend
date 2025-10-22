@@ -15,7 +15,15 @@ const options = [
   "90-100",
 ];
 
-export const NombreReseau = () => {
+interface NombreReseauProps {
+  selectedRanges: string[];
+  onChange: (values: string[]) => void;
+}
+
+export const NombreReseau = ({
+  selectedRanges,
+  onChange,
+}: NombreReseauProps) => {
   return (
     <div className="flex flex-col min-h-screen justify-center px-32 py-20 w-full">
       <Title className="font-bold text-4xl leading-[100%] mb-8">
@@ -25,7 +33,12 @@ export const NombreReseau = () => {
         📊 Réponse estimée acceptable : même une fourchette suffit !
       </Paragraphe>
       <div className="flex flex-col gap-5 w-full mt-10">
-        <MultiSelectGroup showLogo={true} options={options} />
+        <MultiSelectGroup
+          showLogo={true}
+          options={options}
+          selectedOptions={selectedRanges}
+          onChange={onChange}
+        />
       </div>
       <Notices classname="mt-10 !text-xl">
         Cette information nous aide à vous proposer les bons outils.

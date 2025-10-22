@@ -69,10 +69,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async redirect({ url, baseUrl }) {
-      // Redirige vers onboarding seulement après une connexion réussie
-      if (url.startsWith("/onboarding")) return url;
+      if (url.startsWith("/")) {
+        return `${baseUrl}${url}`;
+      }
       if (url.startsWith(baseUrl)) return url;
-      return baseUrl + "/onboarding";
+      return `${baseUrl}/dashboard`;
     },
     async jwt({ token, user }) {
       // Ajoutez les données utilisateur au token JWT

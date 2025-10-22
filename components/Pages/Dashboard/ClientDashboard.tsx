@@ -1,8 +1,11 @@
+import { auth } from "@/auth";
 import { Decouvrir } from "@/components/Assistances";
 import { ProjectCard } from "@/components/Card";
 import { Notifications } from "@/components/Notifications";
 import { Title } from "@/components/Typography";
 import { Videos } from "@/components/Video";
+import { prisma } from "@/lib/prisma";
+import { getUserWorkflowProgress, WORKFLOWS } from "@/lib/workflows";
 import {
   faDownload,
   faFile,
@@ -12,7 +15,51 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { OnboardingFinalisation } from "../Onboarding";
 import { LastProject } from "./Project";
 
-export const ClientDashboard = () => {
+export const ClientDashboard = async () => {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return null;
+  }
+
+  const [user, onboarding, workflowData] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { name: true, last_name: true },
+    }),
+    prisma.onboardingResponse.findUnique({
+      where: { userId: session.user.id },
+      select: { firstName: true, lastName: true },
+    }),
+    getUserWorkflowProgress(session.user.id),
+  ]);
+
+  const sessionName = session.user.name ?? "";
+  const [sessionFirst = "", ...sessionLastParts] = sessionName.split(" ");
+
+  const resolvedFirstName =
+    onboarding?.firstName ||
+    user?.last_name ||
+    sessionFirst ||
+    "";
+  const resolvedLastName =
+    onboarding?.lastName ||
+    user?.name ||
+    sessionLastParts.join(" ") ||
+    "";
+
+  const displayName = [resolvedFirstName, resolvedLastName]
+    .map((part) => part?.trim())
+    .filter(Boolean)
+    .join(" ")
+    .trim() || session.user.email || "Utilisateur";
+
+  const currentWorkflow = workflowData.currentWorkflow;
+  const workflowIndex =
+    WORKFLOWS.findIndex(
+      (workflow) => workflow.key === currentWorkflow.definition.key
+    ) + 1;
+
   const today = new Date();
 
   const formattedDate = today.toLocaleDateString("fr-FR", {
@@ -31,7 +78,7 @@ export const ClientDashboard = () => {
           <div className="flex flex-row gap-5 items-center">
             <div className="w-15 h-15 bg-accent rounded-full" />
             <Title level={2} className="text-black font-semibold text-xl">
-              Bonjour <span>User</span>
+              Bonjour <span>{displayName}</span>
             </Title>
           </div>
         </div>
@@ -64,7 +111,13 @@ export const ClientDashboard = () => {
             title="Importer un document"
           />
         </div>
-        <OnboardingFinalisation />
+        <OnboardingFinalisation
+          title={currentWorkflow.definition.title}
+          stepIndex={workflowIndex > 0 ? workflowIndex : 1}
+          completedSteps={currentWorkflow.completedSteps}
+          totalSteps={currentWorkflow.totalSteps}
+          ctaHref={currentWorkflow.definition.ctaHref}
+        />
         <LastProject />
       </div>
       <div className="w-2/5 bg-[#F2F8F8] p-7 rounded-xl flex flex-col gap-7">
