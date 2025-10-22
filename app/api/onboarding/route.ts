@@ -106,8 +106,8 @@ export async function POST(req: NextRequest) {
     await prisma.user.update({
       where: { id: session.user.id },
       data: {
-        name: firstName,
-        last_name: lastName,
+        name: lastName,
+        last_name: firstName,
       },
     });
 

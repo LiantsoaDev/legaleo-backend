@@ -28,30 +28,36 @@ const page = async () => {
     }),
   ]);
 
-  let firstName = user?.name ?? session.user.name ?? "";
-  let lastName = user?.last_name ?? "";
+  const sessionName = session.user.name ?? "";
 
-  if (!lastName && firstName.includes(" ")) {
-    const [first, ...rest] = firstName.split(" ");
-    firstName = first ?? firstName;
-    lastName = rest.join(" ");
-  }
+  let lastName = user?.name ?? "";
+  let firstName = user?.last_name ?? "";
 
-  if (!firstName && session.user.name) {
-    const [first, ...rest] = session.user.name.split(" ");
-    firstName = first ?? session.user.name;
-    if (!lastName) {
+  if ((!firstName || !lastName) && sessionName) {
+    const [first = "", ...rest] = sessionName.trim().split(/\s+/);
+    if (!firstName && first) {
+      firstName = first;
+    }
+    if (!lastName && rest.length > 0) {
       lastName = rest.join(" ");
     }
+    if (!lastName && !first && sessionName) {
+      lastName = sessionName;
+    }
   }
+
+  const initialFirstName = savedOnboarding?.firstName ?? firstName;
+  const initialLastName = savedOnboarding?.lastName ?? lastName;
 
   return (
     <div className=" h-screen flex flex-col gap-7">
       <Onboarding
-        initialUser={{ firstName, lastName }}
+        initialUser={{ firstName: initialFirstName, lastName: initialLastName }}
         savedOnboarding={
           savedOnboarding
             ? {
+                firstName: savedOnboarding.firstName,
+                lastName: savedOnboarding.lastName,
                 networkName: savedOnboarding.networkName,
                 networkActivity: savedOnboarding.networkActivity,
                 franchiseeCount: savedOnboarding.franchiseeCount ?? [],

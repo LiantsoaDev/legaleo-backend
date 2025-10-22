@@ -360,7 +360,6 @@ export const Select = ({
         <div className="flex flex-row w-full" key={index}>
           <div className="relative w-full">
             <select
-              defaultValue={""}
               name={name}
               id={id}
               className={`w-[80%] border border-gray relative rounded-md px-8 py-5 bg-white text-black focus:outline-none appearance-none after:content-[''] ${classname}`}

@@ -26,16 +26,16 @@ export const UserName = ({
           placeholder="Nom"
           name="name"
           classname="!text-2xl !px-7 !py-5"
-          value={firstName}
-          onValueChange={onFirstNameChange}
+          value={lastName}
+          onValueChange={onLastNameChange}
         />
         <Input
           type="text"
           placeholder="Prénom"
           name="last_name"
           classname="!text-2xl !px-7 !py-5"
-          value={lastName}
-          onValueChange={onLastNameChange}
+          value={firstName}
+          onValueChange={onFirstNameChange}
         />
       </div>
       <Notices classname="mt-5 text-xl">

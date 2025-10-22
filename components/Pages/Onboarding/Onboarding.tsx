@@ -34,6 +34,8 @@ interface SavedDocumentMeta {
 }
 
 interface SavedOnboardingData {
+  firstName?: string | null;
+  lastName?: string | null;
   networkName?: string | null;
   networkActivity?: string | null;
   franchiseeCount?: string[] | null;
@@ -88,8 +90,9 @@ export const Onboarding = ({
   }, [savedOnboarding]);
 
   const [formState, setFormState] = useState<FormState>(() => ({
-    firstName: initialUser?.firstName ?? "",
-    lastName: initialUser?.lastName ?? "",
+    firstName:
+      savedOnboarding?.firstName ?? initialUser?.firstName ?? "",
+    lastName: savedOnboarding?.lastName ?? initialUser?.lastName ?? "",
     networkName: savedOnboarding?.networkName ?? "",
     networkActivity: savedOnboarding?.networkActivity ?? "",
     franchiseeCount: savedOnboarding?.franchiseeCount ?? [],
@@ -103,8 +106,10 @@ export const Onboarding = ({
   useEffect(() => {
     setFormState((prev) => ({
       ...prev,
-      firstName: initialUser?.firstName ?? prev.firstName,
-      lastName: initialUser?.lastName ?? prev.lastName,
+      firstName:
+        savedOnboarding?.firstName ?? initialUser?.firstName ?? prev.firstName,
+      lastName:
+        savedOnboarding?.lastName ?? initialUser?.lastName ?? prev.lastName,
       networkName: savedOnboarding?.networkName ?? prev.networkName,
       networkActivity: savedOnboarding?.networkActivity ?? prev.networkActivity,
       franchiseeCount: savedOnboarding?.franchiseeCount ?? prev.franchiseeCount,
@@ -119,6 +124,8 @@ export const Onboarding = ({
   }, [
     initialUser?.firstName,
     initialUser?.lastName,
+    savedOnboarding?.firstName,
+    savedOnboarding?.lastName,
     savedOnboarding?.networkName,
     savedOnboarding?.networkActivity,
     savedOnboarding?.franchiseeCount,
@@ -152,8 +159,8 @@ export const Onboarding = ({
 
   const validateBeforeSubmit = useCallback(() => {
     const missing: string[] = [];
-    if (!formState.firstName.trim()) missing.push("votre nom");
-    if (!formState.lastName.trim()) missing.push("votre prénom");
+    if (!formState.lastName.trim()) missing.push("votre nom");
+    if (!formState.firstName.trim()) missing.push("votre prénom");
     if (!formState.networkName.trim()) missing.push("le nom du réseau");
     if (!formState.networkActivity) missing.push("le secteur d'activité");
     if (formState.franchiseeCount.length === 0)
@@ -294,6 +301,8 @@ export const Onboarding = ({
 
       setFormState((prev) => ({
         ...prev,
+        firstName: formState.firstName.trim(),
+        lastName: formState.lastName.trim(),
         documents: createEmptyDocumentsState(),
         documentNames: {
           ...prev.documentNames,
