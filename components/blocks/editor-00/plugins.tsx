@@ -30,6 +30,9 @@ import { ElementFormatToolbarPlugin } from "@/components/editor/plugins/toolbar/
 import { LinkToolbarPlugin } from "@/components/editor/plugins/toolbar/link-toolbar-plugin";
 
 import { AddTablePopup } from "@/components/Editor/AddTablePopup";
+import { ImagesPlugin } from "@/components/editor/plugins/images-plugin";
+import { BlockInsertPlugin } from "@/components/editor/plugins/toolbar/block-insert-plugin";
+import { InsertImage } from "@/components/editor/plugins/toolbar/block-insert/insert-image";
 import { DynamiqueChampsCard } from "@/components/Pages/Projet";
 import { useTabContext } from "@/hooks/useTabContext";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
@@ -141,6 +144,9 @@ export function Plugins({}: {}) {
             />
             <div className="flex flex-row gap-1.5 justify-between items-center">
               <LinkToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
+              <BlockInsertPlugin>
+                <InsertImage />
+              </BlockInsertPlugin>
               <svg
                 width="22"
                 height="16"
@@ -427,6 +433,7 @@ export function Plugins({}: {}) {
         <AutocompletePlugin />
         <LinkPlugin />
         <TablePlugin />
+        <ImagesPlugin />
 
         <FloatingTextFormatToolbarPlugin
           anchorElem={floatingAnchorElem}

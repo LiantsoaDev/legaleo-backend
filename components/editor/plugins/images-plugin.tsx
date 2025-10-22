@@ -88,8 +88,9 @@ export function InsertImageUriDialogBody({
           disabled={isDisabled}
           onClick={() => onClick({ altText, src })}
           data-test-id="image-modal-confirm-btn"
+          className="bg-black hover:bg-black hover:text-white font-semibold !opacity-100"
         >
-          Confirm
+          Confirmer
         </Button>
       </DialogFooter>
     </div>
@@ -146,6 +147,7 @@ export function InsertImageUploadedDialogBody({
         disabled={isDisabled}
         onClick={() => onClick({ altText, src })}
         data-test-id="image-modal-file-upload-btn"
+        className="bg-black hover:bg-black hover:text-white font-semibold !opacity-100"
       >
         Confirm
       </Button>
