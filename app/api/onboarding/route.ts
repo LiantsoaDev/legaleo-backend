@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { ONBOARDING_WORKFLOW } from "@/lib/workflows";
 import { randomUUID } from "crypto";
 import { promises as fs } from "fs";
 import path from "path";
@@ -162,6 +163,15 @@ export async function POST(req: NextRequest) {
       include: {
         documents: true,
       },
+    });
+
+    await prisma.userStepCompletion.createMany({
+      data: ONBOARDING_WORKFLOW.steps.map((step) => ({
+        userId: session.user.id,
+        workflow: ONBOARDING_WORKFLOW.key,
+        stepKey: step.key,
+      })),
+      skipDuplicates: true,
     });
 
     return NextResponse.json({

@@ -123,3 +123,16 @@ model OnboardingDocument {
 
   @@index([onboardingId])
 }
+
+model UserStepCompletion {
+  id        String   @id @default(cuid())
+  userId    String
+  workflow  String
+  stepKey   String
+  completedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, workflow, stepKey])
+  @@index([userId, workflow])
+}
