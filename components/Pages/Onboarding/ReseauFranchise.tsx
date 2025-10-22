@@ -2,7 +2,15 @@ import { Input } from "../../Form";
 import { Title } from "../../Typography";
 import { Notices } from "../../Typography/Tips";
 
-export const ReseauFranchise = () => {
+interface ReseauFranchiseProps {
+  networkName: string;
+  onNetworkNameChange: (value: string) => void;
+}
+
+export const ReseauFranchise = ({
+  networkName,
+  onNetworkNameChange,
+}: ReseauFranchiseProps) => {
   return (
     <div className="flex flex-col min-h-screen justify-center px-32 py-20 w-full">
       <Title className="font-bold text-4xl leading-[100%] mb-8 w-full">
@@ -14,6 +22,8 @@ export const ReseauFranchise = () => {
           placeholder="Nom du réseau (nom juridique)"
           name="franchise_name"
           classname="!text-2xl !px-7 !py-5"
+          value={networkName}
+          onValueChange={onNetworkNameChange}
         />
       </div>
       <Notices classname="mt-5 !text-xl">

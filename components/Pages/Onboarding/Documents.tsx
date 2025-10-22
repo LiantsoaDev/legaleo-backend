@@ -2,7 +2,17 @@ import { InputFiles } from "../../Form";
 import { Paragraphe, Title } from "../../Typography";
 import { Notices } from "../../Typography/Tips";
 
-export const Documents = () => {
+type DocumentKey = "status_entreprise" | "kbis" | "pacte_associe";
+
+interface DocumentsProps {
+  documentNames: Partial<Record<DocumentKey, string>>;
+  onFileChange: (key: DocumentKey, file: File | null) => void;
+}
+
+export const Documents = ({
+  documentNames,
+  onFileChange,
+}: DocumentsProps) => {
   return (
     <div className="flex flex-col min-h-screen justify-center px-32 py-20w-full">
       <Title className="font-bold text-4xl leading-9 mb-8">
@@ -18,18 +28,24 @@ export const Documents = () => {
           label="Statuts de la société ( PDF OU DOCX)"
           name="status_entreprise"
           accept=".pdf, .docx"
+          fileName={documentNames.status_entreprise}
+          onFileChange={(file) => onFileChange("status_entreprise", file)}
         />
         <InputFiles
           id="kbis"
           label="Kbis ou équivalent ( PDF uniquement )"
           name="kbis"
           accept=".pdf"
+          fileName={documentNames.kbis}
+          onFileChange={(file) => onFileChange("kbis", file)}
         />
         <InputFiles
           id="pacte_associe"
           label="Pacte d’associés ( PDF OU DOCX)"
           name="pacte_associe"
           accept=".pdf, .docx"
+          fileName={documentNames.pacte_associe}
+          onFileChange={(file) => onFileChange("pacte_associe", file)}
         />
       </div>
       <Paragraphe className="text-xl font-manrope font-semibold text-[#313131] mt-10 text-right underline cursor-pointer">

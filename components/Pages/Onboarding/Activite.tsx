@@ -14,7 +14,12 @@ const options = [
   "Immobilier",
 ];
 
-export const Activite = () => {
+interface ActiviteProps {
+  activity: string;
+  onActivityChange: (value: string) => void;
+}
+
+export const Activite = ({ activity, onActivityChange }: ActiviteProps) => {
   return (
     <div className="flex flex-col min-h-screen justify-center px-32 py-20 w-full">
       <Title className="font-bold text-4xl w-3/5 leading-[100%] mb-8">
@@ -26,7 +31,8 @@ export const Activite = () => {
           options={options}
           name="activity"
           classname="w-full"
-
+          value={activity}
+          onValueChange={onActivityChange}
           // isMultiple
         />
       </div>
