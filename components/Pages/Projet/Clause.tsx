@@ -6,6 +6,23 @@ import { ClauseCard } from "./ClauseCard";
 
 const options = ["Tous", "Contrat de franchise"];
 
+const clauseDynamiques = [
+  {
+    clauseName: "Clause de non-concurrence",
+    category: "Contrat de franchise",
+    type: "Pour Franchiseur",
+    contenu:
+      "X_AE_B-22's pursuit leads it to the subterranean depths of the city, where forgotten tunnels and abandoned cyber-labs hide secrets long buried by time. Each step forward unravels more of the intricate web spun by the Shadow Code, revealing a plot to seize control of the entire megacity.",
+  },
+  {
+    clauseName: "Clause de non-concurrence",
+    category: "Contrat de franchise",
+    type: "Pour Franchiseur",
+    contenu:
+      "X_AE_B-22's pursuit leads it to the subterranean depths of the city, where forgotten tunnels and abandoned cyber-labs hide secrets long buried by time. Each step forward unravels more of the intricate web spun by the Shadow Code, revealing a plot to seize control of the entire megacity.",
+  },
+];
+
 export const Clause = () => {
   const [showClauseLegaleo, setShowClauseLegaleo] = useState(false);
   return (
@@ -50,8 +67,15 @@ export const Clause = () => {
               classSelected="!bg-[#86A2A3]"
             />
             <div className="flex flex-col gap-5">
-              <ClauseCard />
-              <ClauseCard />
+              {clauseDynamiques.map((clause, index) => (
+                <ClauseCard
+                  clauseName={clause.clauseName}
+                  category={clause.category}
+                  type={clause.type}
+                  contenu={clause.contenu}
+                  key={index}
+                />
+              ))}
             </div>
           </div>
         )}

@@ -4,6 +4,7 @@ interface TitleProps {
   level?: 1 | 2 | 3 | 4 | 5 | 6;
   children: React.ReactNode;
   className?: string;
+  onDbClick?: () => void;
 }
 
 const sizeClasses = {
@@ -15,8 +16,17 @@ const sizeClasses = {
   6: "text-base",
 };
 
-export const Title = ({ level = 1, children, className = "" }: TitleProps) => {
+export const Title = ({
+  level = 1,
+  children,
+  className = "",
+  onDbClick,
+}: TitleProps) => {
   const Tag = `h${level}` as HeadingTag;
 
-  return <Tag className={`${sizeClasses} ${className}`}>{children}</Tag>;
+  return (
+    <Tag className={`${sizeClasses} ${className}`} onDoubleClick={onDbClick}>
+      {children}
+    </Tag>
+  );
 };

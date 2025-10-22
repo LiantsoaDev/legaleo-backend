@@ -19,33 +19,76 @@ import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { AutoLinkPlugin } from "@/components/editor/plugins/auto-link-plugin";
 import { AutocompletePlugin } from "@/components/editor/plugins/autocomplete-plugin";
 import { FloatingLinkEditorPlugin } from "@/components/editor/plugins/floating-link-editor-plugin";
 import { FloatingTextFormatToolbarPlugin } from "@/components/editor/plugins/floating-text-format-plugin";
 import { LinkPlugin } from "@/components/editor/plugins/link-plugin";
-import { BlockInsertPlugin } from "@/components/editor/plugins/toolbar/block-insert-plugin";
-import { InsertTable } from "@/components/editor/plugins/toolbar/block-insert/insert-table";
 import { ElementFormatToolbarPlugin } from "@/components/editor/plugins/toolbar/element-format-toolbar-plugin";
 import { LinkToolbarPlugin } from "@/components/editor/plugins/toolbar/link-toolbar-plugin";
-import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 
-export function Plugins({
-  currentTab,
-  setShowTab,
-  showTab,
-  handleShowTab,
-}: {
-  currentTab?: number;
-  showTab?: boolean;
-  setShowTab?: React.Dispatch<React.SetStateAction<boolean>>;
-  handleShowTab?: any;
-}) {
+import { AddTablePopup } from "@/components/Editor/AddTablePopup";
+import { DynamiqueChampsCard } from "@/components/Pages/Projet";
+import { useTabContext } from "@/hooks/useTabContext";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
+import { INSERT_TABLE_COMMAND } from "@lexical/table";
+
+const champs_dynamique = [
+  "Nom franchise",
+  "Raison Social",
+  "Adresse du siège social",
+  "Représentant légal (nom/premon)",
+  "Numéro SIRET",
+  "Numéro TVA intracommunautaire",
+];
+
+export function Plugins({}: {}) {
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
+  const [addDynamiqueChamps, setAddDynamiqueChamps] = useState(false);
+  const [position, setPosition] = useState<{ top: number; left: number }>({
+    top: 0,
+    left: 0,
+  });
+
+  const [addComment, setAddComment] = useState(false);
+  const [comments, setComments] = useState<
+    {
+      id: string;
+      content: string;
+    }[]
+  >([]);
+  const [selectedText, setSelectedText] = useState("");
+
+  const { showTab, setShowTab, handleShowTab } = useTabContext();
+
+  const [showAddTable, setShowAddTable] = useState(false);
+
+  const [editor] = useLexicalComposerContext();
+
+  const insertTable = useCallback(() => {
+    // Exemple : insérer un tableau 3x3
+    editor.dispatchCommand(INSERT_TABLE_COMMAND, {
+      columns: "3",
+      rows: "3",
+    });
+  }, [editor]);
+
+  const getCursorTextPositionAndShowPopup = useCallback(() => {
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const rect = selection.getRangeAt(0).getBoundingClientRect();
+      setPosition({
+        top: rect.top + window.scrollY + rect.height, // juste sous le curseur
+        left: rect.left + window.scrollX,
+      });
+      setAddDynamiqueChamps(!addDynamiqueChamps);
+    }
+  }, [addDynamiqueChamps]);
 
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
@@ -98,15 +141,13 @@ export function Plugins({
             />
             <div className="flex flex-row gap-1.5 justify-between items-center">
               <LinkToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
-              <BlockInsertPlugin>
-                <InsertTable />
-              </BlockInsertPlugin>
               <svg
                 width="22"
                 height="16"
                 viewBox="0 0 22 16"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                onClick={() => getCursorTextPositionAndShowPopup()}
               >
                 <path
                   d="M11.5884 4.58984H20.1433C20.3496 4.58984 20.5474 4.67178 20.6933 4.81764C20.8391 4.96348 20.921 5.1613 20.921 5.36757V10.0339C20.921 10.2402 20.8391 10.438 20.6933 10.5838C20.5474 10.7297 20.3496 10.8116 20.1433 10.8116H11.5884"
@@ -151,6 +192,7 @@ export function Plugins({
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                onClick={() => handleShowTab(showTab, setShowTab, 6)}
               >
                 <path
                   d="M8.76982 19.1093L3.60059 20.4016L4.89289 16.5246V4.89387C4.89289 4.55112 5.02905 4.22243 5.2714 3.98007C5.51376 3.73772 5.84246 3.60156 6.1852 3.60156H19.1083C19.451 3.60156 19.7798 3.73772 20.0221 3.98007C20.2644 4.22243 20.4006 4.55112 20.4006 4.89387V17.8169C20.4006 18.1597 20.2644 18.4884 20.0221 18.7307C19.7798 18.973 19.451 19.1093 19.1083 19.1093H8.76982Z"
@@ -191,7 +233,10 @@ export function Plugins({
       </ToolbarPlugin>
       <div className="relative shadow rounded-md min-h-screen mt-5 border bg-white">
         <div className="bg-[#E6F2F2] px-1 py-4 rounded-full flex flex-col gap-0 w-fit absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 z-10">
-          <div className="relative group">
+          <div
+            className="relative group"
+            onClick={() => handleShowTab(showTab, setShowTab, 5)}
+          >
             <span className="bg-[#087F83] px-1.5 py-1 rounded-sm text-white font-medium text-sm opacity-0 group-hover:opacity-100 absolute left-1/2 translate-x-[-120%] top-1/2 -translate-y-1/2 whitespace-nowrap">
               Insérer une clause dynamique
             </span>
@@ -223,6 +268,7 @@ export function Plugins({
             <span className="bg-[#087F83] px-1.5 py-1 rounded-sm text-white font-medium text-sm opacity-0 group-hover:opacity-100 absolute left-1/2 translate-x-[-120%] top-1/2 -translate-y-1/2 whitespace-nowrap">
               Insérer une image
             </span>
+
             <svg
               width="48"
               height="48"
@@ -253,7 +299,10 @@ export function Plugins({
               />
             </svg>
           </div>
-          <div className="relative group">
+          <div
+            className="relative group"
+            onClick={() => setShowAddTable(!showAddTable)}
+          >
             <span className="bg-[#087F83] px-1.5 py-1 rounded-sm text-white font-medium text-sm opacity-0 group-hover:opacity-100 absolute left-1/2 translate-x-[-120%] top-1/2 -translate-y-1/2 whitespace-nowrap">
               Insérer un tableau
             </span>
@@ -294,7 +343,10 @@ export function Plugins({
               />
             </svg>
           </div>
-          <div className="relative group">
+          <div
+            className="relative group"
+            onClick={() => getCursorTextPositionAndShowPopup()}
+          >
             <span className="bg-[#087F83] px-1.5 py-1 rounded-sm text-white font-medium text-sm opacity-0 group-hover:opacity-100 absolute left-1/2 translate-x-[-120%] top-1/2 -translate-y-1/2 whitespace-nowrap">
               Insérer un champs dynamique
             </span>
@@ -343,6 +395,18 @@ export function Plugins({
             </svg>
           </div>
         </div>
+        {addDynamiqueChamps && (
+          <DynamiqueChampsCard
+            champs={champs_dynamique}
+            classname={`z-20 !top-[${position.top}px] !left-[${position.left}px]`}
+            setShow={setAddDynamiqueChamps}
+          />
+        )}
+
+        {showAddTable && (
+          <AddTablePopup setShow={setShowAddTable} show={showAddTable} />
+        )}
+
         {/* <MenuFlottantEditor /> */}
         <RichTextPlugin
           contentEditable={
@@ -363,6 +427,7 @@ export function Plugins({
         <AutocompletePlugin />
         <LinkPlugin />
         <TablePlugin />
+
         <FloatingTextFormatToolbarPlugin
           anchorElem={floatingAnchorElem}
           setIsLinkEditMode={setIsLinkEditMode}

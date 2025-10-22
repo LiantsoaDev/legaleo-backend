@@ -23,11 +23,21 @@ import {
 import { Dispatch, JSX, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+import { CommentPopup } from "@/components/Editor/CommentPopup";
 import { getDOMRangeRect } from "@/components/editor/utils/get-dom-range-rect";
 import { getSelectedNode } from "@/components/editor/utils/get-selected-node";
 import { setFloatingElemPosition } from "@/components/editor/utils/set-floating-elem-position";
 import { DynamiqueChampsCard } from "@/components/Pages/Projet";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+
+const champs_dynamique = [
+  "Nom franchise",
+  "Raison Social",
+  "Adresse du siège social",
+  "Représentant légal (nom/premon)",
+  "Numéro SIRET",
+  "Numéro TVA intracommunautaire",
+];
 
 function FloatingTextFormat({
   editor,
@@ -41,6 +51,7 @@ function FloatingTextFormat({
   isSubscript,
   isSuperscript,
   setIsLinkEditMode,
+  champ_dynamique,
 }: {
   editor: LexicalEditor;
   anchorElem: HTMLElement;
@@ -53,9 +64,17 @@ function FloatingTextFormat({
   isSuperscript: boolean;
   isUnderline: boolean;
   setIsLinkEditMode: Dispatch<boolean>;
+  champ_dynamique: string[];
 }): JSX.Element {
   const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
   const [addDynamiqueChamps, setAddDynamiqueChamps] = useState(false);
+  const [addComment, setAddComment] = useState(false);
+  const [comments, setComments] = useState<
+    {
+      id: string;
+      content: string;
+    }[]
+  >([]);
 
   const insertLink = useCallback(() => {
     if (!isLink) {
@@ -67,7 +86,6 @@ function FloatingTextFormat({
     }
   }, [editor, isLink, setIsLinkEditMode]);
 
-  // 1) Ajoute cette fonction DANS FloatingTextFormat (au même niveau que insertLink)
   const copySelectedText = useCallback(() => {
     editor.getEditorState().read(() => {
       const selection = $getSelection();
@@ -235,12 +253,15 @@ function FloatingTextFormat({
     ) {
       const rangeRect = getDOMRangeRect(nativeSelection, rootElement);
 
-      setFloatingElemPosition(
-        rangeRect,
-        popupCharStylesEditorElem,
-        anchorElem,
-        isLink
-      );
+      rootElement.addEventListener("contextmenu", function (e) {
+        e.preventDefault();
+        setFloatingElemPosition(
+          rangeRect,
+          popupCharStylesEditorElem,
+          anchorElem,
+          isLink
+        );
+      });
     }
   }, [editor, anchorElem, isLink]);
 
@@ -457,7 +478,7 @@ function FloatingTextFormat({
             <ToggleGroupItem
               value="link"
               aria-label="insert link selected text"
-              onClick={insertLink}
+              onClick={() => setAddComment(!addComment)}
               size="lg"
             >
               <svg
@@ -491,8 +512,20 @@ function FloatingTextFormat({
               </svg>
             </ToggleGroupItem>
           </ToggleGroup>
-          {addDynamiqueChamps && <DynamiqueChampsCard />}
         </div>
+      )}
+      {addDynamiqueChamps && (
+        <DynamiqueChampsCard
+          classname="absolute right-1/2 translate-x-[50%] bottom-[-800%]"
+          champs={champ_dynamique}
+        />
+      )}
+      {addComment && (
+        <CommentPopup
+          classname="absolute right-1/2 translate-x-[50%] bottom-[-300%]"
+          setComments={setComments}
+          setShow={setAddComment}
+        />
       )}
     </div>
   );
@@ -523,15 +556,15 @@ function useFloatingTextFormatToolbar(
       const nativeSelection = window.getSelection();
       const rootElement = editor.getRootElement();
 
-      if (
-        nativeSelection !== null &&
-        (!$isRangeSelection(selection) ||
-          rootElement === null ||
-          !rootElement.contains(nativeSelection.anchorNode))
-      ) {
-        setIsText(false);
-        return;
-      }
+      // if (
+      //   nativeSelection !== null &&
+      //   (!$isRangeSelection(selection) ||
+      //     rootElement === null ||
+      //     !rootElement.contains(nativeSelection.anchorNode))
+      // ) {
+      //   setIsText(false);
+      //   return;
+      // }
 
       if (!$isRangeSelection(selection)) {
         return;
@@ -610,6 +643,7 @@ function useFloatingTextFormatToolbar(
       isUnderline={isUnderline}
       isCode={isCode}
       setIsLinkEditMode={setIsLinkEditMode}
+      champ_dynamique={champs_dynamique}
     />,
     anchorElem
   );

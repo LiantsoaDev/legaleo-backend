@@ -3,6 +3,7 @@ import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 
+import { DynamicParagraphNode } from "@/components/Editor/DynamiqueParagraphNode";
 import {
   Klass,
   LexicalNode,
@@ -10,6 +11,7 @@ import {
   ParagraphNode,
   TextNode,
 } from "lexical";
+import { DynamicFieldNode } from "./DynamicFieldNode";
 
 export const nodes: ReadonlyArray<Klass<LexicalNode> | LexicalNodeReplacement> =
   [
@@ -23,4 +25,6 @@ export const nodes: ReadonlyArray<Klass<LexicalNode> | LexicalNodeReplacement> =
     TableNode,
     TableRowNode,
     TableCellNode,
+    DynamicFieldNode,
+    DynamicParagraphNode,
   ];

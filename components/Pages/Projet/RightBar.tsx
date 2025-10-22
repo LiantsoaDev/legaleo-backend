@@ -1,5 +1,6 @@
 "use client";
 
+import { useTabContext } from "@/hooks/useTabContext";
 import { useEffect } from "react";
 import { Champs } from "./Champs";
 import { Clause } from "./Clause";
@@ -7,24 +8,11 @@ import { Commentaire } from "./Commentaire";
 import { EditeurIA } from "./EditeurIA";
 import { RecommandationJuridique } from "./RecommandationJuridique";
 import { Synthese } from "./Synthese";
+import { UploadDocument } from "./UploadDocument";
 
-interface RightBarProps {
-  currentTab: number;
-  setShowTab: React.Dispatch<React.SetStateAction<boolean>>;
-  showTab: boolean;
-  handleShowTab: (
-    showTab: boolean,
-    setShowTab: React.Dispatch<React.SetStateAction<boolean>>,
-    currentTab?: number
-  ) => void;
-}
+export const RightBar = ({}) => {
+  const { showTab, setShowTab, handleShowTab, currentTab } = useTabContext();
 
-export const RightBar = ({
-  currentTab,
-  setShowTab,
-  showTab,
-  handleShowTab,
-}: RightBarProps) => {
   useEffect(() => {}, [currentTab]);
 
   const handleGetCurrentTab = () => {
@@ -44,7 +32,7 @@ export const RightBar = ({
       case 7:
         return <EditeurIA />;
       default:
-        return <Synthese />;
+        return <UploadDocument />;
     }
   };
 

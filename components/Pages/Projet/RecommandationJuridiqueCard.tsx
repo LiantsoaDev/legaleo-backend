@@ -1,11 +1,27 @@
+"use client";
 import pdp from "@/assets/images/pdp.png";
 import { Input } from "@/components/Form";
 import { Paragraphe } from "@/components/Typography";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { $getSelection, $isRangeSelection, LexicalEditor } from "lexical";
 import Image from "next/image";
 
 export const RecommandationJuridiqueCard = () => {
+  const [editor] = useLexicalComposerContext();
+
+  function replaceSelectedText(editor: LexicalEditor, newText: string) {
+    editor.update(() => {
+      const selection = $getSelection();
+
+      if ($isRangeSelection(selection)) {
+        // Supprime la sélection actuelle
+        selection.insertText(newText);
+      }
+    });
+  }
+
   return (
     <div className="hover:bg-[#F2F2F2] px-5 py-2.5 w-full cursor-pointer">
       <div className="flex flex-col gap-5 shadow bg-white rounded-sm p-3.5">
@@ -25,6 +41,12 @@ export const RecommandationJuridiqueCard = () => {
             <FontAwesomeIcon
               icon={faCheck}
               className="text-|#828282] text-xl px-1.5 py-2 hover:bg-[#F2F2F2] cursor-pointer"
+              onClick={() =>
+                replaceSelectedText(
+                  editor,
+                  `X_AE_B-22's pursuit leads it to the subterranean depths of the city, where forgotten tunnels and abandoned cyber-labs hide secrets long buried by time…” par “The city, a kaleidoscope of digital billboards and holographic projections, is in a state ...`
+                )
+              }
             />
             <FontAwesomeIcon
               icon={faXmark}

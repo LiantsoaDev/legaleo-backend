@@ -5,6 +5,7 @@ export * from "./Commentaire";
 export * from "./DeleteCard";
 export * from "./Dupliquer";
 export * from "./DynamiqueChampsCard";
+export * from "./EditorAction";
 export * from "./Envoyer";
 export * from "./Historique";
 export * from "./Inviter";
