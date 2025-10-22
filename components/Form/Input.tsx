@@ -16,6 +16,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { ChangeEvent } from "react";
 import { useEffect, useState } from "react";
 
 export const Input = ({
@@ -25,14 +26,43 @@ export const Input = ({
   isrequired,
   name,
   classname,
+  value: controlledValue,
+  defaultValue,
+  onValueChange,
 }: InputProps) => {
-  const [value, setValue] = useState<string>("");
+  const [value, setValue] = useState<string>(defaultValue ?? "");
   const [error, setError] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const computedType =
     type === "password" ? (showPassword ? "text" : "password") : type;
 
+  useEffect(() => {
+    if (defaultValue !== undefined) {
+      setValue(defaultValue);
+    }
+  }, [defaultValue]);
+
+  useEffect(() => {
+    if (controlledValue !== undefined) {
+      setValue(controlledValue);
+    }
+  }, [controlledValue]);
+
   useEffect(() => {}, [value, error, showPassword]);
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    if (!isrequired && e.target.value === "") {
+      setValue("");
+      setError(false);
+      onValueChange?.("");
+      return;
+    }
+    getInputValue(e, setValue, setError);
+    const newValue = e.target.value;
+    onValueChange?.(newValue);
+  };
 
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -52,7 +82,7 @@ export const Input = ({
           required={isrequired}
           id={name}
           value={value}
-          onChange={(e) => getInputValue(e, setValue, setError)}
+          onChange={handleChange}
         />
       ) : (
         <div className="relative">
@@ -67,7 +97,7 @@ export const Input = ({
             id={name}
             formNoValidate
             value={value}
-            onChange={(e) => getInputValue(e, setValue, setError)}
+            onChange={handleChange}
           />
           {type === "password" && (
             <FontAwesomeIcon
@@ -137,8 +167,23 @@ export const RadioGroup = ({
   classContainer,
   classLabel,
   classSelected,
+  selectedValue: controlledValue,
+  onValueChange,
 }: RadioProps) => {
-  const [selectedValue, setSelectedValue] = useState<string>("");
+  const [selectedValue, setSelectedValue] = useState<string>(
+    controlledValue ?? ""
+  );
+
+  useEffect(() => {
+    if (controlledValue !== undefined) {
+      setSelectedValue(controlledValue);
+    }
+  }, [controlledValue]);
+
+  const handleSelect = (option: string) => {
+    setSelectedValue(option);
+    onValueChange?.(option);
+  };
   return (
     <div className={`flex gap-4 flex-wrap ${classContainer}`}>
       {options.map((option, index) => (
@@ -148,7 +193,7 @@ export const RadioGroup = ({
           id={`radio-${index}`}
           value={option}
           isSelected={selectedValue === option}
-          onSelect={() => setSelectedValue(option)}
+          onSelect={() => handleSelect(option)}
           name={name}
           type="radio"
           classLabel={classLabel}
@@ -162,18 +207,29 @@ export const RadioGroup = ({
 export const MultiSelectGroup = ({
   options,
   showLogo,
+  selectedOptions: controlledOptions,
+  onChange,
 }: MultiSelectGroupProps) => {
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(
+    controlledOptions ?? []
+  );
+
+  useEffect(() => {
+    if (controlledOptions) {
+      setSelectedOptions(controlledOptions);
+    }
+  }, [controlledOptions]);
 
   const handleSelect = (option: string) => {
-    if (selectedOptions.includes(option)) {
-      // On retire l'option si elle est déjà sélectionnée
-      setSelectedOptions(selectedOptions.filter((item) => item !== option));
-    } else {
-      // On l'ajoute sinon
-      setSelectedOptions([...selectedOptions, option]);
-    }
+    const updatedOptions = selectedOptions.includes(option)
+      ? selectedOptions.filter((item) => item !== option)
+      : [...selectedOptions, option];
+
+    setSelectedOptions(updatedOptions);
+    onChange?.(updatedOptions);
   };
+
+  const computedSelected = controlledOptions ?? selectedOptions;
   return (
     <div className="flex gap-4 flex-wrap">
       {options.map((option, index) => (
@@ -182,7 +238,7 @@ export const MultiSelectGroup = ({
           key={index}
           id={`checkbox-${index}`}
           value={option}
-          isSelected={selectedOptions.includes(option)}
+          isSelected={computedSelected.includes(option)}
           onSelect={() => handleSelect(option)}
           type="checkbox"
         />
@@ -197,13 +253,23 @@ export const InputFiles = ({
   accept,
   isrequired,
   id,
+  fileName: providedFileName,
+  onFileChange,
 }: InputFilesProps) => {
-  const [fileName, setFileName] = useState<string>("");
+  const [fileName, setFileName] = useState<string>(providedFileName ?? "");
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFileName(e.target.files[0].name);
+  useEffect(() => {
+    if (providedFileName !== undefined) {
+      setFileName(providedFileName);
     }
+  }, [providedFileName]);
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files.length > 0
+      ? e.target.files[0]
+      : null;
+    setFileName(file?.name ?? "");
+    onFileChange?.(file);
   };
 
   return (
@@ -264,11 +330,28 @@ export const Select = ({
   isMultiple = false,
   classname = "",
   isFilter = false,
+  value,
+  onValueChange,
 }: SelectProps) => {
   const [selects, setSelects] = useState([0]);
+  const [selectedValue, setSelectedValue] = useState<string>(
+    value ?? (isFilter ? options[0] ?? "" : "")
+  );
+
+  useEffect(() => {
+    if (value !== undefined) {
+      setSelectedValue(value);
+    }
+  }, [value]);
 
   const addSelect = () => {
     setSelects((prev) => [...prev, prev.length]);
+  };
+
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const newValue = event.target.value;
+    setSelectedValue(newValue);
+    onValueChange?.(newValue);
   };
 
   return (
@@ -277,7 +360,6 @@ export const Select = ({
         <div className="flex flex-row w-full" key={index}>
           <div className="relative w-full">
             <select
-              defaultValue={""}
               name={name}
               id={id}
               className={`w-[80%] border border-gray relative rounded-md px-8 py-5 bg-white text-black focus:outline-none appearance-none after:content-[''] ${classname}`}
@@ -286,6 +368,8 @@ export const Select = ({
                 MozAppearance: "none",
                 appearance: "none",
               }}
+              value={selectedValue}
+              onChange={handleChange}
             >
               {!isFilter && (
                 <option value="" disabled>

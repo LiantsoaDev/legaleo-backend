@@ -16,6 +16,9 @@ export interface InputProps {
   isrequired?: boolean;
   name: string;
   classname?: string;
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
 }
 
 export interface CheckBoxProps {
@@ -37,11 +40,15 @@ export interface RadioProps {
   classLabel?: string;
   classSelected?: string;
   classContainer?: string;
+  selectedValue?: string;
+  onValueChange?: (value: string) => void;
 }
 
 export interface MultiSelectGroupProps {
   options: string[];
   showLogo?: boolean;
+  selectedOptions?: string[];
+  onChange?: (values: string[]) => void;
 }
 
 export interface InputFilesProps {
@@ -50,6 +57,8 @@ export interface InputFilesProps {
   isrequired?: boolean;
   accept?: string;
   id: string;
+  fileName?: string;
+  onFileChange?: (file: File | null) => void;
 }
 
 export interface SelectProps {
@@ -59,6 +68,8 @@ export interface SelectProps {
   isMultiple?: boolean;
   classname?: string;
   isFilter?: boolean;
+  value?: string;
+  onValueChange?: (value: string) => void;
 }
 
 // Type générique pour chaque étape

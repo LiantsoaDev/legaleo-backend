@@ -49,7 +49,7 @@ export const LoginRegister = ({ setIsLoading }: LoginRegisterProps) => {
           theme: "colored",
         });
       } else {
-        router.push("/onboarding");
+        router.push("/dashboard");
       }
     } catch (error) {
       console.error("Erreur d'authentification:", error);
