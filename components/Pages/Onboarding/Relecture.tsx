@@ -7,7 +7,15 @@ const options = [
   "❌ Non, je suis autonome pour l’instant",
 ];
 
-export const Relecture = () => {
+interface RelectureProps {
+  legalSupportPreference: string;
+  onLegalSupportChange: (value: string) => void;
+}
+
+export const Relecture = ({
+  legalSupportPreference,
+  onLegalSupportChange,
+}: RelectureProps) => {
   return (
     <div className="flex flex-col min-h-screen justify-center px-32 py-20 w-full">
       <Title className="font-bold text-4xl leading-[100%] mb-8">
@@ -19,7 +27,12 @@ export const Relecture = () => {
         vos documents.
       </Paragraphe>
       <div className="flex flex-col gap-5 mt-10 w-[80%]">
-        <RadioGroup options={options} name="autorise_relecture" />
+        <RadioGroup
+          options={options}
+          name="autorise_relecture"
+          selectedValue={legalSupportPreference}
+          onValueChange={onLegalSupportChange}
+        />
       </div>
       <Notices classname="mt-10 !text-xl">
         Vous pouvez y revenir plus tard
