@@ -29,6 +29,7 @@ import { getSelectedNode } from "@/components/editor/utils/get-selected-node";
 import { setFloatingElemPosition } from "@/components/editor/utils/set-floating-elem-position";
 import { DynamiqueChampsCard } from "@/components/Pages/Projet";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useTabContext } from "@/hooks/useTabContext";
 
 const champs_dynamique = [
   "Nom franchise",
@@ -69,12 +70,15 @@ function FloatingTextFormat({
   const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
   const [addDynamiqueChamps, setAddDynamiqueChamps] = useState(false);
   const [addComment, setAddComment] = useState(false);
+  const [addSuggestion, setAddSuggestion] = useState(false);
   const [comments, setComments] = useState<
     {
       id: string;
       content: string;
     }[]
   >([]);
+  const { isSuggestionMode, setIsSuggestionMode, handleClickSuggestion } =
+    useTabContext();
 
   const insertLink = useCallback(() => {
     if (!isLink) {
@@ -114,6 +118,11 @@ function FloatingTextFormat({
       }
     });
   }, [editor]);
+
+  const handleSetSuggestionMode = useCallback(() => {
+    setAddSuggestion(true);
+    setIsSuggestionMode(true);
+  }, [addSuggestion]);
 
   const cutSelectedText = useCallback(() => {
     editor.update(() => {
@@ -508,6 +517,26 @@ function FloatingTextFormat({
                   strokeWidth="1.8"
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                />
+              </svg>
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="link"
+              aria-label="insert link selected text"
+              onClick={() => handleClickSuggestion()}
+              onMouseDown={(e) => e.preventDefault()}
+              size="lg"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11.7648 2.20637H8.82374C8.62874 2.20637 8.44172 2.28384 8.30383 2.42173C8.16594 2.55961 8.08848 2.74663 8.08848 2.94164C8.08848 3.13664 8.16594 3.32366 8.30383 3.46154C8.44172 3.59943 8.62874 3.6769 8.82374 3.6769H11.7648C11.9598 3.6769 12.1468 3.75436 12.2847 3.89225C12.4226 4.03014 12.5001 4.21716 12.5001 4.41216V11.5589L11.3457 10.4928C11.2101 10.3658 11.0315 10.2949 10.8457 10.2943H4.41216C4.21716 10.2943 4.03014 10.2168 3.89225 10.0789C3.75436 9.94103 3.6769 9.75401 3.6769 9.559V8.82374C3.6769 8.62874 3.59943 8.44172 3.46154 8.30383C3.32366 8.16594 3.13664 8.08848 2.94164 8.08848C2.74663 8.08848 2.55961 8.16594 2.42173 8.30383C2.28384 8.44172 2.20637 8.62874 2.20637 8.82374V9.559C2.20637 10.144 2.43877 10.7051 2.85243 11.1187C3.2661 11.5324 3.82715 11.7648 4.41216 11.7648H10.559L12.7648 13.7721C12.9004 13.899 13.079 13.9699 13.2647 13.9706C13.3656 13.9695 13.4653 13.9495 13.5588 13.9118C13.6904 13.8544 13.8022 13.7597 13.8806 13.6395C13.959 13.5193 14.0005 13.3788 14 13.2353V4.41216C14 4.12 13.942 3.83075 13.8293 3.56119C13.7166 3.29164 13.5515 3.04716 13.3436 2.84194C13.1356 2.63673 12.889 2.47487 12.6179 2.36576C12.3469 2.25665 12.0569 2.20248 11.7648 2.20637ZM4.83861 7.35322H6.61795C6.81296 7.35322 6.99997 7.27575 7.13786 7.13786C7.27575 6.99997 7.35322 6.81296 7.35322 6.61795V4.83861C7.35377 4.74185 7.33523 4.64593 7.29864 4.55634C7.26205 4.46676 7.20813 4.38528 7.13999 4.31658L3.03722 0.213809C2.89946 0.0768657 2.71311 0 2.51886 0C2.32461 0 2.13826 0.0768657 2.0005 0.213809L0.213809 2.0005C0.0768657 2.13826 0 2.32461 0 2.51886C0 2.71311 0.0768657 2.89946 0.213809 3.03722L4.31658 7.13999C4.38528 7.20813 4.46676 7.26205 4.55634 7.29864C4.64593 7.33523 4.74185 7.35377 4.83861 7.35322ZM2.51518 1.77257L5.88269 5.14007V5.87534H5.14743L1.77257 2.51518L2.51518 1.77257Z"
+                  fill="#087F83"
                 />
               </svg>
             </ToggleGroupItem>

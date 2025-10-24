@@ -22,7 +22,6 @@ import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
 import { useCallback, useState } from "react";
 
 import { AutoLinkPlugin } from "@/components/editor/plugins/auto-link-plugin";
-import { AutocompletePlugin } from "@/components/editor/plugins/autocomplete-plugin";
 import { FloatingLinkEditorPlugin } from "@/components/editor/plugins/floating-link-editor-plugin";
 import { FloatingTextFormatToolbarPlugin } from "@/components/editor/plugins/floating-text-format-plugin";
 import { LinkPlugin } from "@/components/editor/plugins/link-plugin";
@@ -430,7 +429,7 @@ export function Plugins({}: {}) {
         <CheckListPlugin />
         <ClickableLinkPlugin />
         <AutoLinkPlugin />
-        <AutocompletePlugin />
+        {/* <AutocompletePlugin /> */}
         <LinkPlugin />
         <TablePlugin />
         <ImagesPlugin />

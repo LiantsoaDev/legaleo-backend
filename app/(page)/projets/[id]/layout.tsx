@@ -70,7 +70,10 @@ const SidebarToc = ({ tocItems }: { tocItems: TocItem[] }) => {
   }, [tocItems, activeHeadingId]);
 
   return (
-    <div className="sticky top-0 h-screen overflow-y-auto p-4">
+    <div
+      className="sticky top-0 h-screen overflow-y-auto p-4"
+      onMouseDown={(e) => e.preventDefault()}
+    >
       <EditorAction />
       <h3 className="text-xs font-semibold uppercase text-gray-500 mb-4 pt-10">
         Table des matières
@@ -197,7 +200,7 @@ export default function ProjetLayout({
               {children}
             </div>
             {!vueMode && (
-              <div className="w-fit flex flex-row shadow h-[82%]">
+              <div className="w-fit flex flex-row h-[82%]">
                 <RightBar />
               </div>
             )}

@@ -2,17 +2,30 @@
 import { useTabContext } from "@/hooks/useTabContext";
 import { faChevronDown, faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect } from "react";
 
 export const EditorAction = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const { showTab, setShowTab, handleShowTab, currentTab } = useTabContext();
+  const {
+    showTab,
+    setShowTab,
+    handleShowTab,
+    isSuggestionMode,
+    setIsSuggestionMode,
+    setCards,
+    cards,
+    isOpen,
+    setIsOpen,
+    handleClickSuggestion,
+    handleClickEditor,
+  } = useTabContext();
+
+  useEffect(() => {}, [isSuggestionMode, cards]);
 
   return (
     <div className="flex flex-col bg-[#087F83] text-white gap-2 rounded-4xl cursor-pointer">
       <div
         className="flex flex-row items-center justify-between px-5 py-3.5 gap-8"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => handleClickEditor()}
       >
         <span className="flex flex-row items-center gap-3.5 font-semibold text-base">
           {" "}
@@ -44,7 +57,7 @@ export const EditorAction = () => {
           </div>
           <div
             className="flex gap-3.5 items-center px-5 py-3.5 hover:bg-[#D9FDFB1A]"
-            onClick={() => handleShowTab(showTab, setShowTab, 3)}
+            onClick={() => handleClickSuggestion()}
           >
             <svg
               width="14"

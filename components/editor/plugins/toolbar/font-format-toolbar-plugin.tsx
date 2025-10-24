@@ -13,7 +13,7 @@ import {
   StrikethroughIcon,
   UnderlineIcon,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useToolbarContext } from "@/components/editor/context/toolbar-context";
 import { useUpdateToolbarHandler } from "@/components/editor/editor-hooks/use-update-toolbar";
@@ -43,6 +43,8 @@ export function FontFormatToolbarPlugin() {
       // setActiveFormats(formats)
     }
   };
+
+  useEffect(() => {}, [activeFormats]);
 
   useUpdateToolbarHandler($updateToolbar);
 
