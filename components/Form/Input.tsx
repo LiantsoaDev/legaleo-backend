@@ -16,9 +16,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../Button";
 import { WorkspaceItem } from "../Pages/MonCompte";
+import { Documents } from "../Pages/Onboarding/Documents";
+import { Paragraphe, Title } from "../Typography";
+import { Notices } from "../Typography/Tips";
 import { SearchBar } from "./SearchBar";
 
 export const Input = ({
@@ -29,6 +33,7 @@ export const Input = ({
   name,
   classname,
   nombreCaractere,
+  onChange,
 }: InputProps) => {
   const [value, setValue] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
@@ -106,20 +111,28 @@ export const CheckBox = ({
   showLogo,
   classLabel = "",
   classSelected,
+  hasToRedirectTo,
+  redirectTo,
 }: CheckBoxProps) => {
+  useEffect(() => {
+    if (value.toLocaleLowerCase().includes("non") && redirectTo && isSelected) {
+      redirect(redirectTo);
+    }
+  }, [value, hasToRedirectTo, isSelected]);
+
   return (
     <div>
       <label
         htmlFor={id}
         className={`py-3 px-5 font-manrope border border-[#8C8783] select-none text-xl flex items-center gap-2.5 cursor-pointer text-[#8C8783] rounded-md ${classLabel} ${
           isSelected
-            ? `bg-primary text-white border-none ${classSelected}`
+            ? `bg-[#087F83] text-white border-none ${classSelected}`
             : "bg-transparent"
         }`}
       >
         {showLogo &&
           (isSelected ? (
-            <div className="w-5 h-5 bg-white border border-gray rounded-full" />
+            <div className="w-5 h-5 bg-[#62E7EB] border border-gray rounded-full" />
           ) : (
             <div className="w-5 h-5 bg-transparent border border-[#8C8783] rounded-full" />
           ))}
@@ -146,8 +159,14 @@ export const RadioGroup = ({
   classContainer,
   classLabel,
   classSelected,
+  redirectTo,
+  onChange,
 }: RadioProps) => {
   const [selectedValue, setSelectedValue] = useState<string>("");
+  const handleSelect = (option: string) => {
+    setSelectedValue(option);
+    onChange?.(option);
+  };
   return (
     <div className={`flex gap-4 flex-wrap ${classContainer}`}>
       {options.map((option, index) => (
@@ -157,11 +176,12 @@ export const RadioGroup = ({
           id={`radio-${index}`}
           value={option}
           isSelected={selectedValue === option}
-          onSelect={() => setSelectedValue(option)}
+          onSelect={() => handleSelect(option)}
           name={name}
           type="radio"
           classLabel={classLabel}
           classSelected={classSelected}
+          redirectTo={redirectTo}
         />
       ))}
     </div>
@@ -276,8 +296,17 @@ export const Select = ({
   classname = "",
   isFilter = false,
   defaultValue = "Sélectionnez une option",
+  onChange,
 }: SelectProps) => {
   const [selects, setSelects] = useState([0]);
+  const [selectedValue, setSelectedValue] = useState("");
+
+  const handleSelect = (option: string) => {
+    setSelectedValue(option);
+    onChange?.(option);
+  };
+
+  useEffect(() => {}, [selectedValue]);
 
   const addSelect = () => {
     setSelects((prev) => [...prev, prev.length]);
@@ -286,43 +315,54 @@ export const Select = ({
   return (
     <div className="w-full flex flex-col gap-5 items-center justify-between">
       {selects.map((index) => (
-        <div className="flex flex-row w-full" key={index}>
-          <div className="relative w-full">
-            <select
-              defaultValue={""}
-              name={name}
-              id={id}
-              className={`w-[80%] border border-gray relative rounded-md px-8 py-5 bg-white text-black focus:outline-none appearance-none after:content-[''] ${classname}`}
-              style={{
-                WebkitAppearance: "none",
-                MozAppearance: "none",
-                appearance: "none",
-              }}
-            >
-              {!isFilter && (
-                <option value="" disabled>
-                  {defaultValue}
-                </option>
-              )}
+        <div className="flex flex-col gap-10 w-full" key={index}>
+          <div className="flex flex-row w-full">
+            <div className="relative w-full">
+              <select
+                name={name}
+                id={id}
+                className={`w-[80%] border border-gray relative rounded-md px-8 py-5 bg-white text-black focus:outline-none appearance-none after:content-[''] ${classname}`}
+                style={{
+                  WebkitAppearance: "none",
+                  MozAppearance: "none",
+                  appearance: "none",
+                }}
+                value={selectedValue}
+                onChange={(e) => handleSelect(e.target.value)}
+              >
+                {!isFilter && (
+                  <option value="" disabled>
+                    {defaultValue}
+                  </option>
+                )}
 
-              {options.map((option, index) => (
-                <option key={index} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-            <FontAwesomeIcon
-              icon={faChevronDown}
-              className="absolute top-[50%] translate-y-[-50%] z-10 right-[10px] text-xs text-[#86A2A3]"
-            />
+                {options.map((option, index) => (
+                  <option key={index} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+              <FontAwesomeIcon
+                icon={faChevronDown}
+                className="absolute top-[50%] translate-y-[-50%] z-10 right-[10px] text-xs text-[#86A2A3]"
+              />
+            </div>
+            {isMultiple && index === selects.length - 1 && (
+              <button
+                className="appearance-none text-lg ml-3 text-accent cursor-pointer"
+                onClick={addSelect}
+              >
+                <FontAwesomeIcon icon={faPlus} />
+              </button>
+            )}
           </div>
-          {isMultiple && index === selects.length - 1 && (
-            <button
-              className="appearance-none text-lg ml-3 text-accent cursor-pointer"
-              onClick={addSelect}
-            >
-              <FontAwesomeIcon icon={faPlus} />
-            </button>
+          {selectedValue.toLocaleLowerCase() === "autre" && (
+            <Input
+              type="textarea"
+              placeholder="Veuillez préciser"
+              name="autre"
+              classname="h-56"
+            />
           )}
         </div>
       ))}
@@ -371,5 +411,158 @@ export const SelectWithSearch = () => {
         </div>
       )}
     </div>
+  );
+};
+
+const has_dip = [
+  "✅ Oui, je l’ai déjà",
+  "❌ Non, pas encore",
+  "🤷 Je ne sais pas",
+];
+
+interface SelectTypeReseauProps {
+  options: string[];
+  id: string;
+  name: string;
+  classname?: string;
+}
+
+export const SelectTypeReseau = ({
+  options,
+  id,
+  name,
+  classname,
+}: SelectTypeReseauProps) => {
+  const [selectedType, setSelectedType] = useState<string>("");
+
+  useEffect(() => {}, [selectedType]);
+
+  return (
+    <>
+      {selectedType === "" && (
+        <>
+          <Paragraphe className="font-medium text-xl">
+            Quel est le type de votre réseau ?
+          </Paragraphe>
+          <Select
+            options={options}
+            id={id}
+            name={name}
+            classname={classname}
+            onChange={(val) => setSelectedType(val)}
+          />
+          <Notices classname="mt-10">
+            Nous configurons vos modèles selon la structure choisie.
+          </Notices>
+        </>
+      )}
+      {(selectedType === "Franchise" ||
+        selectedType === "Licence de marque" ||
+        selectedType === "Concession" ||
+        selectedType === "Commission-affiliation" ||
+        selectedType === "Cooperative") && (
+        <>
+          <Paragraphe className="font-medium text-xl">
+            Disposez-vous déjà d’un DIP (Document d’Information
+            Précontractuelle) ?
+          </Paragraphe>
+          <RadioGroup showLogo={false} options={has_dip} name="localisation" />
+        </>
+      )}
+      {(selectedType === "Distribution sélective" ||
+        selectedType === "Partenariat") && (
+        <>
+          <Paragraphe className="font-medium text-xl">
+            Souhaitez-vous générer un modèle adapté à ce type de réseau ?
+          </Paragraphe>
+          <RadioGroup showLogo={false} options={has_dip} name="localisation" />
+        </>
+      )}
+    </>
+  );
+};
+
+interface SelectCRMProps {
+  options: string[];
+  name: string;
+}
+
+const CRM = ["Cerca", "Cleonet", "Hubspot", "Pipedrive", "Autre"];
+
+export const SelectCRM = ({ name, options }: SelectCRMProps) => {
+  const [selectedType, setSelectedType] = useState<string>("");
+  useEffect(() => {
+    console.log("selectedType CRM", selectedType);
+  }, [selectedType]);
+  return (
+    <>
+      {selectedType === "" && (
+        <>
+          <Paragraphe className="font-medium text-xl">
+            Utilisez-vous un CRM pour suivre vos candidats ?
+          </Paragraphe>
+          <RadioGroup
+            showLogo={false}
+            options={options}
+            name={name}
+            onChange={(val) => setSelectedType(val)}
+          />
+        </>
+      )}
+      {selectedType.toLocaleLowerCase().includes("oui") && (
+        <>
+          <Paragraphe className="font-medium text-xl">
+            Quel CRM utilisez-vous ? :
+          </Paragraphe>
+          <Select
+            options={CRM}
+            id="fonction"
+            name="fonction"
+            classname="w-full"
+          />
+        </>
+      )}
+    </>
+  );
+};
+
+interface SelectImporterProps {
+  options: string[];
+  name: string;
+  onClick: () => void;
+}
+
+export const SelectImporter = ({
+  options,
+  name,
+  onClick,
+}: SelectImporterProps) => {
+  const [selectedType, setSelectedType] = useState<string>("");
+  useEffect(() => {
+    console.log("selectedType CRM", selectedType);
+  }, [selectedType]);
+  return (
+    <>
+      {selectedType === "" && (
+        <div className="flex flex-col gap-5 min-h-screen justify-center px-32 py-20 w-full">
+          <Title className="font-bold text-4xl leading-[100%] mb-5 w-full">
+            Rédaction et gestion de contrat
+          </Title>
+          <Paragraphe className="font-medium text-xl">
+            Disposez-vous aujourd’hui d’un service (interne ou externe) dédié au
+            recrutement de vos franchisés ?
+          </Paragraphe>
+          <RadioGroup
+            showLogo={false}
+            options={options}
+            name={name}
+            onChange={(val) => setSelectedType(val)}
+          />
+        </div>
+      )}
+      {selectedType.toLocaleLowerCase().includes("oui") && (
+        <Documents onClick={() => onClick()} />
+      )}
+    </>
   );
 };

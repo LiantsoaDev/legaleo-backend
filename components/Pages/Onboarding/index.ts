@@ -1,3 +1,4 @@
+export * from "./ConsentementRGPD";
 export * from "./CurrentOnboardingStep";
 export * from "./Onboarding";
 export * from "./OnboardingFinalisation";

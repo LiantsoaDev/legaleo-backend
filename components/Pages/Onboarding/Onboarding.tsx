@@ -9,14 +9,12 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { OnboardingCard } from "../../Card";
-import { Activite } from "./Activite";
-import { Documents } from "./Documents";
-import { Finalisation } from "./Finalisation";
-import { NombreReseau } from "./NombreReseau";
-import { Relecture } from "./Relecture";
-import { ReseauFranchise } from "./ReseauFranchise";
-import { TypeReseau } from "./TypeReseau";
+import { ConsentementRGPD } from "./ConsentementRGPD";
+import { RecrutementFranchiser } from "./RecrutementFranchiser";
+import { RedactionContrat } from "./RedactionContrat";
 import { UserName } from "./UserName";
+import { VotreEnseigne } from "./VotreEnseigne";
+import { VotreReseau } from "./VotreReseau";
 import { Welcome } from "./Welcome";
 
 type FormDataValue = string | { name: string; type: string; content: string };
@@ -26,9 +24,12 @@ export const Onboardings = ({ user }: any) => {
     OnboardingWithSteps[] | null
   >([]);
   const [onboardingSteps, setOnboardingSteps] = useState<OnboardingStep[]>([]);
-  const [onboardingStep, setOnboardingStep] = useState<number>(0);
+  const [onboardingStep, setOnboardingStep] = useState<number>(1);
 
   const [formDataState, setFormDataState] = useState<Record<string, any>>({});
+
+  const [internalStep, setinternalStep] = useState<number>(1);
+  const [internalCurrentStep, setInternalCurrentStep] = useState<number>(1);
 
   useEffect(() => {
     const fetchOnboardings = async () => {
@@ -37,28 +38,50 @@ export const Onboardings = ({ user }: any) => {
       setOnboardingSteps(onboardings?.data[0]?.steps || []);
     };
     fetchOnboardings();
-  }, []);
+  }, [onboardingStep, formDataState]);
 
   const renderStep = () => {
     switch (onboardingStep) {
-      case 0:
-        return <Welcome onClick={() => handleNextStep()} />;
       case 1:
-        return <UserName />;
+        return <Welcome onClick={() => handleNextStep()} />;
       case 2:
-        return <ReseauFranchise />;
+        return <UserName />;
       case 3:
-        return <Activite />;
+        return <VotreEnseigne />;
       case 4:
-        return <NombreReseau />;
+        return (
+          <VotreReseau
+            setInternatStep={setinternalStep}
+            internalStep={internalStep}
+            setCurrentStep={setInternalCurrentStep}
+            currentStep={internalCurrentStep}
+          />
+        );
       case 5:
-        return <TypeReseau />;
+        return (
+          <RecrutementFranchiser
+            setInternatStep={setinternalStep}
+            internalStep={internalStep}
+            setCurrentStep={setInternalCurrentStep}
+            currentStep={internalCurrentStep}
+          />
+        );
       case 6:
-        return <Relecture />;
+        return (
+          <RedactionContrat
+            setInternatStep={setinternalStep}
+            internalStep={internalStep}
+            setCurrentStep={setInternalCurrentStep}
+            currentStep={internalCurrentStep}
+            onClick={() => handleNextStep()}
+          />
+        );
       case 7:
-        return <Documents />;
-      default:
-        return <Finalisation />;
+        return <ConsentementRGPD />;
+      // case 8:
+      //   return <Documents onClick={() => handleNextStep()} />;
+      // default:
+      //   return <Finalisation />;
     }
   };
 
@@ -97,7 +120,7 @@ export const Onboardings = ({ user }: any) => {
     setFormDataState((prev) => ({ ...prev, ...data }));
     const userId = user.id;
     const onboarding_id = onboardingDatas && onboardingDatas[0]?.id;
-    console.log("onboarding ID", onboarding_id);
+
     if (!onboarding_id) return;
 
     const dataToSend = {
@@ -109,28 +132,48 @@ export const Onboardings = ({ user }: any) => {
     console.log("Données à envoyer :", dataToSend);
 
     postOnboardingData(dataToSend);
-
-    // if (onboardingStep === onboardingSteps.length - 1) {
-    //   // Redirection vers le tableau de bord ou une autre page
-    //   window.location.href = "/dashboard";
-    // }
   };
 
   const handleNextStep = () => {
-    saveStepData();
-    setOnboardingStep((prevStep) =>
-      prevStep < onboardingSteps.length - 1 ? prevStep + 1 : prevStep
-    );
-    console.log("Onboarding step", onboardingStep);
-    if (onboardingStep === 7) {
-      // Redirection vers le tableau de bord ou une autre page
-      window.location.href = "/dashboard";
+    if (internalCurrentStep === internalStep) {
+      saveStepData();
+      setOnboardingStep((prevStep) =>
+        prevStep < onboardingSteps.length ? prevStep + 1 : prevStep
+      );
+      setInternalCurrentStep(1);
+      console.log("Onboarding step", onboardingStep);
+      console.log("setOnboardingSteps", onboardingSteps.length);
+      if (onboardingStep === onboardingSteps.length) {
+        // Redirection vers le tableau de bord ou une autre page
+        window.location.href = "/dashboard";
+      }
+    } else {
+      console.log("internal current step", internalCurrentStep);
+      setInternalCurrentStep((prev) => prev + 1);
     }
   };
 
   const handlePrevStep = () => {
-    saveStepData();
-    setOnboardingStep((prevStep) => (prevStep > 0 ? prevStep - 1 : prevStep));
+    if (internalCurrentStep > 1) {
+      console.log("⬅️ internal current step", internalCurrentStep);
+      setInternalCurrentStep((prev) => prev - 1);
+      return;
+    }
+
+    if (internalCurrentStep === 1) {
+      saveStepData();
+
+      setOnboardingStep((prevStep) => {
+        if (prevStep > 1) {
+          return prevStep - 1;
+        }
+        return prevStep;
+      });
+
+      setInternalCurrentStep(internalStep);
+
+      console.log("⬅️ Recul d’un step principal :", onboardingStep - 1);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -142,7 +185,7 @@ export const Onboardings = ({ user }: any) => {
     <div className="flex flex-row">
       <form
         onSubmit={handleSubmit}
-        className="w-2/3 justify-between flex flex-col items-center relative select-none"
+        className="w-2/3 justify-between flex flex-col relative select-none"
       >
         {renderStep()}
         <div className="fixed bottom-0 items-center left-[33%] translate-[-50%] bg-blue px-5 py-5 rounded-full flex gap-10 text-white text-xl">
@@ -174,10 +217,11 @@ export const Onboardings = ({ user }: any) => {
             <OnboardingCard
               key={index}
               title={onboarding.title || "Bienvenu sur legaleo"}
-              isActive={index === onboardingStep}
+              isActive={index + 1 === onboardingStep}
               isCompleted={index < onboardingStep}
               step={index + 1}
               isLast={index === onboardingSteps.length - 1}
+              setOnboardingStep={setOnboardingStep}
             />
           ))}
       </div>

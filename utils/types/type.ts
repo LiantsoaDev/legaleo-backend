@@ -35,6 +35,8 @@ export interface CheckBoxProps {
   showLogo?: boolean;
   classLabel?: string;
   classSelected?: string;
+  hasToRedirectTo?: boolean;
+  redirectTo?: string;
 }
 
 export interface RadioProps {
@@ -44,6 +46,9 @@ export interface RadioProps {
   classLabel?: string;
   classSelected?: string;
   classContainer?: string;
+  hasToRedirectTo?: boolean;
+  redirectTo?: string;
+  onChange?: (option: string) => void;
 }
 
 export interface MultiSelectGroupProps {
@@ -68,6 +73,7 @@ export interface SelectProps {
   classname?: string;
   isFilter?: boolean;
   defaultValue?: string;
+  onChange?: (options: string) => void;
 }
 
 // Type générique pour chaque étape

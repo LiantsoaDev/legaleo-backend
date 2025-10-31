@@ -4,9 +4,10 @@ interface OnboardingCardProps {
   title: string;
   isActive?: boolean;
   isCompleted?: boolean;
-  key?: string | number | undefined;
-  step?: number;
-  isLast?: boolean;
+  key: string | number | undefined;
+  step: number;
+  isLast: boolean;
+  setOnboardingStep: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const OnboardingCard = ({
@@ -15,9 +16,13 @@ export const OnboardingCard = ({
   isCompleted,
   step,
   isLast,
+  setOnboardingStep,
 }: OnboardingCardProps) => {
   return (
-    <div className="flex flex-row gap-8 items-center">
+    <div
+      className="flex flex-row gap-8 items-center cursor-pointer"
+      onClick={() => setOnboardingStep(step)}
+    >
       <div
         className={`flex justify-center items-center font-manrope text-xl font-medium ${
           isActive || isCompleted

@@ -13,11 +13,11 @@ export const onboardingData = {
     },
     {
       id: 1,
-      title: "Votre nom ?",
+      title: "Vos information",
       description: "Lorem ipsum dolor sit amet.",
       onboarding: {
-        placeholder: "Nom du réseau",
-        tips: "Ce nom s’affichera dans votre dashboard",
+        placeholder: "Vos information",
+        tips: "Ces infos alimentent le back-office et la personnalisation de votre tableau de bord.",
       },
     },
     {
@@ -31,7 +31,7 @@ export const onboardingData = {
     },
     {
       id: 3,
-      title: "Nombre de franchisés",
+      title: "Votre réseau",
       description: "Lorem ipsum dolor sit amet.",
       onboarding: {
         now: ["1-10", "11-50", "51-100", "101-500", "501+"],
@@ -40,7 +40,7 @@ export const onboardingData = {
     },
     {
       id: 4,
-      title: "Type de réseau",
+      title: "Recrutement de franchisés",
       description: "Lorem ipsum dolor sit amet.",
       onboarding: {
         optionsMultiples: [
@@ -52,31 +52,6 @@ export const onboardingData = {
     },
     {
       id: 5,
-      title: "Recrutement de franchisés",
-      description: "Lorem ipsum dolor sit amet.",
-      onboarding: {
-        tips: "Vous pourrez modifier ces infos plus tard",
-        files: [
-          {
-            name: "Statuts de la société",
-            accept: ".pdf,.docx",
-            placeholder: "Statuts de la société ( PDF OU DOCX)",
-          },
-          {
-            name: "Kbis ou équivalent",
-            accept: ".pdf",
-            placeholder: "Kbis ou équivalent ( PDF )",
-          },
-          {
-            name: "Pacte d’associés ( PDF OU DOCX)",
-            accept: ".pdf,.docx",
-            placeholder: "Pacte d’associés ( PDF OU DOCX)",
-          },
-        ],
-      },
-    },
-    {
-      id: 6,
       title: "Rédaction contrat",
       description: "Lorem ipsum dolor sit amet.",
       onboarding: {
@@ -101,8 +76,8 @@ export const onboardingData = {
       },
     },
     {
-      id: 7,
-      title: "Vos documents",
+      id: 6,
+      title: "Consentement RGPD",
       description: "Lorem ipsum dolor sit amet.",
       onboarding: {
         tips: "Vous pourrez modifier ces infos plus tard",
@@ -125,5 +100,30 @@ export const onboardingData = {
         ],
       },
     },
+    // {
+    //   id: 7,
+    //   title: "Vos documents",
+    //   description: "Lorem ipsum dolor sit amet.",
+    //   onboarding: {
+    //     tips: "Vous pourrez modifier ces infos plus tard",
+    //     files: [
+    //       {
+    //         name: "Statuts de la société",
+    //         accept: ".pdf,.docx",
+    //         placeholder: "Statuts de la société ( PDF OU DOCX)",
+    //       },
+    //       {
+    //         name: "Kbis ou équivalent",
+    //         accept: ".pdf",
+    //         placeholder: "Kbis ou équivalent ( PDF )",
+    //       },
+    //       {
+    //         name: "Pacte d’associés ( PDF OU DOCX)",
+    //         accept: ".pdf,.docx",
+    //         placeholder: "Pacte d’associés ( PDF OU DOCX)",
+    //       },
+    //     ],
+    //   },
+    // },
   ],
 };

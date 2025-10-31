@@ -1,5 +1,5 @@
+import { LogoLegaleo } from "@/components/Logo";
 import { Button } from "../../Button";
-import { Logo } from "../../Logo/Logo";
 import { Paragraphe, Title } from "../../Typography";
 import { Notices } from "../../Typography/Tips";
 
@@ -9,9 +9,9 @@ interface WelcomeProps {
 
 export const Welcome = ({ onClick }: WelcomeProps) => {
   return (
-    <div className="flex flex-col px-32 py-20 justify-center items-center min-h-screen max-w-4xl">
-      <Logo className="w-52 h-16 filter grayscale mb-14" />
-      <Title className="font-manrope font-bold text-4xl leading-[80px] text-[#1F120E] mb-5">
+    <div className="flex flex-col px-32 py-20 justify-center items-center min-h-screen max-w-4xl mx-auto">
+      <LogoLegaleo />
+      <Title className="font-manrope font-bold text-4xl leading-20 text-[#1F120E] mb-5">
         Bienvenue sur Legaleo ! 👋
       </Title>
       <Paragraphe className="font-normal text-xl leading-8 mb-10">
@@ -21,8 +21,9 @@ export const Welcome = ({ onClick }: WelcomeProps) => {
         👉 Créez, centralisez et gérez tous vos contrats franchise en quelques
         clics.
       </Paragraphe>
-      <Paragraphe className="p-2.5 bg-[#D9FDFB] font-medium text-[#087F83] text-xl leading-8 rounded-lg mt-10 w-fit">
-        🕓 En moins de 5 minutes, vous êtes opérationnel
+      <Paragraphe className="p-2.5 bg-[#D9FDFB] font-medium text-[#087F83] text-xl leading-8 rounded-lg mt-10 w-fit text-center">
+        🕓 En moins de 5 minutes, personnalisez votre espace de travail et vos
+        modèles de contrat.
       </Paragraphe>
       <Button
         primary={false}

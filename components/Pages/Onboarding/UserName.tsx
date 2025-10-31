@@ -1,33 +1,54 @@
-import { Input } from "../../Form";
+import { Input, Select } from "../../Form";
 import { Title } from "../../Typography";
 import { Notices } from "../../Typography/Tips";
 
-interface UserNameProps {
-  onUpdate: (data: any) => void;
-}
+const option: string[] = [
+  "Fondateur",
+  "Directeur réseau",
+  "Directeur des opérations",
+  "Responsable développement",
+  "Animateur réseau",
+  "Responsable Juridique",
+  "Consultant externalisé",
+];
 
 export const UserName = () => {
   return (
-    <div className="flex flex-col min-h-screen justify-center px-32 py-20 w-full">
+    <div className="flex flex-col min-h-screen justify-center px-32 py-20 w-[788px] items-start">
       <Title className="font-bold text-4xl leading-[100%] mb-8">
-        Pour commencer, <br /> comment vous appelez-vous ?
+        Vos informations
       </Title>
-      <div className="flex flex-row gap-5">
+      <div className="flex flex-col gap-5 w-full">
+        <div className="flex flex-row gap-5 w-full">
+          <Input
+            type="text"
+            placeholder="Nom"
+            name="name"
+            classname="text-xl px-6 py-4 w-1/2"
+          />
+          <Input
+            type="text"
+            placeholder="Prénom"
+            name="last_name"
+            classname="text-xl px-6 py-4 w-1/2"
+          />
+        </div>
         <Input
-          type="text"
-          placeholder="Nom"
-          name="name"
-          classname="!text-2xl !px-7 !py-5"
+          type="email"
+          placeholder="Email professionnel"
+          name="email"
+          classname="text-xl px-6 py-4"
         />
-        <Input
-          type="text"
-          placeholder="Prénom"
-          name="last_name"
-          classname="!text-2xl !px-7 !py-5"
+        <Select
+          options={option}
+          id="fonction"
+          name="fonction"
+          classname="w-full"
         />
       </div>
-      <Notices classname="mt-5 text-xl">
-        Ce prénom servira à personnaliser votre espace Legaleo.
+      <Notices classname="mt-5 text-lg!">
+        Ces infos alimentent le back-office et la personnalisation de votre
+        tableau de bord.
       </Notices>
     </div>
   );

@@ -36,18 +36,26 @@ async function main() {
     },
   });
 
-  const hashedPassword = await hashPassword("admin@admin.com");
-
-  const adminUser = await prisma.user.create({
-    data: {
+  const isExistingAdminUser = await prisma.user.findUnique({
+    where: {
       email: "admin@admin.com",
-      name: "Super Admin",
-      password: hashedPassword,
     },
   });
 
-  console.log("✅ Seed terminé !");
-  console.log("👤 Admin créé :", adminUser.email);
+  let adminUser = null;
+  const hashedPassword = await hashPassword("admin@admin.com");
+
+  if (!isExistingAdminUser) {
+    adminUser = await prisma.user.create({
+      data: {
+        email: "admin@admin.com",
+        name: "Super Admin",
+        password: hashedPassword,
+      },
+    });
+    console.log("✅ Seed terminé !");
+    console.log("👤 Admin créé :", adminUser.email);
+  }
 }
 
 main()
