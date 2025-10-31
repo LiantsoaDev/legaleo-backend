@@ -36,7 +36,7 @@ async function main() {
     },
   });
 
-  const isExistingAdminUser = await prisma.user.findUnique({
+  const isExistingAdminUsers = await prisma.user.findUnique({
     where: {
       email: "admin@admin.com",
     },
@@ -45,7 +45,7 @@ async function main() {
   let adminUser = null;
   const hashedPassword = await hashPassword("admin@admin.com");
 
-  if (!isExistingAdminUser) {
+  if (!isExistingAdminUsers) {
     adminUser = await prisma.user.create({
       data: {
         email: "admin@admin.com",
