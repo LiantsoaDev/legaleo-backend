@@ -43,6 +43,8 @@ model Onboarding {
   steps   OnboardingStep[]
   answers OnboardingAnswer[]
 
+  type String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

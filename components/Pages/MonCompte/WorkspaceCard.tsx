@@ -1,8 +1,7 @@
 import { Paragraphe } from "@/components/Typography";
-import Image from "next/image";
 
 interface WorkspaceCardProps {
-  icon: any;
+  icon?: any;
   name: string;
   members: number;
 }
@@ -12,7 +11,8 @@ export const WorkspaceCard = ({ icon, name, members }: WorkspaceCardProps) => {
     <div className="flex flex-col gap-5 border border-[#E3E3E3] rounded-lg p-5">
       <div className="flex justify-between items-center">
         <div className="flex gap-2.5 items-center">
-          <Image src={icon} alt="Workspace picture" width={40} height={40} />
+          <div className="w-10 h-10 bg-[#86A2A3] rounded-[3px]" />
+          {/* <Image src={icon} alt="Workspace picture" width={40} height={40} /> */}
           <Paragraphe className="font-semibold text-base text-black">
             {name}
           </Paragraphe>

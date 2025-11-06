@@ -1,198 +1,87 @@
 "use client";
 import { OnboardingStep } from "@/app/generated/prisma";
-import { getOnboardings, postOnboardingData } from "@/server";
+import { handleNextStep, handlePrevStep, saveStepData } from "@/server";
+import { renderStep } from "@/utils/functions";
 import { OnboardingWithSteps } from "@/utils/types";
 import {
   faLongArrowLeft,
   faLongArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import { FormEvent, useCallback } from "react";
 import { OnboardingCard } from "../../Card";
-import { ConsentementRGPD } from "./ConsentementRGPD";
-import { RecrutementFranchiser } from "./RecrutementFranchiser";
-import { RedactionContrat } from "./RedactionContrat";
-import { UserName } from "./UserName";
-import { VotreEnseigne } from "./VotreEnseigne";
-import { VotreReseau } from "./VotreReseau";
-import { Welcome } from "./Welcome";
 
-type FormDataValue = string | { name: string; type: string; content: string };
+interface OnboardingsProps {
+  user: any;
+  onboardingDatas: OnboardingWithSteps[] | null;
+  onboardingSteps: OnboardingStep[];
+  onboardingStep: number;
+  setOnboardingStep: React.Dispatch<React.SetStateAction<number>>;
+  setFormDataState: React.Dispatch<React.SetStateAction<Record<string, any>>>;
+  internalStep: number;
+  setinternalStep: React.Dispatch<React.SetStateAction<number>>;
+  internalCurrentStep: number;
+  setInternalCurrentStep: React.Dispatch<React.SetStateAction<number>>;
+  type: "general" | "jeuneReseau" | "juridique";
+}
 
-export const Onboardings = ({ user }: any) => {
-  const [onboardingDatas, setOnboardingDatas] = useState<
-    OnboardingWithSteps[] | null
-  >([]);
-  const [onboardingSteps, setOnboardingSteps] = useState<OnboardingStep[]>([]);
-  const [onboardingStep, setOnboardingStep] = useState<number>(1);
-
-  const [formDataState, setFormDataState] = useState<Record<string, any>>({});
-
-  const [internalStep, setinternalStep] = useState<number>(1);
-  const [internalCurrentStep, setInternalCurrentStep] = useState<number>(1);
-
-  useEffect(() => {
-    const fetchOnboardings = async () => {
-      const onboardings = await getOnboardings();
-      setOnboardingDatas(onboardings?.data || null);
-      setOnboardingSteps(onboardings?.data[0]?.steps || []);
-    };
-    fetchOnboardings();
-  }, [onboardingStep, formDataState]);
-
-  const renderStep = () => {
-    switch (onboardingStep) {
-      case 1:
-        return <Welcome onClick={() => handleNextStep()} />;
-      case 2:
-        return <UserName />;
-      case 3:
-        return <VotreEnseigne />;
-      case 4:
-        return (
-          <VotreReseau
-            setInternatStep={setinternalStep}
-            internalStep={internalStep}
-            setCurrentStep={setInternalCurrentStep}
-            currentStep={internalCurrentStep}
-          />
-        );
-      case 5:
-        return (
-          <RecrutementFranchiser
-            setInternatStep={setinternalStep}
-            internalStep={internalStep}
-            setCurrentStep={setInternalCurrentStep}
-            currentStep={internalCurrentStep}
-          />
-        );
-      case 6:
-        return (
-          <RedactionContrat
-            setInternatStep={setinternalStep}
-            internalStep={internalStep}
-            setCurrentStep={setInternalCurrentStep}
-            currentStep={internalCurrentStep}
-            onClick={() => handleNextStep()}
-          />
-        );
-      case 7:
-        return <ConsentementRGPD />;
-      // case 8:
-      //   return <Documents onClick={() => handleNextStep()} />;
-      // default:
-      //   return <Finalisation />;
-    }
-  };
-
-  const fileToBase64 = (file: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file); // encode en base64
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
-
-  const saveStepData = async () => {
-    const formElement = document.querySelector("form");
-    if (!formElement) return;
-
-    const formData = new FormData(formElement as HTMLFormElement);
-    const data: Record<string, FormDataValue> = Object.fromEntries(
-      Array.from(formData.entries()).filter(
-        ([_, value]) => !(value instanceof File)
-      )
-    ) as Record<string, FormDataValue>;
-
-    for (const [key, value] of formData.entries()) {
-      if (value instanceof File && value.size > 0) {
-        const base64 = await fileToBase64(value);
-        // On ajoute le fichier encodé dans data
-        data[key] = {
-          name: value.name,
-          type: value.type,
-          content: base64,
-        };
-      }
-    }
-
-    // Fusionner avec les données précédentes
-    setFormDataState((prev) => ({ ...prev, ...data }));
-    const userId = user.id;
-    const onboarding_id = onboardingDatas && onboardingDatas[0]?.id;
-
-    if (!onboarding_id) return;
-
-    const dataToSend = {
-      userId,
-      onboarding_id,
-      value: data,
-    };
-
-    console.log("Données à envoyer :", dataToSend);
-
-    postOnboardingData(dataToSend);
-  };
-
-  const handleNextStep = () => {
-    if (internalCurrentStep === internalStep) {
-      saveStepData();
-      setOnboardingStep((prevStep) =>
-        prevStep < onboardingSteps.length ? prevStep + 1 : prevStep
-      );
-      setInternalCurrentStep(1);
-      console.log("Onboarding step", onboardingStep);
-      console.log("setOnboardingSteps", onboardingSteps.length);
-      if (onboardingStep === onboardingSteps.length) {
-        // Redirection vers le tableau de bord ou une autre page
-        window.location.href = "/dashboard";
-      }
-    } else {
-      console.log("internal current step", internalCurrentStep);
-      setInternalCurrentStep((prev) => prev + 1);
-    }
-  };
-
-  const handlePrevStep = () => {
-    if (internalCurrentStep > 1) {
-      console.log("⬅️ internal current step", internalCurrentStep);
-      setInternalCurrentStep((prev) => prev - 1);
-      return;
-    }
-
-    if (internalCurrentStep === 1) {
-      saveStepData();
-
-      setOnboardingStep((prevStep) => {
-        if (prevStep > 1) {
-          return prevStep - 1;
-        }
-        return prevStep;
-      });
-
-      setInternalCurrentStep(internalStep);
-
-      console.log("⬅️ Recul d’un step principal :", onboardingStep - 1);
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    saveStepData();
-  };
+export const Onboardings = ({
+  user,
+  onboardingDatas,
+  onboardingSteps,
+  onboardingStep,
+  setOnboardingStep,
+  setFormDataState,
+  internalStep,
+  setinternalStep,
+  internalCurrentStep,
+  setInternalCurrentStep,
+  type,
+}: OnboardingsProps) => {
+  const handleSubmit = useCallback(
+    (e: FormEvent) => {
+      e.preventDefault();
+      saveStepData(setFormDataState, onboardingDatas, user);
+    },
+    [setFormDataState, onboardingDatas, user]
+  );
 
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row justify-between">
       <form
         onSubmit={handleSubmit}
         className="w-2/3 justify-between flex flex-col relative select-none"
       >
-        {renderStep()}
-        <div className="fixed bottom-0 items-center left-[33%] translate-[-50%] bg-blue px-5 py-5 rounded-full flex gap-10 text-white text-xl">
-          <button type="submit">
+        {renderStep(
+          onboardingStep,
+          setinternalStep,
+          internalStep,
+          setInternalCurrentStep,
+          internalCurrentStep,
+          onboardingSteps,
+          setOnboardingStep,
+          setFormDataState,
+          user,
+          onboardingDatas,
+          type
+        )}
+        <div className="fixed bottom-10 items-center right-[20%] translate-[-50%] bg-blue px-5 py-5 rounded-full flex gap-10 text-white text-xl">
+          <button
+            type="submit"
+            onClick={() =>
+              handlePrevStep(
+                internalCurrentStep,
+                internalStep,
+                setOnboardingStep,
+                setInternalCurrentStep,
+                setFormDataState,
+                user,
+                onboardingDatas
+              )
+            }
+          >
             <FontAwesomeIcon
               icon={faLongArrowLeft}
-              onClick={handlePrevStep}
               className={`cursor-pointer transition ${
                 onboardingStep === 0
                   ? "opacity-40 pointer-events-none"
@@ -201,16 +90,31 @@ export const Onboardings = ({ user }: any) => {
             />
           </button>
 
-          <button type="submit">
+          <button
+            type="submit"
+            onClick={() =>
+              handleNextStep(
+                internalCurrentStep,
+                internalStep,
+                onboardingSteps,
+                onboardingStep,
+                setOnboardingStep,
+                setInternalCurrentStep,
+                setFormDataState,
+                "/dashboard",
+                user,
+                onboardingDatas
+              )
+            }
+          >
             <FontAwesomeIcon
               icon={faLongArrowRight}
-              onClick={handleNextStep}
               className={`cursor-pointer transition`}
             />
           </button>
         </div>
       </form>
-      <div className="bg-[#1F120E] w-1/3 rounded-l-4xl h-full p-8 flex flex-col gap-7 justify-center overflow-y-auto select-none">
+      <div className="bg-[#1F120E] w-[480px] rounded-l-4xl h-full px-16 py-20 flex flex-col gap-7 justify-center overflow-y-auto select-none">
         {onboardingSteps &&
           onboardingSteps.length > 0 &&
           onboardingSteps.map((onboarding: OnboardingStep, index) => (

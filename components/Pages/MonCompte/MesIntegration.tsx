@@ -1,4 +1,3 @@
-import image from "@/assets/images/template.png";
 import { IntegrationCard } from "./IntegrationCard";
 
 const mesIntegration = [
@@ -7,7 +6,7 @@ const mesIntegration = [
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     category: "Catégorie",
-    imageUrl: image,
+
     link: "#",
   },
   {
@@ -15,7 +14,7 @@ const mesIntegration = [
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     category: "Catégorie",
-    imageUrl: image,
+
     link: "#",
   },
   {
@@ -23,7 +22,7 @@ const mesIntegration = [
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     category: "Catégorie",
-    imageUrl: image,
+
     link: "#",
   },
   {
@@ -31,7 +30,7 @@ const mesIntegration = [
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     category: "Catégorie",
-    imageUrl: image,
+
     link: "#",
   },
   {
@@ -39,7 +38,7 @@ const mesIntegration = [
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     category: "Catégorie",
-    imageUrl: image,
+
     link: "#",
   },
   {
@@ -47,7 +46,7 @@ const mesIntegration = [
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     category: "Catégorie",
-    imageUrl: image,
+
     link: "#",
   },
 ];
@@ -59,7 +58,6 @@ export const MesIntegration = () => {
         <IntegrationCard
           category={integration.category}
           description={integration.description}
-          imageUrl={integration.imageUrl}
           link={integration.link}
           title={integration.title}
           key={index}

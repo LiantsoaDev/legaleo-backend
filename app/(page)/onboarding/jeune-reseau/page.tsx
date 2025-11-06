@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { OnboardingGeneral } from "@/components/Pages/Onboarding";
+import { OnboardingJeuneReseau } from "@/components/Pages/Onboarding/OnboardingJeuneReseau";
 import { getOnboardings } from "@/server";
 import { redirect } from "next/navigation";
 
@@ -14,7 +14,7 @@ const page = async () => {
 
   return (
     <div className=" h-screen flex flex-col gap-7">
-      <OnboardingGeneral user={session.user} />
+      <OnboardingJeuneReseau user={session.user} />
     </div>
   );
 };

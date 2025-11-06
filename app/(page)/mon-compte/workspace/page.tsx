@@ -1,16 +1,13 @@
-import img from "@/assets/images/template.png";
 import { Button } from "@/components/Button";
 import { NewWorkSpace, WorkspaceCard } from "@/components/Pages/MonCompte";
 import { Paragraphe, Title } from "@/components/Typography";
 
 const workspaces = [
   {
-    icon: img,
     name: "Workspace 1",
     members: 7,
   },
   {
-    icon: img,
     name: "Workspace 2",
     members: 5,
   },
@@ -30,11 +27,7 @@ const page = () => {
       <div className="flex flex-row gap-5">
         {workspaces.map((workspace, index) => (
           <div key={index} className="w-1/3">
-            <WorkspaceCard
-              icon={workspace.icon}
-              name={workspace.name}
-              members={workspace.members}
-            />
+            <WorkspaceCard name={workspace.name} members={workspace.members} />
           </div>
         ))}
       </div>

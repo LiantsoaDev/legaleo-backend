@@ -1,4 +1,3 @@
-import image from "@/assets/images/template.png";
 import { RadioGroup } from "@/components/Form";
 import { Title } from "@/components/Typography";
 import { IntegrationCard } from "./IntegrationCard";
@@ -8,7 +7,6 @@ const mesIntegration = [
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     category: "Catégorie",
-    imageUrl: image,
     link: "#",
   },
   {
@@ -16,7 +14,6 @@ const mesIntegration = [
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     category: "Catégorie",
-    imageUrl: image,
     link: "#",
   },
   {
@@ -24,7 +21,6 @@ const mesIntegration = [
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     category: "Catégorie",
-    imageUrl: image,
     link: "#",
   },
 ];
@@ -54,7 +50,6 @@ export const Decouvrir = () => {
             <IntegrationCard
               category={integration.category}
               description={integration.description}
-              imageUrl={integration.imageUrl}
               link={integration.link}
               title={integration.title}
               key={index}
@@ -70,7 +65,6 @@ export const Decouvrir = () => {
             <IntegrationCard
               category={integration.category}
               description={integration.description}
-              imageUrl={integration.imageUrl}
               link={integration.link}
               title={integration.title}
               key={index}

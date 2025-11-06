@@ -8,7 +8,7 @@ interface IntegrationCardProps {
   title: string;
   description: string;
   category: string;
-  imageUrl: any;
+  imageUrl?: any;
   link: string;
   classname?: string;
   isInFacturationPage?: boolean;
@@ -33,13 +33,14 @@ export const IntegrationCard = ({
           className={`flex w-1/3 flex-row justify-between px-5 py-7 border border-[#E3E3E3] shadow-sm rounded-md relative ${classname}`}
         >
           <div className="flex flex-col gap-5">
-            <Image
+            <div className="w-10 h-10 bg-[#86A2A3] rounded-[3px]" />
+            {/* <Image
               src={imageUrl}
               alt={title}
               width={60}
               height={60}
               className="rounded-xl mt-5"
-            />
+            /> */}
             <div className="flex flex-col gap-1">
               <Title className="font-semibold text-base text-black" level={3}>
                 {title}

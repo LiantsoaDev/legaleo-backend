@@ -14,7 +14,11 @@ export const OnboardingFinalisation = () => {
         </Title>
         <CurrentOnboardingStep />
       </div>
-      <Button classname="rounded-sm w-1/4 cursor-pointer !text-md !py-2.5">
+      <Button
+        href="/"
+        isLink
+        classname="rounded-sm w-1/4 cursor-pointer !text-md !py-2.5"
+      >
         Afficher
       </Button>
     </div>

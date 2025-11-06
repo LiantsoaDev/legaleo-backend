@@ -17,7 +17,7 @@ export const Button = ({
       href={href}
       className={`${
         isLink
-          ? `bg-secondary text-white px-5 py-3 font-manrope font-bold border-secondary rounded-full hover:bg-white hover:text-black text-base md:text-xl lg:text-base transition ease-in-out duration-500 hover:border-secondary hover:border disabled:opacity-90 disabled:cursor-not-allowed cursor-pointer ${classname}`
+          ? `bg-secondary text-white px-5 text-center py-3 font-manrope font-bold border-secondary rounded-full hover:bg-white hover:text-black text-base md:text-xl lg:text-base transition ease-in-out duration-500 hover:border-secondary hover:border disabled:opacity-90 disabled:cursor-not-allowed cursor-pointer ${classname}`
           : `font-semibold hover:underline !p-0 bg-white text-secondary cursor-pointer !border-0 !appearance-none !hover:border-0 ${classname}`
       }`}
     >

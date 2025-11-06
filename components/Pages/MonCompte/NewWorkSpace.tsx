@@ -1,9 +1,7 @@
 "use client";
-import img from "@/assets/images/template.png";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Form";
 import { Paragraphe, Title } from "@/components/Typography";
-import Image from "next/image";
 import { useState } from "react";
 
 export const NewWorkSpace = () => {
@@ -57,13 +55,14 @@ export const NewWorkSpace = () => {
         <div className="flex flex-col justify-center items-center fixed top-0 bottom-0 left-0 right-0 bg-[#00000033] w-full h-full">
           <div className="flex flex-col gap-7 bg-white p-7 rounded-2xl w-1/2">
             <div className="flex flex-col justify-center items-center gap-4">
-              <Image
+              <div className="w-10 h-10 bg-[#86A2A3] rounded-[3px]" />
+              {/* <Image
                 src={img}
                 alt="workspace"
                 className="rounded-full"
                 width={80}
                 height={80}
-              />
+              /> */}
               <label
                 htmlFor="couverture_workspace"
                 className="bg-[#F2F2F2] py-2 px-4 rounded-sm text-xs font-bold cursor-pointer text-[#828282] hover:bg-[#E0E0E0] transition"

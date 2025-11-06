@@ -1,4 +1,3 @@
-import image from "@/assets/images/template.png";
 import {
   FacturationNextPaymentCard,
   FacturationPlanCard,
@@ -33,7 +32,6 @@ const page = () => {
         <IntegrationCard
           category=""
           description=""
-          imageUrl={image}
           link=""
           title="Lorem ipsum dolor sit amet"
           workspace="Actif sur 2 espaces de travail"
@@ -42,7 +40,6 @@ const page = () => {
         <IntegrationCard
           category=""
           description=""
-          imageUrl={image}
           link=""
           title="Lorem ipsum dolor sit amet"
           workspace="Actif sur 2 espaces de travail"
@@ -51,7 +48,6 @@ const page = () => {
         <IntegrationCard
           category=""
           description=""
-          imageUrl={image}
           link=""
           title="Lorem ipsum dolor sit amet"
           workspace="Actif sur 2 espaces de travail"
