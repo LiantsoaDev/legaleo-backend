@@ -1,5 +1,7 @@
 "use client";
 import { Notices } from "@/components/Typography/Tips";
+import { setMaxInternalStep } from "@/lib/features/slice/onboardingSlice";
+import { useAppDispatch } from "@/lib/hook";
 import { useEffect } from "react";
 import { RadioGroup, SelectCRM } from "../../Form";
 import { Paragraphe, Title } from "../../Typography";
@@ -16,28 +18,24 @@ const object_developpement = [
 const has_crm = ["✅ Oui", "❌ Non"];
 
 interface RecrutementFranchiserProps {
-  setInternatStep: React.Dispatch<React.SetStateAction<number>>;
   internalStep: number;
-  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
-  currentStep: number;
 }
 
 export const RecrutementFranchiser = ({
-  currentStep,
   internalStep,
-  setCurrentStep,
-  setInternatStep,
 }: RecrutementFranchiserProps) => {
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
-    setInternatStep(4);
-  }, [internalStep]);
+    dispatch(setMaxInternalStep(4));
+  }, [dispatch]);
 
   return (
     <div className="flex flex-col gap-3 min-h-screen justify-center px-32 py-20 w-full max-w-5xl">
       <Title className="font-bold text-4xl leading-[100%] mb-8 w-full">
         Recrutement de franchisés
       </Title>
-      {currentStep === 1 && (
+      {internalStep === 1 && (
         <>
           <Paragraphe className="font-medium text-xl">
             Disposez-vous aujourd’hui d’un service (interne ou externe) dédié au
@@ -49,11 +47,12 @@ export const RecrutementFranchiser = ({
           </Notices>
         </>
       )}
-      {currentStep === 2 && (
+      {internalStep === 2 && (
         <>
           <Paragraphe className="font-medium text-xl">
-            Souhaitez-vous être accompagné dans la rédaction de vos documents de
-            recrutement (DIP, contrat, grille d’éligibilité) ?
+            Souhaitez-vous être accompagné par un humain (avocat) pour la
+            rédaction de vos documents ? (DIP, contrat, grille d'éligibilité
+            etc).
           </Paragraphe>
           <RadioGroup options={accompagnement} name="autorise_relecture" />
           <Notices classname="mt-10">
@@ -61,7 +60,7 @@ export const RecrutementFranchiser = ({
           </Notices>
         </>
       )}
-      {currentStep === 3 && (
+      {internalStep === 3 && (
         <>
           <Paragraphe className="font-medium text-xl">
             Quel est votre objectif de développement sur 12 mois ?
@@ -76,7 +75,7 @@ export const RecrutementFranchiser = ({
           </Notices>
         </>
       )}
-      {currentStep === 4 && (
+      {internalStep === 4 && (
         <>
           <SelectCRM options={has_crm} name="crm" />
         </>

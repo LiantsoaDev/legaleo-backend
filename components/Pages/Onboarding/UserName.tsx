@@ -44,6 +44,7 @@ export const UserName = () => {
           id="fonction"
           name="fonction"
           classname="w-full"
+          defaultValue="Indiquez votre fonction"
         />
       </div>
       <Notices classname="mt-5 text-lg!">

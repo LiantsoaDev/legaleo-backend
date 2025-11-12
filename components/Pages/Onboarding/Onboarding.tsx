@@ -1,7 +1,13 @@
 "use client";
 import { OnboardingStep } from "@/app/generated/prisma";
-import { handleNextStep, handlePrevStep, saveStepData } from "@/server";
-import { renderStep } from "@/utils/functions";
+
+import {
+  handleNextStep,
+  handlePrevStep,
+  saveStepData,
+} from "@/lib/features/slice/onboardingSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hook";
+import { AppDispatch } from "@/lib/store";
 import { OnboardingWithSteps } from "@/utils/types";
 import {
   faLongArrowLeft,
@@ -11,39 +17,52 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormEvent, useCallback } from "react";
 import { OnboardingCard } from "../../Card";
 
+type RenderStepFn = (
+  currentStep: number,
+  internalStep: number,
+  userId: any,
+  onboardingDatas: OnboardingWithSteps | null,
+  dispatch: AppDispatch
+) => React.ReactNode;
+
 interface OnboardingsProps {
-  user: any;
-  onboardingDatas: OnboardingWithSteps[] | null;
-  onboardingSteps: OnboardingStep[];
-  onboardingStep: number;
-  setOnboardingStep: React.Dispatch<React.SetStateAction<number>>;
-  setFormDataState: React.Dispatch<React.SetStateAction<Record<string, any>>>;
+  steps: OnboardingStep[];
+  onboardings: OnboardingWithSteps | null;
+  currentStep: number;
   internalStep: number;
-  setinternalStep: React.Dispatch<React.SetStateAction<number>>;
-  internalCurrentStep: number;
-  setInternalCurrentStep: React.Dispatch<React.SetStateAction<number>>;
-  type: "general" | "jeuneReseau" | "juridique";
+  formData: Record<string, any>;
+  renderStep: RenderStepFn;
 }
 
 export const Onboardings = ({
-  user,
-  onboardingDatas,
-  onboardingSteps,
-  onboardingStep,
-  setOnboardingStep,
-  setFormDataState,
+  steps,
+  onboardings,
+  currentStep,
   internalStep,
-  setinternalStep,
-  internalCurrentStep,
-  setInternalCurrentStep,
-  type,
+  renderStep,
 }: OnboardingsProps) => {
+  const { id: userId } = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
+
+  const nextStepPayload = {
+    userId: userId,
+    onboardingDatas: onboardings,
+    linkToRedirect: "/dashboard",
+  };
+
+  const prevStepPayload = {
+    userId: userId,
+    onboardingDatas: onboardings,
+  };
+
   const handleSubmit = useCallback(
     (e: FormEvent) => {
       e.preventDefault();
-      saveStepData(setFormDataState, onboardingDatas, user);
+      if (userId && onboardings) {
+        dispatch(saveStepData({ userId, onboardingDatas: onboardings }));
+      }
     },
-    [setFormDataState, onboardingDatas, user]
+    [userId]
   );
 
   return (
@@ -52,38 +71,16 @@ export const Onboardings = ({
         onSubmit={handleSubmit}
         className="w-2/3 justify-between flex flex-col relative select-none"
       >
-        {renderStep(
-          onboardingStep,
-          setinternalStep,
-          internalStep,
-          setInternalCurrentStep,
-          internalCurrentStep,
-          onboardingSteps,
-          setOnboardingStep,
-          setFormDataState,
-          user,
-          onboardingDatas,
-          type
-        )}
+        {renderStep(currentStep, internalStep, userId, onboardings, dispatch)}
         <div className="fixed bottom-10 items-center right-[20%] translate-[-50%] bg-blue px-5 py-5 rounded-full flex gap-10 text-white text-xl">
           <button
             type="submit"
-            onClick={() =>
-              handlePrevStep(
-                internalCurrentStep,
-                internalStep,
-                setOnboardingStep,
-                setInternalCurrentStep,
-                setFormDataState,
-                user,
-                onboardingDatas
-              )
-            }
+            onClick={() => dispatch(handlePrevStep(prevStepPayload))}
           >
             <FontAwesomeIcon
               icon={faLongArrowLeft}
               className={`cursor-pointer transition ${
-                onboardingStep === 0
+                currentStep === 0
                   ? "opacity-40 pointer-events-none"
                   : "opacity-100"
               }`}
@@ -92,20 +89,7 @@ export const Onboardings = ({
 
           <button
             type="submit"
-            onClick={() =>
-              handleNextStep(
-                internalCurrentStep,
-                internalStep,
-                onboardingSteps,
-                onboardingStep,
-                setOnboardingStep,
-                setInternalCurrentStep,
-                setFormDataState,
-                "/dashboard",
-                user,
-                onboardingDatas
-              )
-            }
+            onClick={() => dispatch(handleNextStep(nextStepPayload))}
           >
             <FontAwesomeIcon
               icon={faLongArrowRight}
@@ -115,17 +99,19 @@ export const Onboardings = ({
         </div>
       </form>
       <div className="bg-[#1F120E] w-[480px] rounded-l-4xl h-full px-16 py-20 flex flex-col gap-7 justify-center overflow-y-auto select-none">
-        {onboardingSteps &&
-          onboardingSteps.length > 0 &&
-          onboardingSteps.map((onboarding: OnboardingStep, index) => (
+        {steps &&
+          steps.length > 0 &&
+          steps.map((onboarding: OnboardingStep, index) => (
             <OnboardingCard
               key={index}
               title={onboarding.title || "Bienvenu sur legaleo"}
-              isActive={index + 1 === onboardingStep}
-              isCompleted={index < onboardingStep}
+              isActive={index + 1 === currentStep}
+              isCompleted={index < currentStep}
               step={index + 1}
-              isLast={index === onboardingSteps.length - 1}
-              setOnboardingStep={setOnboardingStep}
+              isLast={index === steps.length - 1}
+              dispatch={dispatch}
+              onboardingDatas={onboardings}
+              userId={userId}
             />
           ))}
       </div>

@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { Fraunces, Manrope } from "next/font/google";
 import "./globals.css";
 
+import AuthWatcher from "@/components/AuthWatcher";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css"; // Import obligatoire
+import { SessionProvider } from "next-auth/react";
 import { ToastContainer } from "react-toastify";
+import StoreProvider from "./StoreProvider";
 config.autoAddCss = false; // 🔥 Important pour éviter les bugs de CSS avec Next.js
 
 const manrope = Manrope({
@@ -30,8 +33,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${manrope.variable} ${fraunces.variable} antialiased `}>
-        {children}
-        <ToastContainer />
+        <SessionProvider>
+          <StoreProvider>
+            <AuthWatcher />
+            {children}
+            <ToastContainer />
+          </StoreProvider>
+        </SessionProvider>
       </body>
     </html>
   );

@@ -34,6 +34,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   onboardingAnswers OnboardingAnswer[]
+  onboardingStep    OnboardingStep[]
 }
 
 model Onboarding {
@@ -64,6 +65,9 @@ model OnboardingStep {
   onboardingId     String
   onboarding       Onboarding @relation(fields: [onboardingId], references: [id], onDelete: Cascade)
   File             File[]
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 }
 
 model OnboardingAnswer {

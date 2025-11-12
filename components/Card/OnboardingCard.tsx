@@ -1,3 +1,6 @@
+import { jumpToStep } from "@/lib/features/slice/onboardingSlice";
+import { AppDispatch } from "@/lib/store";
+import { OnboardingWithSteps } from "@/utils/types";
 import { Title } from "../Typography";
 
 interface OnboardingCardProps {
@@ -7,7 +10,9 @@ interface OnboardingCardProps {
   key: string | number | undefined;
   step: number;
   isLast: boolean;
-  setOnboardingStep: React.Dispatch<React.SetStateAction<number>>;
+  dispatch: AppDispatch;
+  userId: string | null;
+  onboardingDatas: OnboardingWithSteps | null;
 }
 
 export const OnboardingCard = ({
@@ -16,12 +21,26 @@ export const OnboardingCard = ({
   isCompleted,
   step,
   isLast,
-  setOnboardingStep,
+  dispatch, // <-- Prop mise à jour
+  userId,
+  onboardingDatas,
 }: OnboardingCardProps) => {
+  const handleJump = () => {
+    if (userId) {
+      dispatch(
+        jumpToStep({
+          step: step,
+          userId: userId,
+          onboardingDatas: onboardingDatas,
+        })
+      );
+    }
+  };
+
   return (
     <div
       className="flex flex-row gap-8 items-center cursor-pointer"
-      onClick={() => setOnboardingStep(step)}
+      onClick={handleJump}
     >
       <div
         className={`flex justify-center items-center font-manrope text-xl font-medium ${

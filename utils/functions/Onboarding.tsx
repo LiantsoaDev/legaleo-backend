@@ -1,163 +1,112 @@
-import { OnboardingStep } from "@/app/generated/prisma";
-import { ConsentementRGPD, Welcome } from "@/components/Pages/Onboarding";
+import {
+  Approvisionnement,
+  ConsentementRGPD,
+  ConventionAnnuel,
+  Formation,
+  InformationFinanciere,
+  MarqueJeuneReseau,
+  OutilGestion,
+  PointVente,
+  SiteInternetReseauSociaux,
+  Territoire,
+  Welcome,
+} from "@/components/Pages/Onboarding";
+import { ConceptSavoirFaire } from "@/components/Pages/Onboarding/ConceptSavoirFaire";
 import { RecrutementFranchiser } from "@/components/Pages/Onboarding/RecrutementFranchiser";
 import { RedactionContrat } from "@/components/Pages/Onboarding/RedactionContrat";
 import { UserName } from "@/components/Pages/Onboarding/UserName";
 import { VotreEnseigne } from "@/components/Pages/Onboarding/VotreEnseigne";
-import { VotreReseau } from "@/components/Pages/Onboarding/VotreReseau";
-import { handleNextStep } from "@/server";
+import {
+  VotreReseau,
+  VotreReseauJeune,
+} from "@/components/Pages/Onboarding/VotreReseau";
+import { handleNextStep } from "@/lib/features/slice/onboardingSlice";
+import { AppDispatch } from "@/lib/store";
 import { OnboardingWithSteps } from "../types";
 
 export const renderStep = (
-  onboardingStep: number,
-  setinternalStep: React.Dispatch<React.SetStateAction<number>>,
+  currentStep: number,
   internalStep: number,
-  setInternalCurrentStep: React.Dispatch<React.SetStateAction<number>>,
-  internalCurrentStep: number,
-  onboardingSteps: OnboardingStep[],
-  setOnboardingStep: React.Dispatch<React.SetStateAction<number>>,
-  setFormDataState: React.Dispatch<React.SetStateAction<Record<string, any>>>,
-  user: any,
-  onboardingDatas: OnboardingWithSteps[] | null,
-  type: "general" | "jeuneReseau" | "juridique"
+  userId: any,
+  onboardingDatas: OnboardingWithSteps | null,
+  dispatch: AppDispatch
 ) => {
-  if (type === "general") {
-    switch (onboardingStep) {
-      case 1:
-        return (
-          <Welcome
-            onClick={() =>
-              handleNextStep(
-                internalCurrentStep,
-                internalStep,
-                onboardingSteps,
-                onboardingStep,
-                setOnboardingStep,
-                setInternalCurrentStep,
-                setFormDataState,
-                "/dashboard",
-                user,
-                onboardingDatas
-              )
-            }
-          />
-        );
-      case 2:
-        return <UserName />;
-      case 3:
-        return <VotreEnseigne />;
-      case 4:
-        return (
-          <VotreReseau
-            setInternatStep={setinternalStep}
-            internalStep={internalStep}
-            setCurrentStep={setInternalCurrentStep}
-            currentStep={internalCurrentStep}
-          />
-        );
-      case 5:
-        return (
-          <RecrutementFranchiser
-            setInternatStep={setinternalStep}
-            internalStep={internalStep}
-            setCurrentStep={setInternalCurrentStep}
-            currentStep={internalCurrentStep}
-          />
-        );
-      case 6:
-        return (
-          <RedactionContrat
-            setInternatStep={setinternalStep}
-            internalStep={internalStep}
-            setCurrentStep={setInternalCurrentStep}
-            currentStep={internalCurrentStep}
-            onClick={() =>
-              handleNextStep(
-                internalCurrentStep,
-                internalStep,
-                onboardingSteps,
-                onboardingStep,
-                setOnboardingStep,
-                setInternalCurrentStep,
-                setFormDataState,
-                "/dashboard",
-                user,
-                onboardingDatas
-              )
-            }
-          />
-        );
-      case 7:
-        return <ConsentementRGPD />;
-    }
-  } else if (type === "jeuneReseau") {
-    switch (onboardingStep) {
-      case 1:
-        return (
-          <Welcome
-            onClick={() =>
-              handleNextStep(
-                internalCurrentStep,
-                internalStep,
-                onboardingSteps,
-                onboardingStep,
-                setOnboardingStep,
-                setInternalCurrentStep,
-                setFormDataState,
-                "/dashboard",
-                user,
-                onboardingDatas
-              )
-            }
-          />
-        );
-      case 2:
-        return <UserName />;
-      case 3:
-        return <VotreEnseigne />;
-      case 4:
-        return (
-          <VotreReseau
-            setInternatStep={setinternalStep}
-            internalStep={internalStep}
-            setCurrentStep={setInternalCurrentStep}
-            currentStep={internalCurrentStep}
-          />
-        );
-      case 5:
-        return (
-          <RecrutementFranchiser
-            setInternatStep={setinternalStep}
-            internalStep={internalStep}
-            setCurrentStep={setInternalCurrentStep}
-            currentStep={internalCurrentStep}
-          />
-        );
-      case 6:
-        return (
-          <RedactionContrat
-            setInternatStep={setinternalStep}
-            internalStep={internalStep}
-            setCurrentStep={setInternalCurrentStep}
-            currentStep={internalCurrentStep}
-            onClick={() =>
-              handleNextStep(
-                internalCurrentStep,
-                internalStep,
-                onboardingSteps,
-                onboardingStep,
-                setOnboardingStep,
-                setInternalCurrentStep,
-                setFormDataState,
-                "/dashboard",
-                user,
-                onboardingDatas
-              )
-            }
-          />
-        );
-      case 7:
-        return <ConsentementRGPD />;
-    }
+  const nextStepPayload = {
+    userId: userId,
+    onboardingDatas: onboardingDatas,
+    linkToRedirect: "/dashboard",
+  };
+
+  switch (currentStep) {
+    case 1:
+      return (
+        <Welcome onClick={() => dispatch(handleNextStep(nextStepPayload))} />
+      );
+    case 2:
+      return <UserName />;
+    case 3:
+      return <VotreEnseigne />;
+    case 4:
+      return <VotreReseau internalStep={internalStep} dispatch={dispatch} />;
+    case 5:
+      return <RecrutementFranchiser internalStep={internalStep} />;
+    case 6:
+      return (
+        <RedactionContrat
+          internalStep={internalStep}
+          onClick={() => dispatch(handleNextStep(nextStepPayload))}
+        />
+      );
+    case 7:
+      return <ConsentementRGPD />;
+  }
+};
+
+export const renderStepJeuneReseau = (
+  currentStep: number,
+  internalStep: number,
+  userId: any,
+  onboardingDatas: OnboardingWithSteps | null,
+  dispatch: AppDispatch
+) => {
+  const nextStepPayload = {
+    userId: userId,
+    onboardingDatas: onboardingDatas,
+    linkToRedirect: "/dashboard",
+  };
+
+  switch (currentStep) {
+    case 1:
+      return (
+        <Welcome onClick={() => dispatch(handleNextStep(nextStepPayload))} />
+      );
+    case 2:
+      return <UserName />;
+    case 3:
+      return <VotreEnseigne />;
+    case 4:
+      return (
+        <VotreReseauJeune internalStep={internalStep} dispatch={dispatch} />
+      );
+    case 5:
+      return <ConceptSavoirFaire internalStep={internalStep} />;
+    case 6:
+      return <MarqueJeuneReseau internalStep={internalStep} />;
+    case 7:
+      return <PointVente internalStep={internalStep} />;
+    case 8:
+      return <Territoire />;
+    case 9:
+      return <InformationFinanciere internalStep={internalStep} />;
+    case 10:
+      return <SiteInternetReseauSociaux />;
+    case 11:
+      return <Approvisionnement internalStep={internalStep} />;
+    case 12:
+      return <Formation internalStep={internalStep} />;
+    case 13:
+      return <ConventionAnnuel />;
+    case 14:
+      return <OutilGestion internalStep={internalStep} />;
   }
 };

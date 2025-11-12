@@ -6,6 +6,12 @@ import { hashPassword } from "@/utils/functions";
 async function main() {
   console.log("🌱 Seeding database...");
   // Créer un onboarding global
+  console.log("🧹 Suppression des anciennes données d'onboarding...");
+  await prisma.file.deleteMany({});
+  await prisma.onboardingAnswer.deleteMany({});
+  await prisma.onboardingStep.deleteMany({});
+  await prisma.onboarding.deleteMany({});
+  console.log("✅ Données d'onboarding supprimées.");
   const onboarding = await prisma.onboarding.create({
     data: {
       title: "Onboarding principal",

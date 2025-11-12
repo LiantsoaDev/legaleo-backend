@@ -1,4 +1,6 @@
 "use client";
+import { setMaxInternalStep } from "@/lib/features/slice/onboardingSlice";
+import { useAppDispatch } from "@/lib/hook";
 import { useEffect } from "react";
 import { RadioGroup, SelectImporter } from "../../Form";
 import { Paragraphe, Title } from "../../Typography";
@@ -11,39 +13,36 @@ const objectif_principal = [
 ];
 
 interface RedactionContratProps {
-  setInternatStep: React.Dispatch<React.SetStateAction<number>>;
   internalStep: number;
-  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
-  currentStep: number;
   onClick: () => void;
 }
 
 const modele_contrat = ["✅ Oui", "❌ Non"];
 
 export const RedactionContrat = ({
-  currentStep,
   internalStep,
-  setCurrentStep,
-  setInternatStep,
   onClick,
 }: RedactionContratProps) => {
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
-    setInternatStep(2);
-  }, [currentStep]);
+    dispatch(setMaxInternalStep(2));
+  }, [dispatch]);
+
   return (
     <>
-      {currentStep === 1 && (
+      {internalStep === 1 && (
         <div className="flex flex-col gap-5 min-h-screen justify-center px-32 py-20 w-full">
           <Title className="font-bold text-4xl leading-[100%] mb-5 w-full">
             Rédaction et gestion de contrat
           </Title>
           <Paragraphe className="font-medium text-xl">
-            Avez-vous déjà un modèle de contrat à importer ?
+            Qu'attendez-vous principalement de Legaleo ?
           </Paragraphe>
           <RadioGroup options={objectif_principal} name="autorise_relecture" />
         </div>
       )}
-      {currentStep === 2 && (
+      {internalStep === 2 && (
         <SelectImporter
           onClick={onClick}
           name="has_contrat_model"

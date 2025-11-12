@@ -1,5 +1,5 @@
 "use client";
-
+import pdp from "@/assets/images/pdp.png";
 import { getErrorMessage, getInputValue } from "@/utils/functions";
 import {
   CheckBoxProps,
@@ -16,6 +16,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../Button";
@@ -161,11 +162,30 @@ export const RadioGroup = ({
   classSelected,
   redirectTo,
   onChange,
+  questionId,
+  setAnswers,
+  id,
 }: RadioProps) => {
   const [selectedValue, setSelectedValue] = useState<string>("");
+
+  useEffect(() => {}, [selectedValue]);
+
   const handleSelect = (option: string) => {
     setSelectedValue(option);
-    onChange?.(option);
+    let normalized = "";
+
+    if (option.includes("Oui")) {
+      normalized = "oui";
+    } else if (option.includes("Non")) {
+      normalized = "non";
+    } else {
+      normalized = option;
+    }
+    // const normalizeds = option.includes("Oui") ? "oui" : "non";
+    onChange?.(normalized);
+    if (questionId && setAnswers) {
+      setAnswers((prev) => ({ ...prev, [questionId]: normalized }));
+    }
   };
   return (
     <div className={`flex gap-4 flex-wrap ${classContainer}`}>
@@ -173,7 +193,7 @@ export const RadioGroup = ({
         <CheckBox
           showLogo={showLogo}
           key={index}
-          id={`radio-${index}`}
+          id={id ? `${id}-${index}` : `radio-${name}-${index}`}
           value={option}
           isSelected={selectedValue === option}
           onSelect={() => handleSelect(option)}
@@ -414,11 +434,7 @@ export const SelectWithSearch = () => {
   );
 };
 
-const has_dip = [
-  "✅ Oui, je l’ai déjà",
-  "❌ Non, pas encore",
-  "🤷 Je ne sais pas",
-];
+const has_dip = ["✅ Oui, je l’ai déjà", "❌ Non, pas encore"];
 
 interface SelectTypeReseauProps {
   options: string[];
@@ -564,5 +580,268 @@ export const SelectImporter = ({
         <Documents onClick={() => onClick()} />
       )}
     </>
+  );
+};
+
+interface TextareaIAProps {
+  name: string;
+  suggestions: string[];
+  classname?: string;
+}
+
+export const TextareaIA = ({
+  name,
+  suggestions,
+  classname,
+}: TextareaIAProps) => {
+  const [value, setValue] = useState("");
+  return (
+    <div
+      className={`w-full h-56 border border-[#E3E3E3] rounded-xl relative p-5 ${classname}`}
+    >
+      <textarea
+        name={name}
+        id=""
+        className="w-full h-full appearance-none outline-none focus-within:outline-none resize-none"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
+      <AssistantTextarea
+        suggestions={suggestions}
+        setSuggeredValue={setValue}
+        classname="absolute bottom-5 right-5"
+      />
+    </div>
+  );
+};
+
+interface AssistantTextareaProps {
+  suggestions: string[];
+  classname?: string;
+  setSuggeredValue: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const AssistantTextarea = ({
+  suggestions,
+  classname,
+  setSuggeredValue,
+}: AssistantTextareaProps) => {
+  const [showSuggestion, setShowSuggestion] = useState(false);
+
+  const handleSetSuggeredAnswers = (suggestion: string) => {
+    setSuggeredValue(
+      `Generer via: ${suggestion}: Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias maxime atque consectetur nam! Suscipit voluptates iusto porro ratione a iure magnam ipsa aliquid. Illo, blanditiis iusto eos sint a iste.`
+    );
+    setShowSuggestion(false);
+  };
+
+  return (
+    <div className={`flex flex-col gap-2.5  items-end ${classname}`}>
+      <div className="flex flex-row items-center gap-3 cursor-pointer">
+        {!showSuggestion && (
+          <span
+            onClick={() => setShowSuggestion(!showSuggestion)}
+            className="text-base font-semibold text-[#087F83] bg-[#F2F8F8] px-3.5 py-2 rounded-full"
+          >
+            Besoin d'un coup de main ?
+          </span>
+        )}
+        <svg
+          width="48"
+          height="48"
+          viewBox="0 0 48 48"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          onClick={() => setShowSuggestion(!showSuggestion)}
+        >
+          <rect width="48" height="48" rx="24" fill="#62E7EB" />
+          <path
+            d="M25.9082 12.9769C24.7408 12.2473 23.2596 12.2473 22.0922 12.9769L14.8922 17.4769C13.8396 18.1348 13.2002 19.2884 13.2002 20.5297V27.4693C13.2002 28.7105 13.8396 29.8642 14.8922 30.5221L22.0922 35.0221C23.2596 35.7517 24.7408 35.7517 25.9082 35.0221L33.1082 30.5221C34.1608 29.8642 34.8002 28.7105 34.8002 27.4693V20.5297C34.8002 19.2884 34.1608 18.1348 33.1082 17.4769L25.9082 12.9769Z"
+            fill="white"
+            stroke="white"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+          />
+        </svg>
+        {showSuggestion && (
+          <span
+            className="font-semibold text-base text-black"
+            onClick={() => setShowSuggestion(!showSuggestion)}
+          >
+            Assistant Legaleo
+          </span>
+        )}
+      </div>
+      {showSuggestion && (
+        <div className="flex flex-col items-end gap-2.5">
+          {suggestions.map((suggestion: string, index: number) => (
+            <span
+              key={index}
+              onClick={() => handleSetSuggeredAnswers(suggestion)}
+              className="text-base font-semibold text-[#087F83] bg-[#F2F8F8] px-3.5 py-2 rounded-full cursor-pointer"
+            >
+              {suggestion}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export const ImportImage = () => {
+  const [imageSrc, setImageSrc] = useState<any>(pdp);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file); // crée une URL temporaire
+      setImageSrc(url);
+    }
+  };
+
+  const handleRemoveImage = (e: any) => {
+    e.preventDefault();
+    alert("kdj");
+    setImageSrc(pdp);
+  };
+
+  return (
+    <div className="flex flex-row items-center gap-4 mb-5">
+      <Image
+        src={imageSrc}
+        alt="photo de profil"
+        width={80}
+        height={80}
+        className="rounded-full w-20 h-20"
+      />
+      <div className="flex flex-row gap-4 items-center">
+        <label
+          htmlFor="photo_profil"
+          className="bg-[#F2F2F2] py-2 px-4 rounded-sm text-xs font-bold cursor-pointer text-[#828282] hover:bg-[#E0E0E0] transition"
+        >
+          Importer une image
+        </label>
+        <input
+          type="file"
+          name="photo_profil"
+          id="photo_profil"
+          className="hidden"
+          onChange={handleImageChange}
+        />
+        <Button
+          href="#"
+          classname="!text-xs"
+          onclick={(e) => handleRemoveImage(e)}
+        >
+          Supprimer
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+interface TextareaAndFilesProps {
+  name: string;
+  id: string;
+  classname?: string;
+  placeholder: string;
+}
+
+export const TextareaAndFiles = ({
+  id,
+  name,
+  classname,
+  placeholder,
+}: TextareaAndFilesProps) => {
+  const [value, setValue] = useState<string | File | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setValue(e.target.value);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setValue(file);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      setValue(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  return (
+    <div
+      className="flex flex-col gap-0 border border-[#E3E3E3] rounded-xl h-[307px] relative p-5"
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+    >
+      <textarea
+        name={`textarea-${name}`}
+        id={`textarea-${id}`}
+        className="appearance-none p-0 text-xl font-medium text-black h-full w-full resize-none outline-none"
+        placeholder={placeholder}
+        onChange={handleTextChange}
+      ></textarea>
+      <label htmlFor={`file-${id}`} className="absolute bottom-7 right-5">
+        <svg
+          width="40"
+          height="40"
+          viewBox="0 0 40 40"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect width="40" height="40" rx="20" fill="#E5E7FF" />
+          <path
+            d="M20.0009 25.5556V10"
+            stroke="#545FFF"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M28.8911 30.0009H11.1133"
+            stroke="#545FFF"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M25.5575 20L20.0009 25.5567L14.4453 20"
+            stroke="#545FFF"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </label>
+      <input
+        type="file"
+        className="hidden"
+        id={`file-${id}`}
+        name={`file-${name}`}
+        onChange={handleFileChange}
+      />
+    </div>
   );
 };

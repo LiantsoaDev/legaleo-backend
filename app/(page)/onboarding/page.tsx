@@ -1,20 +1,9 @@
-import { auth } from "@/auth";
 import { OnboardingGeneral } from "@/components/Pages/Onboarding";
-import { getOnboardings } from "@/server";
-import { redirect } from "next/navigation";
 
 const page = async () => {
-  const session = await auth();
-
-  const onboardings = await getOnboardings();
-
-  if (!session?.user) {
-    redirect("/");
-  }
-
   return (
     <div className=" h-screen flex flex-col gap-7">
-      <OnboardingGeneral user={session.user} />
+      <OnboardingGeneral />
     </div>
   );
 };

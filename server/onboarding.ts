@@ -4,13 +4,15 @@ import { toast } from "react-toastify";
 
 type FormDataValue = string | { name: string; type: string; content: string };
 
-export const getOnboardings = async () => {
+export const getOnboardings = async (title: string) => {
   try {
-    const res = await fetch("/api/user/onboarding");
+    const res = await fetch(
+      `/api/user/onboarding?title=${encodeURIComponent(title)}`
+    );
     if (!res.ok) throw new Error("Erreur serveur");
     return await res.json();
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return null;
   }
 };

@@ -1,22 +1,21 @@
 "use client";
+import { startLoading, stopLoading } from "@/lib/features/slice/authSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hook";
 import { createUser, handleSubmit } from "@/utils/functions";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { Button } from "../Button";
 import { Form, Input } from "../Form";
 import { Paragraphe, Title } from "../Typography";
 
-interface LoginRegisterProps {
-  isLoading?: boolean;
-  setIsLoading: React.Dispatch<SetStateAction<boolean>>;
-}
-
-export const LoginRegister = ({ setIsLoading }: LoginRegisterProps) => {
+export const LoginRegister = () => {
   const [showCreateUser, setShowCreateUser] = useState<boolean>(false);
   const [showForgotPassword, setShowForgotPassword] = useState<boolean>(false);
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { isLoading } = useAppSelector((state) => state.auth);
 
   const handleShowRegister = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -26,7 +25,7 @@ export const LoginRegister = ({ setIsLoading }: LoginRegisterProps) => {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
+    dispatch(startLoading());
     try {
       const formData = new FormData(e.currentTarget);
       const email = formData.get("email") as string;
@@ -58,7 +57,7 @@ export const LoginRegister = ({ setIsLoading }: LoginRegisterProps) => {
         theme: "colored",
       });
     } finally {
-      setIsLoading(false);
+      dispatch(stopLoading());
     }
   };
 
@@ -78,7 +77,7 @@ export const LoginRegister = ({ setIsLoading }: LoginRegisterProps) => {
             onSubmit={(e) =>
               handleSubmit(e, () => {
                 e.preventDefault();
-                setIsLoading(true);
+                dispatch(startLoading());
                 const emailValue = e.currentTarget.email;
                 console.log(
                   "Recuperation de mot de passe pour l'email:",
@@ -96,7 +95,7 @@ export const LoginRegister = ({ setIsLoading }: LoginRegisterProps) => {
                 if (emailValue) {
                   emailValue.value = "";
                 }
-                setIsLoading(false);
+                dispatch(stopLoading());
               })
             }
           >

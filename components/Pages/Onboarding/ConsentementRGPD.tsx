@@ -15,8 +15,8 @@ export const ConsentementRGPD = () => {
         />
         <div className="flex flex-col gap-2.5">
           <label htmlFor="consent" className="font-medium text-2xl text-black">
-            J’autorise Legaleo à stocker et analyser ces documents pour
-            améliorer mes modèles de contrat.
+            J’accepte que mes documents soient utilisés par Legaleo afin
+            d’optimiser mon expérience sur la plateforme.
           </label>
           <Link
             href="politique-confidentialite"

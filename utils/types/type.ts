@@ -40,6 +40,7 @@ export interface CheckBoxProps {
 }
 
 export interface RadioProps {
+  id?: string;
   options: string[];
   name: string;
   showLogo?: boolean;
@@ -49,6 +50,8 @@ export interface RadioProps {
   hasToRedirectTo?: boolean;
   redirectTo?: string;
   onChange?: (option: string) => void;
+  questionId?: string;
+  setAnswers?: React.Dispatch<React.SetStateAction<Record<string, string>>>;
 }
 
 export interface MultiSelectGroupProps {
@@ -185,4 +188,44 @@ export type FileNode = {
 export interface Recharge {
   duration: string;
   prix: string;
+}
+
+export type QuestionType =
+  | "yesno"
+  | "text"
+  | "textarea"
+  | "file"
+  | "image"
+  | "number"
+  | "array"
+  | "textareaAndFile";
+
+export interface Subquestion {
+  id: string;
+  label: string;
+  type: QuestionType;
+  placeholder?: string;
+  needIA?: string;
+}
+
+interface Questions {
+  label: string;
+  type: QuestionType;
+  placeholder?: string;
+  option?: string[];
+  showLogo?: boolean;
+}
+
+export interface Question {
+  id: string;
+  label: string;
+  type: QuestionType;
+  dependsOn?: string;
+  condition?: string;
+  placeholder?: string;
+  needIA?: boolean;
+  option?: string[];
+  showLogo?: boolean;
+  subquestion?: Subquestion;
+  questions?: Questions[];
 }
