@@ -221,7 +221,7 @@ export const onboardingSlice = createSlice({
         state.isLoading = false;
         state.onboardings = action.payload.data;
         if (state.onboardings) {
-          state.steps = state.onboardings.steps;
+          state.steps = state.onboardings.steps.reverse();
         }
       })
       .addCase(fetchOnboardings.rejected, (state, action) => {

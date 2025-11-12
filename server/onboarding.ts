@@ -9,6 +9,7 @@ export const getOnboardings = async (title: string) => {
     const res = await fetch(
       `/api/user/onboarding?title=${encodeURIComponent(title)}`
     );
+
     if (!res.ok) throw new Error("Erreur serveur");
     return await res.json();
   } catch (error) {
