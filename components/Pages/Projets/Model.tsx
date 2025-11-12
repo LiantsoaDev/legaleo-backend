@@ -1,4 +1,4 @@
-import franchiseur from "@/assets/images/logo_franchiseur.png";
+import franchiseur from "@/app/assets/images/logo_franchiseur.png";
 import { SearchBar } from "@/components/Form";
 import { Title } from "@/components/Typography";
 import { ModelContrat } from "../Dashboard/Models/ModelContrat";

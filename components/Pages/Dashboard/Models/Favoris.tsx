@@ -1,4 +1,4 @@
-import franchiseur from "@/assets/images/logo_franchiseur.png";
+import franchiseur from "@/app/assets/images/logo_franchiseur.png";
 import { ModelContrat } from "./ModelContrat";
 
 const modelContrats = [

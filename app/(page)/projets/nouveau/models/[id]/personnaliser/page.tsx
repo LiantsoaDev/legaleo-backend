@@ -1,4 +1,4 @@
-import franchiseur from "@/assets/images/logo_franchiseur.png";
+import franchiseur from "@/app/assets/images/logo_franchiseur.png";
 import { auth } from "@/auth";
 import { Personnaliser } from "@/components/Pages/Projets";
 import { redirect } from "next/navigation";

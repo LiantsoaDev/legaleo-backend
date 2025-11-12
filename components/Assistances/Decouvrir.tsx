@@ -1,4 +1,4 @@
-import assistanceIA from "@/assets/images/assistance_logo.png";
+import assistanceIA from "@/app/assets/images/assistance_logo.png";
 import Image from "next/image";
 import { Button } from "../Button";
 import { Paragraphe, Title } from "../Typography";
