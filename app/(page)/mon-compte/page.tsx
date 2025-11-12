@@ -1,5 +1,4 @@
 "use client";
-import pdp from "@/assets/images/pdp.png";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Form";
 import { Paragraphe, Title } from "@/components/Typography";
@@ -25,7 +24,12 @@ const page = () => {
             Photo de profil
           </Title>
           <div className="flex flex-row items-center gap-4 mb-5">
-            <Image src={pdp} alt="photo de profil" width={80} height={80} />
+            <Image
+              src="../../assets/images/pdp.png"
+              alt="photo de profil"
+              width={80}
+              height={80}
+            />
             <div className="flex flex-row gap-4 items-center">
               <label
                 htmlFor="photo_profil"

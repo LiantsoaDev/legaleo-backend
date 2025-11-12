@@ -1,5 +1,4 @@
 "use client";
-import pdp from "@/assets/images/pdp.png";
 import { Input } from "@/components/Form";
 import { Paragraphe } from "@/components/Typography";
 import Image from "next/image";
@@ -11,7 +10,12 @@ export const CommentaireCard = () => {
     <div className="flex flex-col gap-3 rounded-sm shadow px-3.5 py-3.5">
       <div className="flex flex-col gap-1">
         <div className="flex flex-row gap-1 items-center">
-          <Image src={pdp} alt="pdp" width={24} height={24} />
+          <Image
+            src="../../../app/assets/images/pdp.png"
+            alt="pdp"
+            width={24}
+            height={24}
+          />
           <span className="font-bold text-xs text-[#087F83]">
             ID utilisateur
           </span>

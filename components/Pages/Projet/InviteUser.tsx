@@ -1,6 +1,4 @@
 "use client";
-import pdp from "@/assets/images/pdp.png";
-import { Button } from "@/components/Button";
 import { Title } from "@/components/Typography";
 import { faCheck, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons/faChevronDown";
@@ -34,7 +32,12 @@ export const InviteUser = ({ currentRole }: InviteUserProps) => {
         }}
       >
         <div className="flex flex-row items-center gap-2">
-          <Image src={pdp} alt="Photo de profil" width={30} height={30} />
+          <Image
+            src="../../../app/assets/images/pdp.png"
+            alt="Photo de profil"
+            width={30}
+            height={30}
+          />
           <div className="flex flex-col gap-1">
             <Title className="font-medium text-black text-sm">
               Lorem ipsum

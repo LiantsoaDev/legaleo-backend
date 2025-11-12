@@ -1,6 +1,6 @@
 "use client";
-import LogoGoogle from "@/assets/images/logo_google.png";
-import LogoMicrosoft from "@/assets/images/logo_microsoft.png";
+import LogoGoogle from "@/app/assets/images/logo_google.png";
+import LogoMicrosoft from "@/app/assets/images/logo_microsoft.png";
 import {
   setError,
   startLoading,

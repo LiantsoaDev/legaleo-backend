@@ -1,4 +1,4 @@
-import logo_partner from "@/assets/images/logo_ipsum.png";
+import logo_partner from "@/app/assets/images/logo_ipsum.png";
 import Image from "next/image";
 import { Paragraphe } from "../Typography";
 

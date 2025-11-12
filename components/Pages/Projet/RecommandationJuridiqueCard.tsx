@@ -1,5 +1,4 @@
 "use client";
-import pdp from "@/assets/images/pdp.png";
 import { Input } from "@/components/Form";
 import { Paragraphe } from "@/components/Typography";
 import { useTabContext } from "@/hooks/useTabContext";
@@ -285,7 +284,12 @@ export const RecommandationJuridiqueCard = ({
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-1">
             <div className="font-medium text-sm text-black flex gap-1 items-center">
-              <Image src={pdp} alt="photo de profil" width={24} height={24} />
+              <Image
+                src="../../../app/assets/images/pdp.png"
+                alt="photo de profil"
+                width={24}
+                height={24}
+              />
               <span className="font-semibold text-xs text-[#087F83]">
                 ID utilisateur
               </span>

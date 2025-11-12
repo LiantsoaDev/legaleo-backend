@@ -1,4 +1,3 @@
-import pdp from "@/assets/images/pdp.png";
 import { Paragraphe, Title } from "@/components/Typography";
 import {
   faChevronDown,
@@ -62,7 +61,12 @@ export const Synthese = () => {
                 Propriétaire
               </span>
               <span className="font-medium text-sm text-black flex gap-2.5 items-center">
-                <Image src={pdp} alt="photo de profil" width={24} height={24} />
+                <Image
+                  src="../../../app/assets/images/pdp.png"
+                  alt="photo de profil"
+                  width={24}
+                  height={24}
+                />
                 Lorem ipsum
               </span>
             </div>

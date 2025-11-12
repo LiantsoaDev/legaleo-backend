@@ -1,5 +1,4 @@
 "use client";
-import pdp from "@/assets/images/pdp.png";
 import { getErrorMessage, getInputValue } from "@/utils/functions";
 import {
   CheckBoxProps,
@@ -690,7 +689,9 @@ export const AssistantTextarea = ({
 };
 
 export const ImportImage = () => {
-  const [imageSrc, setImageSrc] = useState<any>(pdp);
+  const [imageSrc, setImageSrc] = useState<any>(
+    "../../app/assets/images/pdp.png"
+  );
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -702,8 +703,7 @@ export const ImportImage = () => {
 
   const handleRemoveImage = (e: any) => {
     e.preventDefault();
-    alert("kdj");
-    setImageSrc(pdp);
+    setImageSrc("../../app/assets/images/pdp.png");
   };
 
   return (
