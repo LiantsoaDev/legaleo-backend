@@ -557,23 +557,19 @@ export const SelectTypeReseau = ({
 
   return (
     <>
-      {selectedType === "" && (
-        <>
-          <Paragraphe className="font-medium text-xl">
-            Quel est le type de votre réseau ?
-          </Paragraphe>
-          <Select
-            options={options}
-            id={id}
-            name={name}
-            classname={classname}
-            onChange={(val) => setSelectedType(val)}
-          />
-          <Notices classname="mt-10">
-            Nous configurons vos modèles selon la structure choisie.
-          </Notices>
-        </>
-      )}
+      <Paragraphe className="font-medium text-xl">
+        Quel est le type de votre réseau ?
+      </Paragraphe>
+      <Select
+        options={options}
+        id={id}
+        name={name}
+        classname={classname}
+        onChange={(val) => setSelectedType(val)}
+      />
+      <Notices classname="mt-10">
+        Nous configurons vos modèles selon la structure choisie.
+      </Notices>
       {(selectedType === "Franchise" ||
         selectedType === "Licence de marque" ||
         selectedType === "Concession" ||
@@ -632,19 +628,15 @@ export const SelectCRM = ({ name, options }: SelectCRMProps) => {
   }, [onboardingFormData, name]);
   return (
     <>
-      {selectedType === "" && (
-        <>
-          <Paragraphe className="font-medium text-xl">
-            Utilisez-vous un CRM pour suivre vos candidats ?
-          </Paragraphe>
-          <RadioGroup
-            showLogo={false}
-            options={options}
-            name={name}
-            onChange={(val) => setSelectedType(val)}
-          />
-        </>
-      )}
+      <Paragraphe className="font-medium text-xl">
+        Utilisez-vous un CRM pour suivre vos candidats ?
+      </Paragraphe>
+      <RadioGroup
+        showLogo={false}
+        options={options}
+        name={name}
+        onChange={(val) => setSelectedType(val)}
+      />
       {selectedType.toLocaleLowerCase().includes("oui") && (
         <>
           <Paragraphe className="font-medium text-xl">
@@ -689,23 +681,21 @@ export const SelectImporter = ({
   }, [onboardingFormData, name]);
   return (
     <>
-      {selectedType === "" && (
-        <div className="flex flex-col gap-5 min-h-screen justify-center px-32 py-20 w-full">
-          <Title className="font-bold text-4xl leading-[100%] mb-5 w-full">
-            Rédaction et gestion de contrat
-          </Title>
-          <Paragraphe className="font-medium text-xl">
-            Disposez-vous aujourd’hui d’un service (interne ou externe) dédié au
-            recrutement de vos franchisés ?
-          </Paragraphe>
-          <RadioGroup
-            showLogo={false}
-            options={options}
-            name={name}
-            onChange={(val) => setSelectedType(val)}
-          />
-        </div>
-      )}
+      <div className="flex flex-col gap-5 min-h-screen justify-center px-32 py-20 w-full">
+        <Title className="font-bold text-4xl leading-[100%] mb-5 w-full">
+          Rédaction et gestion de contrat
+        </Title>
+        <Paragraphe className="font-medium text-xl">
+          Disposez-vous aujourd’hui d’un service (interne ou externe) dédié au
+          recrutement de vos franchisés ?
+        </Paragraphe>
+        <RadioGroup
+          showLogo={false}
+          options={options}
+          name={name}
+          onChange={(val) => setSelectedType(val)}
+        />
+      </div>
       {selectedType.toLocaleLowerCase().includes("oui") && (
         <Documents onClick={() => onClick()} />
       )}

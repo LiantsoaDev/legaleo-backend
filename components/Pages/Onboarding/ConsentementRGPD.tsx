@@ -1,5 +1,7 @@
 "use client";
 import { Title } from "@/components/Typography";
+import { setMaxInternalStep } from "@/lib/features/slice/onboardingSlice";
+import { useAppDispatch } from "@/lib/hook";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useOnboardingFormData } from "./OnboardingFormContext";
@@ -7,6 +9,11 @@ import { useOnboardingFormData } from "./OnboardingFormContext";
 export const ConsentementRGPD = () => {
   const onboardingFormData = useOnboardingFormData();
   const [isChecked, setIsChecked] = useState(false);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setMaxInternalStep(1));
+  }, [dispatch]);
 
   useEffect(() => {
     if (
