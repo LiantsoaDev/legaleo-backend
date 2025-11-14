@@ -21,6 +21,7 @@ import { useEffect, useState } from "react";
 import { Button } from "../Button";
 import { WorkspaceItem } from "../Pages/MonCompte";
 import { Documents } from "../Pages/Onboarding/Documents";
+import { useOnboardingFormData } from "../Pages/Onboarding/OnboardingFormContext";
 import { Paragraphe, Title } from "../Typography";
 import { Notices } from "../Typography/Tips";
 import { SearchBar } from "./SearchBar";
@@ -34,14 +35,47 @@ export const Input = ({
   classname,
   nombreCaractere,
   onChange,
+  defaultValue,
 }: InputProps) => {
-  const [value, setValue] = useState<string>("");
+  const onboardingFormData = useOnboardingFormData();
+  const contextValue =
+    onboardingFormData && name in onboardingFormData
+      ? onboardingFormData[name]
+      : undefined;
+  const initialValue =
+    typeof contextValue === "string"
+      ? contextValue
+      : typeof defaultValue === "string"
+      ? defaultValue
+      : "";
+
+  const [value, setValue] = useState<string>(initialValue);
   const [error, setError] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const computedType =
     type === "password" ? (showPassword ? "text" : "password") : type;
 
   useEffect(() => {}, [value, error, showPassword]);
+
+  useEffect(() => {
+    if (typeof contextValue === "string") {
+      setValue(contextValue);
+      setError(false);
+    } else if (typeof defaultValue === "string") {
+      setValue(defaultValue);
+      setError(false);
+    } else if (contextValue === undefined && defaultValue === undefined) {
+      setValue("");
+      setError(false);
+    }
+  }, [contextValue, defaultValue]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    getInputValue(e, setValue, setError);
+    onChange?.(e);
+  };
 
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -61,7 +95,7 @@ export const Input = ({
           required={isrequired}
           id={name}
           value={value}
-          onChange={(e) => getInputValue(e, setValue, setError)}
+          onChange={handleChange}
         />
       ) : (
         <div className="relative">
@@ -76,7 +110,7 @@ export const Input = ({
             id={name}
             formNoValidate
             value={value}
-            onChange={(e) => getInputValue(e, setValue, setError)}
+            onChange={handleChange}
           />
           {type === "password" && (
             <FontAwesomeIcon
@@ -164,24 +198,54 @@ export const RadioGroup = ({
   questionId,
   setAnswers,
   id,
+  defaultValue,
 }: RadioProps) => {
+  const onboardingFormData = useOnboardingFormData();
+  const storedValue =
+    defaultValue ??
+    (name && onboardingFormData && onboardingFormData[name]
+      ? onboardingFormData[name]
+      : undefined);
   const [selectedValue, setSelectedValue] = useState<string>("");
 
-  useEffect(() => {}, [selectedValue]);
+  const normalizeChoice = (option: string) => {
+    const lowered = option.toLocaleLowerCase();
+    if (lowered.includes("oui")) {
+      return "oui";
+    }
+    if (lowered.includes("non")) {
+      return "non";
+    }
+    return lowered
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim();
+  };
+
+  useEffect(() => {
+    if (typeof storedValue !== "string") {
+      if (storedValue === undefined) {
+        setSelectedValue("");
+      }
+      return;
+    }
+    const normalizedStored = normalizeChoice(storedValue);
+    const match = options.find((option) => {
+      const normalizedOption = normalizeChoice(option);
+      return (
+        normalizedOption === normalizedStored ||
+        option.toLocaleLowerCase() === storedValue.toLocaleLowerCase()
+      );
+    });
+    if (match) {
+      setSelectedValue(match);
+    }
+  }, [options, storedValue]);
 
   const handleSelect = (option: string) => {
     setSelectedValue(option);
-    let normalized = "";
-
-    if (option.includes("Oui")) {
-      normalized = "oui";
-    } else if (option.includes("Non")) {
-      normalized = "non";
-    } else {
-      normalized = option;
-    }
-    // const normalizeds = option.includes("Oui") ? "oui" : "non";
-    onChange?.(normalized);
+    const normalized = normalizeChoice(option);
+    onChange?.(normalized, option);
     if (questionId && setAnswers) {
       setAnswers((prev) => ({ ...prev, [questionId]: normalized }));
     }
@@ -212,7 +276,22 @@ export const MultiSelectGroup = ({
   showLogo,
   name,
 }: MultiSelectGroupProps) => {
+  const onboardingFormData = useOnboardingFormData();
+  const storedValue =
+    name && onboardingFormData && onboardingFormData[name]
+      ? onboardingFormData[name]
+      : undefined;
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (Array.isArray(storedValue)) {
+      setSelectedOptions(storedValue);
+    } else if (typeof storedValue === "string" && storedValue.length > 0) {
+      setSelectedOptions([storedValue]);
+    } else if (storedValue === undefined) {
+      setSelectedOptions([]);
+    }
+  }, [storedValue]);
 
   const handleSelect = (option: string) => {
     if (selectedOptions.includes(option)) {
@@ -318,14 +397,27 @@ export const Select = ({
   onChange,
 }: SelectProps) => {
   const [selects, setSelects] = useState([0]);
-  const [selectedValue, setSelectedValue] = useState("");
+  const onboardingFormData = useOnboardingFormData();
+  const storedValue =
+    onboardingFormData && name && onboardingFormData[name]
+      ? onboardingFormData[name]
+      : undefined;
+  const [selectedValue, setSelectedValue] = useState<string>(
+    typeof storedValue === "string" ? storedValue : ""
+  );
 
   const handleSelect = (option: string) => {
     setSelectedValue(option);
     onChange?.(option);
   };
 
-  useEffect(() => {}, [selectedValue]);
+  useEffect(() => {
+    if (typeof storedValue === "string") {
+      setSelectedValue(storedValue);
+    } else if (storedValue === undefined) {
+      setSelectedValue("");
+    }
+  }, [storedValue]);
 
   const addSelect = () => {
     setSelects((prev) => [...prev, prev.length]);
@@ -448,9 +540,20 @@ export const SelectTypeReseau = ({
   name,
   classname,
 }: SelectTypeReseauProps) => {
+  const onboardingFormData = useOnboardingFormData();
   const [selectedType, setSelectedType] = useState<string>("");
 
-  useEffect(() => {}, [selectedType]);
+  useEffect(() => {
+    if (
+      onboardingFormData &&
+      name &&
+      typeof onboardingFormData[name] === "string"
+    ) {
+      setSelectedType(onboardingFormData[name]);
+    } else if (!onboardingFormData || onboardingFormData[name] === undefined) {
+      setSelectedType("");
+    }
+  }, [onboardingFormData, name]);
 
   return (
     <>
@@ -481,7 +584,11 @@ export const SelectTypeReseau = ({
             Disposez-vous déjà d’un DIP (Document d’Information
             Précontractuelle) ?
           </Paragraphe>
-          <RadioGroup showLogo={false} options={has_dip} name="localisation" />
+          <RadioGroup
+            showLogo={false}
+            options={has_dip}
+            name={`${name}_dip_status`}
+          />
         </>
       )}
       {(selectedType === "Distribution sélective" ||
@@ -490,7 +597,11 @@ export const SelectTypeReseau = ({
           <Paragraphe className="font-medium text-xl">
             Souhaitez-vous générer un modèle adapté à ce type de réseau ?
           </Paragraphe>
-          <RadioGroup showLogo={false} options={has_dip} name="localisation" />
+          <RadioGroup
+            showLogo={false}
+            options={has_dip}
+            name={`${name}_modele`}
+          />
         </>
       )}
     </>
@@ -505,10 +616,20 @@ interface SelectCRMProps {
 const CRM = ["Cerca", "Cleonet", "Hubspot", "Pipedrive", "Autre"];
 
 export const SelectCRM = ({ name, options }: SelectCRMProps) => {
+  const onboardingFormData = useOnboardingFormData();
   const [selectedType, setSelectedType] = useState<string>("");
+
   useEffect(() => {
-    console.log("selectedType CRM", selectedType);
-  }, [selectedType]);
+    if (
+      onboardingFormData &&
+      name &&
+      typeof onboardingFormData[name] === "string"
+    ) {
+      setSelectedType(onboardingFormData[name]);
+    } else if (!onboardingFormData || onboardingFormData[name] === undefined) {
+      setSelectedType("");
+    }
+  }, [onboardingFormData, name]);
   return (
     <>
       {selectedType === "" && (
@@ -531,8 +652,8 @@ export const SelectCRM = ({ name, options }: SelectCRMProps) => {
           </Paragraphe>
           <Select
             options={CRM}
-            id="fonction"
-            name="fonction"
+            id="crm_outil"
+            name="crm_outil"
             classname="w-full"
           />
         </>
@@ -552,10 +673,20 @@ export const SelectImporter = ({
   name,
   onClick,
 }: SelectImporterProps) => {
+  const onboardingFormData = useOnboardingFormData();
   const [selectedType, setSelectedType] = useState<string>("");
+
   useEffect(() => {
-    console.log("selectedType CRM", selectedType);
-  }, [selectedType]);
+    if (
+      onboardingFormData &&
+      name &&
+      typeof onboardingFormData[name] === "string"
+    ) {
+      setSelectedType(onboardingFormData[name]);
+    } else if (!onboardingFormData || onboardingFormData[name] === undefined) {
+      setSelectedType("");
+    }
+  }, [onboardingFormData, name]);
   return (
     <>
       {selectedType === "" && (
@@ -593,7 +724,22 @@ export const TextareaIA = ({
   suggestions,
   classname,
 }: TextareaIAProps) => {
-  const [value, setValue] = useState("");
+  const onboardingFormData = useOnboardingFormData();
+  const storedValue =
+    onboardingFormData && name && onboardingFormData[name]
+      ? onboardingFormData[name]
+      : undefined;
+  const [value, setValue] = useState(
+    typeof storedValue === "string" ? storedValue : ""
+  );
+
+  useEffect(() => {
+    if (typeof storedValue === "string") {
+      setValue(storedValue);
+    } else if (storedValue === undefined) {
+      setValue("");
+    }
+  }, [storedValue]);
   return (
     <div
       className={`w-full h-56 border border-[#E3E3E3] rounded-xl relative p-5 ${classname}`}

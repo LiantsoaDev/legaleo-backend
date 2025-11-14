@@ -1,9 +1,13 @@
 "use client";
 import { Notices } from "@/components/Typography/Tips";
-import { setMaxInternalStep } from "@/lib/features/slice/onboardingSlice";
-import { useAppDispatch } from "@/lib/hook";
+import {
+  saveStepData,
+  setMaxInternalStep,
+} from "@/lib/features/slice/onboardingSlice";
+import { useAppSelector } from "@/lib/hook";
 import { AppDispatch } from "@/lib/store";
-import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect } from "react";
 import { Input, RadioGroup, Select, SelectTypeReseau } from "../../Form";
 import { Paragraphe, Title } from "../../Typography";
 
@@ -49,12 +53,41 @@ const type_reseau = [
   "Autre",
 ];
 
-export const VotreReseau = ({ internalStep }: VotreReseauProps) => {
-  const dispatch = useAppDispatch();
+export const VotreReseau = ({
+  internalStep,
+  dispatch: storeDispatch,
+}: VotreReseauProps) => {
+  const router = useRouter();
+  const { id: userId } = useAppSelector((state) => state.user);
+  const { onboardings } = useAppSelector((state) => state.onboarding);
 
   useEffect(() => {
-    dispatch(setMaxInternalStep(5));
-  }, [dispatch]);
+    storeDispatch(setMaxInternalStep(5));
+  }, [storeDispatch]);
+
+  const handleNetworkChoice = useCallback(
+    async (normalizedValue: string, rawOption?: string) => {
+      const persistedValue = rawOption ?? normalizedValue;
+      if (userId && onboardings) {
+        try {
+          await storeDispatch(
+            saveStepData({
+              userId,
+              onboardingDatas: onboardings,
+              valuesOverride: { reseau_existant: persistedValue },
+            })
+          ).unwrap();
+        } catch (error) {
+          console.error("Impossible d'enregistrer la réponse", error);
+        }
+      }
+
+      if (normalizedValue === "non") {
+        router.push("/dashboard");
+      }
+    },
+    [storeDispatch, userId, onboardings, router]
+  );
 
   return (
     <div className="flex flex-col gap-3 min-h-screen justify-center px-32 py-20 w-full max-w-5xl">
@@ -67,9 +100,9 @@ export const VotreReseau = ({ internalStep }: VotreReseauProps) => {
             Avez-vous déjà un réseau de franchisés ou d’affiliés ?
           </Paragraphe>
           <RadioGroup
-            redirectTo="/dashboard"
             options={reseau_franchise}
-            name="autorise_relecture"
+            name="reseau_existant"
+            onChange={handleNetworkChoice}
           />
         </>
       )}
@@ -85,7 +118,7 @@ export const VotreReseau = ({ internalStep }: VotreReseauProps) => {
           <RadioGroup
             showLogo={true}
             options={point_ventes}
-            name="point_ventes"
+            name="points_de_vente"
           />
         </>
       )}
@@ -108,8 +141,8 @@ export const VotreReseau = ({ internalStep }: VotreReseauProps) => {
           </Paragraphe>
           <Select
             options={principale_reseau}
-            id="fonction"
-            name="fonction"
+            id="secteur_activite"
+            name="secteur_activite"
             classname="w-full"
           />
           <Notices classname="mt-10">
@@ -122,8 +155,8 @@ export const VotreReseau = ({ internalStep }: VotreReseauProps) => {
         <>
           <SelectTypeReseau
             options={type_reseau}
-            id="fonction"
-            name="fonction"
+            id="type_reseau"
+            name="type_reseau"
             classname="w-full"
           />
         </>
@@ -132,12 +165,40 @@ export const VotreReseau = ({ internalStep }: VotreReseauProps) => {
   );
 };
 
-export const VotreReseauJeune = ({ internalStep }: VotreReseauProps) => {
-  const dispatch = useAppDispatch();
+export const VotreReseauJeune = ({
+  internalStep,
+  dispatch: storeDispatch,
+}: VotreReseauProps) => {
+  const router = useRouter();
+  const { id: userId } = useAppSelector((state) => state.user);
+  const { onboardings } = useAppSelector((state) => state.onboarding);
 
   useEffect(() => {
-    dispatch(setMaxInternalStep(4));
-  }, [dispatch]);
+    storeDispatch(setMaxInternalStep(4));
+  }, [storeDispatch]);
+
+  const handleNetworkChoice = useCallback(
+    async (normalizedValue: string, rawOption?: string) => {
+      const persistedValue = rawOption ?? normalizedValue;
+      if (userId && onboardings) {
+        try {
+          await storeDispatch(
+            saveStepData({
+              userId,
+              onboardingDatas: onboardings,
+              valuesOverride: { reseau_existant: persistedValue },
+            })
+          ).unwrap();
+        } catch (error) {
+          console.error("Impossible d'enregistrer la réponse", error);
+        }
+      }
+      if (normalizedValue === "non") {
+        router.push("/dashboard");
+      }
+    },
+    [storeDispatch, userId, onboardings, router]
+  );
 
   return (
     <div className="flex flex-col gap-3 min-h-screen justify-center px-32 py-20 w-full max-w-5xl">
@@ -150,9 +211,9 @@ export const VotreReseauJeune = ({ internalStep }: VotreReseauProps) => {
             Avez-vous déjà un réseau de franchisés ou d’affiliés ?
           </Paragraphe>
           <RadioGroup
-            redirectTo="/dashboard"
             options={reseau_franchise}
-            name="autorise_relecture"
+            name="reseau_existant"
+            onChange={handleNetworkChoice}
           />
         </>
       )}
@@ -163,8 +224,8 @@ export const VotreReseauJeune = ({ internalStep }: VotreReseauProps) => {
           </Paragraphe>
           <Select
             options={principale_reseau}
-            id="fonction"
-            name="fonction"
+            id="secteur_activite"
+            name="secteur_activite"
             classname="w-full"
           />
           {/* <RadioGroup
@@ -195,12 +256,12 @@ export const VotreReseauJeune = ({ internalStep }: VotreReseauProps) => {
           <RadioGroup
             showLogo={false}
             options={prestations}
-            name="point_ventes"
+            name="prestations_plateforme"
           />
           <Input
             type="textarea"
             placeholder="Veuillez préciser si autre"
-            name="autre"
+            name="prestations_precision"
             classname="h-56"
           />
         </>

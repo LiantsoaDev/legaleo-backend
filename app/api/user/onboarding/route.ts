@@ -1,26 +1,58 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
 
+const toRecord = (value: unknown): Record<string, any> => {
+  if (
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value)
+  ) {
+    return value as Record<string, any>;
+  }
+  return {};
+};
+
 export async function POST(req: NextRequest) {
   const { onboarding_id, userId, value } = await req.json();
 
-  console.log("Received data:", { onboarding_id, userId, value });
+  if (!onboarding_id || !userId) {
+    return new Response(
+      JSON.stringify({
+        success: 0,
+        message: "onboarding_id et userId sont requis",
+      }),
+      { status: 400 }
+    );
+  }
+
+  const payloadValue = toRecord(value);
 
   try {
+    const identifier = {
+      userId: String(userId),
+      onboarding_id: String(onboarding_id),
+    };
+
+    const existing = await prisma.onboardingAnswer.findUnique({
+      where: {
+        userId_onboarding_id: identifier,
+      },
+    });
+
+    const existingValue = toRecord(existing?.value ?? {});
+    const mergedValue = { ...existingValue, ...payloadValue };
+
     const onboadingAnswer = await prisma.onboardingAnswer.upsert({
       where: {
-        userId_onboarding_id: {
-          userId: String(userId),
-          onboarding_id: String(onboarding_id),
-        },
+        userId_onboarding_id: identifier,
       },
       update: {
-        value,
+        value: mergedValue,
       },
       create: {
-        userId: String(userId),
-        onboarding_id: String(onboarding_id),
-        value,
+        userId: identifier.userId,
+        onboarding_id: identifier.onboarding_id,
+        value: mergedValue,
       },
     });
     return new Response(
@@ -28,6 +60,7 @@ export async function POST(req: NextRequest) {
         success: 1,
         message: "Reponse enregistrée",
         data: onboadingAnswer,
+        value: mergedValue,
       }),
       { status: 201 }
     );
@@ -47,6 +80,7 @@ export async function GET(req: NextRequest) {
     // récupère le paramètre "name" de la requête
     const { searchParams } = new URL(req.url);
     const name = searchParams.get("title");
+    const userId = searchParams.get("userId");
 
     // si "name" est fourni, on cherche par nom
     if (name) {
@@ -74,11 +108,25 @@ export async function GET(req: NextRequest) {
         );
       }
 
+      let answer = null;
+      if (userId) {
+        const storedAnswer = await prisma.onboardingAnswer.findUnique({
+          where: {
+            userId_onboarding_id: {
+              userId,
+              onboarding_id: onboarding.id,
+            },
+          },
+        });
+        answer = storedAnswer?.value ?? null;
+      }
+
       return new Response(
         JSON.stringify({
           success: 1,
           message: "Onboarding trouvé",
           data: onboarding,
+          answer,
         }),
         { status: 200 }
       );
