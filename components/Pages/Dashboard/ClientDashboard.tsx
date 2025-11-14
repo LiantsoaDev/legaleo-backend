@@ -10,13 +10,27 @@ import {
   faSignature,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useAppSelector } from "@/lib/hook";
+import { useSession } from "next-auth/react";
+import { useMemo, useState } from "react";
 import { OnboardingFinalisation } from "../Onboarding";
 import { LastProject } from "./Project";
 
 export const ClientDashboard = () => {
   const today = new Date();
   const [importDocument, setImportDocument] = useState(false);
+  const { data: session } = useSession();
+  const { name, lastName } = useAppSelector((state) => state.user);
+
+  const displayName = useMemo(() => {
+    const safeName = name ?? session?.user?.name ?? "";
+    const safeLastName = lastName ?? session?.user?.last_name ?? "";
+    const nameParts = [safeName, safeLastName]
+      .map((part) => part?.trim())
+      .filter((part) => Boolean(part && part.length));
+
+    return nameParts.join(" ") || "Utilisateur";
+  }, [lastName, name, session?.user?.last_name, session?.user?.name]);
 
   const formattedDate = today.toLocaleDateString("fr-FR", {
     weekday: "long",
@@ -34,7 +48,7 @@ export const ClientDashboard = () => {
           <div className="flex flex-row gap-5 items-center">
             <div className="w-15 h-15 bg-accent rounded-full" />
             <Title level={2} className="text-black font-semibold text-xl">
-              Bonjour <span>User</span>
+              Bonjour <span>{displayName}</span>
             </Title>
           </div>
         </div>
