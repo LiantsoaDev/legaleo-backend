@@ -39,7 +39,10 @@ export const RedactionContrat = ({
           <Paragraphe className="font-medium text-xl">
             Qu'attendez-vous principalement de Legaleo ?
           </Paragraphe>
-          <RadioGroup options={objectif_principal} name="autorise_relecture" />
+          <RadioGroup
+            options={objectif_principal}
+            name="objectif_legaleo"
+          />
         </div>
       )}
       {internalStep === 2 && (

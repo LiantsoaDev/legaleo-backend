@@ -4,11 +4,16 @@ import { toast } from "react-toastify";
 
 type FormDataValue = string | { name: string; type: string; content: string };
 
-export const getOnboardings = async (title: string) => {
+export const getOnboardings = async (
+  title: string,
+  userId?: string | null
+) => {
   try {
-    const res = await fetch(
-      `/api/user/onboarding?title=${encodeURIComponent(title)}`
-    );
+    const params = new URLSearchParams({ title });
+    if (userId) {
+      params.append("userId", userId);
+    }
+    const res = await fetch(`/api/user/onboarding?${params.toString()}`);
 
     if (!res.ok) throw new Error("Erreur serveur");
     return await res.json();
