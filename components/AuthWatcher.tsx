@@ -18,6 +18,7 @@ export default function AuthWatcher() {
         setUser({
           id: session.user.id!,
           name: session.user.name!,
+          last_name: session.user.last_name || undefined,
           email: session.user.email!,
           image: session.user.image || "",
         })

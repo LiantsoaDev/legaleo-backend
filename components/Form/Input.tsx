@@ -17,7 +17,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Button } from "../Button";
 import { WorkspaceItem } from "../Pages/MonCompte";
 import { Documents } from "../Pages/Onboarding/Documents";
@@ -34,14 +34,30 @@ export const Input = ({
   classname,
   nombreCaractere,
   onChange,
+  defaultValue,
 }: InputProps) => {
-  const [value, setValue] = useState<string>("");
+  const [value, setValue] = useState<string>(defaultValue ?? "");
   const [error, setError] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const computedType =
     type === "password" ? (showPassword ? "text" : "password") : type;
 
+  useEffect(() => {
+    if (defaultValue !== undefined) {
+      setValue(defaultValue);
+    }
+  }, [defaultValue]);
+
   useEffect(() => {}, [value, error, showPassword]);
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    getInputValue(e, setValue, setError);
+    if (onChange) {
+      onChange(e as ChangeEvent<HTMLInputElement>);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -76,7 +92,7 @@ export const Input = ({
             id={name}
             formNoValidate
             value={value}
-            onChange={(e) => getInputValue(e, setValue, setError)}
+            onChange={handleChange}
           />
           {type === "password" && (
             <FontAwesomeIcon

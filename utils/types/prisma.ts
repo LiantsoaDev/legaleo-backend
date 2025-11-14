@@ -1,10 +1,15 @@
 // types/prisma.ts
 
-import { Onboarding, OnboardingStep } from "@/app/generated/prisma";
+import {
+  Onboarding,
+  OnboardingAnswer,
+  OnboardingStep,
+} from "@/app/generated/prisma";
 
 // Type manuel pour Onboarding avec steps
 export type OnboardingWithSteps = Onboarding & {
   steps: OnboardingStep[];
+  answers: OnboardingAnswer[];
 };
 
 // Type manuel pour OnboardingStep avec onboarding
