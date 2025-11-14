@@ -1,4 +1,5 @@
 "use client";
+import { Input } from "../../Form";
 import { Paragraphe, Title } from "../../Typography";
 import { Notices } from "../../Typography/Tips";
 
@@ -13,14 +14,11 @@ export const VotreEnseigne = ({}) => {
         renseigner automatiquement vos informations{" "}
       </Paragraphe>
       <div className="flex flex-row gap-5">
-        <input
-          className={`w-full border border-opacity-60 rounded-sm px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black `}
+        <Input
           type="text"
           placeholder="Nom de votre enseigne (Nom juridique)"
-          name="nom"
-          id="nom"
-          formNoValidate
-          onChange={(e) => console.log(e.target.value)}
+          name="enseigne_nom"
+          classname="text-xl px-6 py-4 w-full"
         />
       </div>
       <Notices classname="mt-5 !text-xl">

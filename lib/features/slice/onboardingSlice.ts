@@ -27,9 +27,12 @@ const initialState: OnboardingState = {
 
 export const fetchOnboardings = createAsyncThunk(
   "onboarding/fetchOnboardings",
-  async ({ title }: { title: string }, { rejectWithValue }) => {
+  async (
+    { title, userId }: { title: string; userId?: string | null },
+    { rejectWithValue }
+  ) => {
     try {
-      const res = await getOnboardings(title);
+      const res = await getOnboardings(title, userId);
       if (!res) {
         return rejectWithValue("Impossible de récupérer les données");
       }
@@ -139,30 +142,54 @@ export const saveStepData = createAsyncThunk(
     {
       userId,
       onboardingDatas,
-    }: { userId: string; onboardingDatas: OnboardingWithSteps },
-    { getState }
+      valuesOverride,
+    }: {
+      userId: string;
+      onboardingDatas: OnboardingWithSteps;
+      valuesOverride?: Record<string, any>;
+    }
   ) => {
-    const state = getState() as { onboarding: OnboardingState };
-    const formElement = document.querySelector("form");
-    if (!formElement) return;
+    let data: Record<string, any> = {};
 
-    const formData = new FormData(formElement as HTMLFormElement);
-    const data: Record<string, any> = Object.fromEntries(
-      Array.from(formData.entries()).filter(
-        ([_, value]) => !(value instanceof File)
-      )
-    );
+    if (valuesOverride && Object.keys(valuesOverride).length > 0) {
+      data = valuesOverride;
+    } else {
+      const formElement = document.querySelector("form");
+      if (!formElement) return;
 
-    for (const [key, value] of formData.entries()) {
-      if (value instanceof File && value.size > 0) {
-        const base64 = await fileToBase64(value);
-        data[key] = { name: value.name, type: value.type, content: base64 };
+      const formData = new FormData(formElement as HTMLFormElement);
+
+      const appendValue = (key: string, value: any) => {
+        if (key in data) {
+          const current = data[key];
+          data[key] = Array.isArray(current)
+            ? [...current, value]
+            : [current, value];
+        } else {
+          data[key] = value;
+        }
+      };
+
+      for (const [key, value] of formData.entries()) {
+        if (value instanceof File) {
+          if (value.size === 0) continue;
+          const base64 = await fileToBase64(value);
+          appendValue(key, {
+            name: value.name,
+            type: value.type,
+            content: base64,
+          });
+        } else {
+          appendValue(key, value);
+        }
       }
     }
 
+    if (!Object.keys(data).length) return {};
+
     const onboarding_id = onboardingDatas && onboardingDatas?.id;
 
-    if (!onboarding_id) return;
+    if (!onboarding_id) return {};
 
     const dataToSend = {
       userId,
@@ -223,6 +250,8 @@ export const onboardingSlice = createSlice({
         if (state.onboardings) {
           state.steps = state.onboardings.steps.reverse();
         }
+        state.formData =
+          (action.payload.answer as Record<string, any>) ?? {};
       })
       .addCase(fetchOnboardings.rejected, (state, action) => {
         state.isLoading = false;
@@ -233,7 +262,9 @@ export const onboardingSlice = createSlice({
       })
       .addCase(saveStepData.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.formData = { ...state.formData, ...action.payload };
+        if (action.payload) {
+          state.formData = { ...state.formData, ...action.payload };
+        }
       })
       .addCase(saveStepData.rejected, (state, action) => {
         state.isLoading = false;

@@ -41,7 +41,10 @@ export const RecrutementFranchiser = ({
             Disposez-vous aujourd’hui d’un service (interne ou externe) dédié au
             recrutement de vos franchisés ?
           </Paragraphe>
-          <RadioGroup options={service_recrutement} name="autorise_relecture" />
+          <RadioGroup
+            options={service_recrutement}
+            name="service_recrutement"
+          />
           <Notices classname="mt-10">
             Nous configurons vos modèles selon la structure choisie.
           </Notices>
@@ -54,7 +57,10 @@ export const RecrutementFranchiser = ({
             rédaction de vos documents ? (DIP, contrat, grille d'éligibilité
             etc).
           </Paragraphe>
-          <RadioGroup options={accompagnement} name="autorise_relecture" />
+          <RadioGroup
+            options={accompagnement}
+            name="accompagnement_humain"
+          />
           <Notices classname="mt-10">
             Nous configurons vos modèles selon la structure choisie.
           </Notices>
@@ -67,7 +73,7 @@ export const RecrutementFranchiser = ({
           </Paragraphe>
           <RadioGroup
             options={object_developpement}
-            name="autorise_relecture"
+            name="objectif_developpement"
             showLogo
           />
           <Notices classname="mt-10">
@@ -77,7 +83,7 @@ export const RecrutementFranchiser = ({
       )}
       {internalStep === 4 && (
         <>
-          <SelectCRM options={has_crm} name="crm" />
+          <SelectCRM options={has_crm} name="utilise_crm" />
         </>
       )}
     </div>
