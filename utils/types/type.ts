@@ -20,9 +20,12 @@ export interface InputProps {
   name: string;
   classname?: string;
   value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   nombreCaractere?: number;
   ref?: React.Ref<HTMLInputElement | HTMLTextAreaElement>;
+  defaultValue?: string;
 }
 
 export interface CheckBoxProps {

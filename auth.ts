@@ -17,6 +17,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Google({
       clientId: process.env.AUTH_GOOGLE_ID ?? "",
       clientSecret: process.env.AUTH_GOOGLE_SECRET ?? "",
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.given_name ?? profile.name ?? "",
+          last_name: profile.family_name ?? "",
+          email: profile.email,
+          image: profile.picture,
+        };
+      },
     }),
     MicrosoftEntraID({
       clientId: process.env.AUTH_MICROSOFT_ENTRA_ID_ID,
@@ -30,9 +39,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       profile(profile) {
         return {
           id: profile.oid || profile.sub, // Microsoft utilise souvent 'oid' ou 'sub' pour l'ID
-          name: profile.name,
+          name: profile.given_name || profile.givenName || profile.name,
+          last_name: profile.family_name || profile.surname || "",
           email: profile.email,
-          // image: profile.picture,
+          image: profile.picture,
         };
       },
     }),
@@ -58,6 +68,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return {
             id: user.id,
             name: user.name,
+            last_name: user.last_name,
             email: user.email,
             image: user.image,
           };
@@ -80,6 +91,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
+        if ("last_name" in user) {
+          token.last_name = user.last_name;
+        }
       }
       return token;
     },
@@ -90,6 +104,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.id = token.id as string;
         session.user.name = token.name as string;
         session.user.email = token.email as string;
+        session.user.last_name = (token.last_name as string | null) ?? null;
       }
       return session;
     },
