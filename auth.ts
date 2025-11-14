@@ -60,6 +60,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             name: user.name,
             email: user.email,
             image: user.image,
+            last_name: user.last_name,
           };
         }
 
@@ -80,6 +81,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
+        token.last_name = user.last_name;
       }
       return token;
     },
@@ -90,6 +92,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.id = token.id as string;
         session.user.name = token.name as string;
         session.user.email = token.email as string;
+        session.user.last_name = token.last_name as string | undefined;
       }
       return session;
     },

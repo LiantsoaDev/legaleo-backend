@@ -1,6 +1,9 @@
+"use client";
+
 import { Input, Select } from "../../Form";
 import { Title } from "../../Typography";
 import { Notices } from "../../Typography/Tips";
+import { useAppSelector } from "@/lib/hook";
 
 const option: string[] = [
   "Fondateur",
@@ -13,6 +16,8 @@ const option: string[] = [
 ];
 
 export const UserName = () => {
+  const { name, last_name } = useAppSelector((state) => state.user);
+
   return (
     <div className="flex flex-col min-h-screen justify-center px-32 py-20 w-[788px] items-start">
       <Title className="font-bold text-4xl leading-[100%] mb-8">
@@ -25,12 +30,14 @@ export const UserName = () => {
             placeholder="Nom"
             name="name"
             classname="text-xl px-6 py-4 w-1/2"
+            defaultValue={last_name ?? undefined}
           />
           <Input
             type="text"
             placeholder="Prénom"
             name="last_name"
             classname="text-xl px-6 py-4 w-1/2"
+            defaultValue={name ?? undefined}
           />
         </div>
         <Input
