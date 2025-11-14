@@ -2,19 +2,48 @@ import { OnboardingStep } from "@/app/generated/prisma";
 import { OnboardingWithSteps } from "@/utils/types";
 import { toast } from "react-toastify";
 
-type FormDataValue = string | { name: string; type: string; content: string };
+type FormDataValue =
+  | string
+  | { name: string; type: string; content: string }
+  | FormDataValue[];
 
-export const getOnboardings = async (title: string) => {
+export const getOnboardings = async (title?: string, userId?: string) => {
   try {
-    const res = await fetch(
-      `/api/user/onboarding?title=${encodeURIComponent(title)}`
-    );
+    const params = new URLSearchParams();
+    if (title) {
+      params.append("title", title);
+    }
+    if (userId) {
+      params.append("userId", userId);
+    }
 
-    if (!res.ok) throw new Error("Erreur serveur");
-    return await res.json();
+    const res = await fetch(`/api/user/onboarding?${params.toString()}`);
+    let payload: any = null;
+
+    try {
+      payload = await res.json();
+    } catch (error) {
+      console.error("Impossible de parser la réponse de l'onboarding", error);
+    }
+
+    if (!res.ok || !payload?.success) {
+      const message =
+        payload?.message || (res.ok ? "Aucune donnée trouvée" : "Erreur serveur");
+      throw new Error(message);
+    }
+
+    const normalizedPayload = { ...payload };
+    const onboardingData = payload.data;
+    normalizedPayload.data = Array.isArray(onboardingData)
+      ? onboardingData[0] ?? null
+      : onboardingData ?? null;
+
+    return normalizedPayload;
   } catch (error) {
     console.error(error);
-    return null;
+    throw error instanceof Error
+      ? error
+      : new Error("Erreur inattendue lors de la récupération de l'onboarding");
   }
 };
 

@@ -11,12 +11,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import { useAppSelector } from "@/lib/hook";
 import { OnboardingFinalisation } from "../Onboarding";
 import { LastProject } from "./Project";
 
 export const ClientDashboard = () => {
   const today = new Date();
   const [importDocument, setImportDocument] = useState(false);
+  const { name, last_name } = useAppSelector((state) => state.user);
 
   const formattedDate = today.toLocaleDateString("fr-FR", {
     weekday: "long",
@@ -26,6 +28,7 @@ export const ClientDashboard = () => {
 
   const finalDate =
     formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+  const greetingName = [name, last_name].filter(Boolean).join(" ").trim();
   return (
     <div className="flex flex-row gap-12">
       <div className="w-3/5 flex flex-col gap-7">
@@ -34,7 +37,7 @@ export const ClientDashboard = () => {
           <div className="flex flex-row gap-5 items-center">
             <div className="w-15 h-15 bg-accent rounded-full" />
             <Title level={2} className="text-black font-semibold text-xl">
-              Bonjour <span>User</span>
+              Bonjour <span>{greetingName || "Utilisateur"}</span>
             </Title>
           </div>
         </div>

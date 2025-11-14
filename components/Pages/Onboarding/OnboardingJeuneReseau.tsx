@@ -19,11 +19,14 @@ export const OnboardingJeuneReseau = ({ user }: any) => {
     isLoading,
     error,
   } = useAppSelector((state) => state.onboarding);
+  const { id: userId } = useAppSelector((state) => state.user);
 
   useEffect(() => {
-    dispatch(fetchOnboardings({ title: "Onboarding jeune reseau" }));
-    console.log("steps", steps);
-  }, [dispatch]);
+    if (!userId) return;
+    dispatch(
+      fetchOnboardings({ title: "Onboarding jeune reseau", userId: userId })
+    );
+  }, [dispatch, userId]);
 
   if (isLoading) {
     return (

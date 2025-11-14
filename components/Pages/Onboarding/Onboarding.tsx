@@ -14,7 +14,7 @@ import {
   faLongArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FormEvent, useCallback } from "react";
+import { FormEvent, useCallback, useEffect, useRef } from "react";
 import { OnboardingCard } from "../../Card";
 
 type RenderStepFn = (
@@ -39,10 +39,12 @@ export const Onboardings = ({
   onboardings,
   currentStep,
   internalStep,
+  formData,
   renderStep,
 }: OnboardingsProps) => {
   const { id: userId } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   const nextStepPayload = {
     userId: userId,
@@ -55,6 +57,58 @@ export const Onboardings = ({
     onboardingDatas: onboardings,
   };
 
+  useEffect(() => {
+    const formElement = formRef.current;
+    if (!formElement) return;
+
+    const escapeName = (value: string) => {
+      if (typeof CSS !== "undefined" && typeof CSS.escape === "function") {
+        return CSS.escape(value);
+      }
+      return value.replace(/"/g, '\\"');
+    };
+
+    Object.entries(formData || {}).forEach(([name, storedValue]) => {
+      const selector = `[name="${escapeName(name)}"]`;
+      const fields = formElement.querySelectorAll<
+        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+      >(selector);
+      if (!fields.length) return;
+
+      const normalizedValues = Array.isArray(storedValue)
+        ? storedValue
+            .map((entry) =>
+              typeof entry === "string" || typeof entry === "number"
+                ? String(entry)
+                : null
+            )
+            .filter((entry): entry is string => Boolean(entry))
+        : typeof storedValue === "string" || typeof storedValue === "number"
+        ? [String(storedValue)]
+        : [];
+
+      fields.forEach((field) => {
+        if (field instanceof HTMLInputElement) {
+          if (field.type === "checkbox" || field.type === "radio") {
+            field.checked = normalizedValues.includes(field.value);
+          } else if (field.type !== "file") {
+            field.value = normalizedValues[0] ?? "";
+          }
+        } else if (field instanceof HTMLTextAreaElement) {
+          field.value = normalizedValues[0] ?? "";
+        } else if (field instanceof HTMLSelectElement) {
+          if (field.multiple) {
+            Array.from(field.options).forEach((option) => {
+              option.selected = normalizedValues.includes(option.value);
+            });
+          } else {
+            field.value = normalizedValues[0] ?? "";
+          }
+        }
+      });
+    });
+  }, [formData, currentStep]);
+
   const handleSubmit = useCallback(
     (e: FormEvent) => {
       e.preventDefault();
@@ -62,13 +116,15 @@ export const Onboardings = ({
         dispatch(saveStepData({ userId, onboardingDatas: onboardings }));
       }
     },
-    [userId]
+    [userId, onboardings, dispatch]
   );
 
   return (
     <div className="flex flex-row justify-between">
       <form
         onSubmit={handleSubmit}
+        ref={formRef}
+        data-onboarding-form="true"
         className="w-2/3 justify-between flex flex-col relative select-none"
       >
         {renderStep(currentStep, internalStep, userId, onboardings, dispatch)}
