@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { Onboardings } from "./Onboarding";
 
-export const OnboardingGeneral = ({ user }: any) => {
+export const OnboardingGeneral = () => {
   const dispatch = useAppDispatch();
 
   const {
@@ -28,19 +28,18 @@ export const OnboardingGeneral = ({ user }: any) => {
     );
   }, [dispatch, userId]);
 
-  if (isLoading) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        {/* <LoadingSpinner /> */}
-        <p>Chargement de votre onboarding...</p>
-      </div>
-    );
-  }
-
   useEffect(() => {
     if (!error) return;
     toast.error(error, { position: "top-right", theme: "colored" });
   }, [error]);
+
+  if (isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <p>Chargement de votre onboarding...</p>
+      </div>
+    );
+  }
 
   if (error) {
     return (

@@ -116,13 +116,13 @@ export const fetchOnboardings = createAsyncThunk(
   ) => {
     try {
       const res = await getOnboardings(title, userId);
-      if (!res) {
-        return rejectWithValue("Impossible de récupérer les données");
-      }
-      console.log("res", res);
       return res;
     } catch (error) {
-      return rejectWithValue("Erreur inattendue");
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Erreur inattendue lors de la récupération de l'onboarding";
+      return rejectWithValue(message);
     }
   }
 );
@@ -304,12 +304,14 @@ export const onboardingSlice = createSlice({
     builder
       .addCase(fetchOnboardings.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(fetchOnboardings.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.error = null;
         state.onboardings = action.payload.data;
         if (state.onboardings) {
-          state.steps = state.onboardings.steps.reverse();
+          state.steps = [...state.onboardings.steps].reverse();
           const existingAnswers =
             (state.onboardings.answers?.[0]?.value as Record<string, any>) ||
             {};

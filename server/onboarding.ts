@@ -15,12 +15,26 @@ export const getOnboardings = async (title: string, userId?: string) => {
     }
 
     const res = await fetch(`/api/user/onboarding?${params.toString()}`);
+    let payload: any = null;
 
-    if (!res.ok) throw new Error("Erreur serveur");
-    return await res.json();
+    try {
+      payload = await res.json();
+    } catch (error) {
+      console.error("Impossible de parser la réponse de l'onboarding", error);
+    }
+
+    if (!res.ok || !payload?.success) {
+      const message =
+        payload?.message || (res.ok ? "Aucune donnée trouvée" : "Erreur serveur");
+      throw new Error(message);
+    }
+
+    return payload;
   } catch (error) {
     console.error(error);
-    return null;
+    throw error instanceof Error
+      ? error
+      : new Error("Erreur inattendue lors de la récupération de l'onboarding");
   }
 };
 
