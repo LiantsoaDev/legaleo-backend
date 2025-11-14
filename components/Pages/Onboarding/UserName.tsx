@@ -1,3 +1,5 @@
+import { useAppSelector } from "@/lib/hook";
+import { useSession } from "next-auth/react";
 import { Input, Select } from "../../Form";
 import { Title } from "../../Typography";
 import { Notices } from "../../Typography/Tips";
@@ -13,6 +15,12 @@ const option: string[] = [
 ];
 
 export const UserName = () => {
+  const { data: session } = useSession();
+  const { name, lastName } = useAppSelector((state) => state.user);
+
+  const resolvedFirstName = name ?? session?.user?.name ?? "";
+  const resolvedLastName = lastName ?? session?.user?.last_name ?? "";
+
   return (
     <div className="flex flex-col min-h-screen justify-center px-32 py-20 w-[788px] items-start">
       <Title className="font-bold text-4xl leading-[100%] mb-8">
@@ -25,12 +33,14 @@ export const UserName = () => {
             placeholder="Nom"
             name="name"
             classname="text-xl px-6 py-4 w-1/2"
+            defaultValue={resolvedFirstName}
           />
           <Input
             type="text"
             placeholder="Prénom"
             name="last_name"
             classname="text-xl px-6 py-4 w-1/2"
+            defaultValue={resolvedLastName}
           />
         </div>
         <Input

@@ -34,14 +34,29 @@ export const Input = ({
   classname,
   nombreCaractere,
   onChange,
+  defaultValue,
 }: InputProps) => {
-  const [value, setValue] = useState<string>("");
+  const [value, setValue] = useState<string>(defaultValue ?? "");
   const [error, setError] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const computedType =
     type === "password" ? (showPassword ? "text" : "password") : type;
 
   useEffect(() => {}, [value, error, showPassword]);
+
+  useEffect(() => {
+    if (typeof defaultValue === "string") {
+      setValue(defaultValue);
+      setError(false);
+    }
+  }, [defaultValue]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    getInputValue(e, setValue, setError);
+    onChange?.(e);
+  };
 
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -61,7 +76,7 @@ export const Input = ({
           required={isrequired}
           id={name}
           value={value}
-          onChange={(e) => getInputValue(e, setValue, setError)}
+          onChange={handleChange}
         />
       ) : (
         <div className="relative">
@@ -76,7 +91,7 @@ export const Input = ({
             id={name}
             formNoValidate
             value={value}
-            onChange={(e) => getInputValue(e, setValue, setError)}
+            onChange={handleChange}
           />
           {type === "password" && (
             <FontAwesomeIcon
