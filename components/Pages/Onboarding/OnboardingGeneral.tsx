@@ -19,11 +19,14 @@ export const OnboardingGeneral = ({ user }: any) => {
     isLoading,
     error,
   } = useAppSelector((state) => state.onboarding);
+  const { id: userId } = useAppSelector((state) => state.user);
 
   useEffect(() => {
-    dispatch(fetchOnboardings({ title: "Onboarding principal" }));
-    console.log("steps", steps);
-  }, [dispatch]);
+    if (!userId) return;
+    dispatch(
+      fetchOnboardings({ title: "Onboarding principal", userId: userId })
+    );
+  }, [dispatch, userId]);
 
   if (isLoading) {
     return (
@@ -34,8 +37,12 @@ export const OnboardingGeneral = ({ user }: any) => {
     );
   }
 
-  if (error) {
+  useEffect(() => {
+    if (!error) return;
     toast.error(error, { position: "top-right", theme: "colored" });
+  }, [error]);
+
+  if (error) {
     return (
       <div className="h-screen flex items-center justify-center text-red-500">
         <p>Une erreur est survenue: {error}</p>
