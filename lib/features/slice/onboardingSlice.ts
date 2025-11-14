@@ -25,18 +25,104 @@ const initialState: OnboardingState = {
   error: null,
 };
 
+const ONBOARDING_FORM_SELECTOR = 'form[data-onboarding-form="true"]';
+
+const appendFormValue = (
+  target: Record<string, any>,
+  key: string,
+  value: any
+) => {
+  if (value === undefined) return;
+  if (!(key in target)) {
+    target[key] = value;
+    return;
+  }
+
+  const existing = target[key];
+  if (Array.isArray(existing)) {
+    target[key] = [...existing, value];
+    return;
+  }
+
+  target[key] = [existing, value];
+};
+
+const collectChoiceFieldValues = (
+  formElement: HTMLFormElement
+): Record<string, any> => {
+  const inputs = Array.from(
+    formElement.querySelectorAll<HTMLInputElement>(
+      "input[type='checkbox'], input[type='radio']"
+    )
+  );
+
+  const choiceValues: Record<string, any> = {};
+
+  inputs.forEach((input) => {
+    if (!input.name) return;
+    if (!(input.name in choiceValues)) {
+      choiceValues[input.name] =
+        input.type === "checkbox" ? ([] as string[]) : null;
+    }
+
+    if (input.checked) {
+      if (input.type === "checkbox") {
+        const current = choiceValues[input.name] as string[];
+        choiceValues[input.name] = [...current, input.value];
+      } else {
+        choiceValues[input.name] = input.value;
+      }
+    }
+  });
+
+  return choiceValues;
+};
+
+const serializeFormEntries = async (
+  formElement: HTMLFormElement
+): Promise<Record<string, any>> => {
+  const formData = new FormData(formElement);
+  const serialized: Record<string, any> = {};
+
+  for (const [key, rawValue] of formData.entries()) {
+    if (rawValue instanceof File) continue;
+    appendFormValue(serialized, key, rawValue as string);
+  }
+
+  for (const [key, rawValue] of formData.entries()) {
+    if (!(rawValue instanceof File) || rawValue.size === 0) continue;
+    const base64 = await fileToBase64(rawValue);
+    const filePayload = {
+      name: rawValue.name,
+      type: rawValue.type,
+      content: base64,
+    };
+    appendFormValue(serialized, key, filePayload);
+  }
+
+  const choiceValues = collectChoiceFieldValues(formElement);
+  Object.entries(choiceValues).forEach(([key, value]) => {
+    serialized[key] = value;
+  });
+
+  return serialized;
+};
+
 export const fetchOnboardings = createAsyncThunk(
   "onboarding/fetchOnboardings",
-  async ({ title }: { title: string }, { rejectWithValue }) => {
+  async (
+    { title, userId }: { title: string; userId?: string },
+    { rejectWithValue }
+  ) => {
     try {
-      const res = await getOnboardings(title);
-      if (!res) {
-        return rejectWithValue("Impossible de récupérer les données");
-      }
-      console.log("res", res);
+      const res = await getOnboardings(title, userId);
       return res;
     } catch (error) {
-      return rejectWithValue("Erreur inattendue");
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Erreur inattendue lors de la récupération de l'onboarding";
+      return rejectWithValue(message);
     }
   }
 );
@@ -143,35 +229,37 @@ export const saveStepData = createAsyncThunk(
     { getState }
   ) => {
     const state = getState() as { onboarding: OnboardingState };
-    const formElement = document.querySelector("form");
-    if (!formElement) return;
-
-    const formData = new FormData(formElement as HTMLFormElement);
-    const data: Record<string, any> = Object.fromEntries(
-      Array.from(formData.entries()).filter(
-        ([_, value]) => !(value instanceof File)
-      )
-    );
-
-    for (const [key, value] of formData.entries()) {
-      if (value instanceof File && value.size > 0) {
-        const base64 = await fileToBase64(value);
-        data[key] = { name: value.name, type: value.type, content: base64 };
-      }
+    if (typeof document === "undefined") {
+      return state.onboarding.formData;
     }
 
-    const onboarding_id = onboardingDatas && onboardingDatas?.id;
+    const formElement = document.querySelector<HTMLFormElement>(
+      ONBOARDING_FORM_SELECTOR
+    );
+    if (!formElement) return state.onboarding.formData;
 
-    if (!onboarding_id) return;
+    const stepData = await serializeFormEntries(formElement);
 
-    const dataToSend = {
-      userId,
-      onboarding_id,
-      value: data,
+    if (!Object.keys(stepData).length) {
+      return state.onboarding.formData;
+    }
+
+    if (!onboardingDatas?.id) {
+      return state.onboarding.formData;
+    }
+
+    const mergedData = {
+      ...state.onboarding.formData,
+      ...stepData,
     };
 
-    await postOnboardingData(dataToSend);
-    return data;
+    await postOnboardingData({
+      userId,
+      onboarding_id: onboardingDatas.id,
+      value: mergedData,
+    });
+
+    return mergedData;
   }
 );
 
@@ -216,12 +304,21 @@ export const onboardingSlice = createSlice({
     builder
       .addCase(fetchOnboardings.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(fetchOnboardings.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.error = null;
         state.onboardings = action.payload.data;
         if (state.onboardings) {
-          state.steps = state.onboardings.steps.reverse();
+          state.steps = [...state.onboardings.steps].reverse();
+          const existingAnswers =
+            (state.onboardings.answers?.[0]?.value as Record<string, any>) ||
+            {};
+          state.formData = existingAnswers;
+        } else {
+          state.steps = [];
+          state.formData = {};
         }
       })
       .addCase(fetchOnboardings.rejected, (state, action) => {
@@ -233,7 +330,9 @@ export const onboardingSlice = createSlice({
       })
       .addCase(saveStepData.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.formData = { ...state.formData, ...action.payload };
+        if (action.payload) {
+          state.formData = action.payload;
+        }
       })
       .addCase(saveStepData.rejected, (state, action) => {
         state.isLoading = false;

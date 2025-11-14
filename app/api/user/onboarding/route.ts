@@ -47,6 +47,7 @@ export async function GET(req: NextRequest) {
     // récupère le paramètre "name" de la requête
     const { searchParams } = new URL(req.url);
     const name = searchParams.get("title");
+    const userId = searchParams.get("userId");
 
     // si "name" est fourni, on cherche par nom
     if (name) {
@@ -61,6 +62,13 @@ export async function GET(req: NextRequest) {
           steps: {
             include: { File: true },
           },
+          answers: userId
+            ? {
+                where: { userId: userId },
+                orderBy: { createdAt: "desc" },
+                take: 1,
+              }
+            : true,
         },
       });
 
@@ -90,6 +98,11 @@ export async function GET(req: NextRequest) {
         steps: {
           include: { File: true },
         },
+        answers: userId
+          ? {
+              where: { userId: userId },
+            }
+          : true,
       },
     });
 
