@@ -62,7 +62,7 @@ export const Onboardings = ({
         dispatch(saveStepData({ userId, onboardingDatas: onboardings }));
       }
     },
-    [userId]
+    [userId, dispatch, onboardings]
   );
 
   return (

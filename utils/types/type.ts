@@ -52,9 +52,10 @@ export interface RadioProps {
   classContainer?: string;
   hasToRedirectTo?: boolean;
   redirectTo?: string;
-  onChange?: (option: string) => void;
+  onChange?: (normalizedValue: string, rawOption?: string) => void;
   questionId?: string;
   setAnswers?: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  defaultValue?: string;
 }
 
 export interface MultiSelectGroupProps {

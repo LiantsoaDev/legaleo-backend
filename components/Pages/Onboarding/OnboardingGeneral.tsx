@@ -6,6 +6,7 @@ import { renderStep } from "@/utils/functions";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { Onboardings } from "./Onboarding";
+import { OnboardingFormProvider } from "./OnboardingFormContext";
 
 export const OnboardingGeneral = ({ user }: any) => {
   const dispatch = useAppDispatch();
@@ -19,11 +20,11 @@ export const OnboardingGeneral = ({ user }: any) => {
     isLoading,
     error,
   } = useAppSelector((state) => state.onboarding);
+  const { id: userId } = useAppSelector((state) => state.user);
 
   useEffect(() => {
-    dispatch(fetchOnboardings({ title: "Onboarding principal" }));
-    console.log("steps", steps);
-  }, [dispatch]);
+    dispatch(fetchOnboardings({ title: "Onboarding principal", userId }));
+  }, [dispatch, userId]);
 
   if (isLoading) {
     return (
@@ -44,15 +45,17 @@ export const OnboardingGeneral = ({ user }: any) => {
   }
 
   return (
-    <div className=" h-screen flex flex-col gap-7">
-      <Onboardings
-        steps={steps}
-        onboardings={onboardings}
-        currentStep={currentStep}
-        internalStep={internalStep}
-        formData={formData}
-        renderStep={renderStep}
-      />
-    </div>
+    <OnboardingFormProvider value={formData}>
+      <div className=" h-screen flex flex-col gap-7">
+        <Onboardings
+          steps={steps}
+          onboardings={onboardings}
+          currentStep={currentStep}
+          internalStep={internalStep}
+          formData={formData}
+          renderStep={renderStep}
+        />
+      </div>
+    </OnboardingFormProvider>
   );
 };
