@@ -126,13 +126,13 @@ export const LoginRegister = () => {
                 type="text"
                 placeholder="Votre nom"
                 label="Nom"
-                name="name"
+                name="last_name"
               />
               <Input
                 type="text"
                 placeholder="Votre prenom"
                 label="Prénom"
-                name="last_name"
+                name="name"
               />
             </div>
             <Input
