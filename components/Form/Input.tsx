@@ -17,7 +17,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Button } from "../Button";
 import { WorkspaceItem } from "../Pages/MonCompte";
 import { Documents } from "../Pages/Onboarding/Documents";
@@ -978,6 +978,76 @@ export const TextareaAndFiles = ({
         name={`file-${name}`}
         onChange={handleFileChange}
       />
+    </div>
+  );
+};
+
+interface Question {
+  id: string;
+  label: string;
+  placeholder?: string;
+}
+
+interface DynamicTextInputsProps {
+  question: Question;
+  onChange: (values: string[]) => void;
+}
+
+export const DynamicTextInputs: React.FC<DynamicTextInputsProps> = ({
+  question,
+  onChange,
+}) => {
+  const [fields, setFields] = useState<string[]>([""]);
+
+  const handleFieldChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const newFields = [...fields];
+    newFields[index] = e.target.value;
+
+    setFields(newFields);
+    onChange(newFields);
+  };
+
+  const addField = () => {
+    setFields((prev) => {
+      const updated = [...prev, ""];
+      onChange(updated);
+      return updated;
+    });
+  };
+
+  return (
+    <div className="flex flex-col gap-4">
+      <label className="font-semibold text-md text-black">
+        {question.label}
+      </label>
+
+      {fields.map((value, index) => (
+        <div key={index} className="flex items-center gap-3">
+          <input
+            type="text"
+            value={value}
+            id={`${question.id}-${index}`}
+            placeholder={question.placeholder || question.label}
+            onChange={(e) => handleFieldChange(e, index)}
+            className="w-full border border-opacity-60 rounded-sm px-2 py-3 
+                       focus:outline-none text-black"
+          />
+
+          {/* Ajouter un champ seulement sur le dernier input */}
+          {index === fields.length - 1 && (
+            <button
+              type="button"
+              onClick={addField}
+              className="px-3 py-2 border rounded font-bold text-black"
+            >
+              +
+            </button>
+          )}
+        </div>
+      ))}
     </div>
   );
 };

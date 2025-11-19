@@ -1,5 +1,6 @@
 "use client";
 import {
+  DynamicTextInputs,
   ImportImage,
   Input,
   RadioGroup,
@@ -74,6 +75,27 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
                   id={question.label}
                   showLogo={question.showLogo ? true : false}
                 />
+                {question.hasAutre && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-text text-xl font-medium">
+                      Autre:{" "}
+                    </span>
+                    <Input
+                      type="text"
+                      name="autre"
+                      placeholder="Autre"
+                      classname="max-w-[600px] px-6 py-4"
+                    />
+                  </div>
+                )}
+                {question.hasTextarea && (
+                  <Input
+                    key={question.label}
+                    name={question.label}
+                    placeholder="Ajouter des précisions si besoin."
+                    type="textarea"
+                  />
+                )}
               </div>
             );
 
@@ -81,24 +103,69 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
             return (
               <div className="flex flex-col gap-5" key={question.id}>
                 <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor={question.id}
-                    className="font-semibold text-md text-black"
-                  >
-                    {question.label}
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border border-opacity-60 rounded-sm px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black"
-                    name={question.label}
-                    placeholder={
-                      question.placeholder
-                        ? question.placeholder
-                        : question.label
-                    }
-                    id={question.id}
-                    onChange={(e) => handleAnswer(question.id, e.target.value)}
-                  />
+                  {question.hasMultipleInputs ? (
+                    <>
+                      <DynamicTextInputs
+                        key={question.id}
+                        question={question}
+                        onChange={(values: any) =>
+                          handleAnswer(question.id, values)
+                        }
+                      />
+                    </>
+                  ) : question.inputListQuestions ? (
+                    <>
+                      <label
+                        htmlFor={question.id}
+                        className="font-semibold text-md text-black"
+                      >
+                        {question.label}
+                      </label>
+                      <div className="flex flex-row items-center gap-7">
+                        {question.inputListQuestions.map((inputQst, index) => (
+                          <Input
+                            key={index}
+                            name={inputQst.name}
+                            placeholder={inputQst.placeholder}
+                            type={inputQst.type}
+                            label={inputQst.label}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <label
+                        htmlFor={question.id}
+                        className="font-semibold text-md text-black"
+                      >
+                        {question.label}
+                      </label>
+                      <input
+                        type="text"
+                        className="w-full border border-opacity-60 rounded-sm px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black"
+                        name={question.label}
+                        placeholder={
+                          question.placeholder
+                            ? question.placeholder
+                            : question.label
+                        }
+                        id={question.id}
+                        onChange={(e) =>
+                          handleAnswer(question.id, e.target.value)
+                        }
+                      />
+                    </>
+                  )}
+
+                  {question.hasTextarea && (
+                    <Input
+                      key={question.label}
+                      name={question.label}
+                      placeholder="Ajouter des précisions si besoin."
+                      type="textarea"
+                    />
+                  )}
                 </div>
                 {question.subquestion && (
                   <div className="flex flex-col gap-2">
@@ -227,23 +294,23 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
                     <path
                       d="M19.9999 25.5556V10"
                       stroke="#545FFF"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
                     <path
                       d="M28.8886 30.0009H11.1108"
                       stroke="#545FFF"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
                     <path
                       d="M25.5556 20L19.9989 25.5567L14.4434 20"
                       stroke="#545FFF"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
                   </svg>
                   <Paragraphe className="font-medium text-base text-black">

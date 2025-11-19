@@ -44,7 +44,7 @@ export const ClientDashboard = () => {
     <div className="flex flex-row gap-12">
       <div className="w-3/5 flex flex-col gap-7">
         <div className="flex flex-col gap-2.5">
-          <span className="text-[#828282] text-sm">{finalDate}</span>
+          <span className="text-text text-sm">{finalDate}</span>
           <div className="flex flex-row gap-5 items-center">
             <div className="w-15 h-15 bg-accent rounded-full" />
             <Title level={2} className="text-black font-semibold text-xl">

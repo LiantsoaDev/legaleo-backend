@@ -15,7 +15,7 @@ export const OnboardingFinalisation = () => {
         <CurrentOnboardingStep />
       </div>
       <Button
-        href="/"
+        href="/onboarding/juridique"
         isLink
         classname="rounded-sm w-1/4 cursor-pointer !text-md !py-2.5"
       >
