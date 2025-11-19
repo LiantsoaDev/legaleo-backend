@@ -26,7 +26,7 @@ export const FinalisationReseauEtabli = () => {
         // onclick={onClick}
         classname="!bg-primary !border-primary hover:!bg-transparent hover:!text-secondary w-fit text-lg font-semibold mt-10 transition-colors"
       >
-        Créer mon premier contrat
+        Créer mon premier contrats
       </Button>
     </div>
   );
