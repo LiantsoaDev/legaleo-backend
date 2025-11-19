@@ -36,13 +36,37 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           scope: "openid email profile User.Read",
         },
       },
-      profile(profile) {
+      async profile(profile, tokens) {
+        let image: string | null = null;
+        const profilePhotoSize = 48;
+
+        if (tokens?.access_token) {
+          const response = await fetch(
+            `https://graph.microsoft.com/v1.0/me/photos/${profilePhotoSize}x${profilePhotoSize}/$value`,
+            {
+              headers: {
+                Authorization: `Bearer ${tokens.access_token}`,
+              },
+            }
+          );
+
+          if (response.ok && typeof Buffer !== "undefined") {
+            try {
+              const pictureBuffer = await response.arrayBuffer();
+              const pictureBase64 = Buffer.from(pictureBuffer).toString("base64");
+              image = `data:image/jpeg;base64, ${pictureBase64}`;
+            } catch (error) {
+              console.error("Error while fetching Microsoft profile picture", error);
+            }
+          }
+        }
+
         return {
-          id: profile.oid || profile.sub, // Microsoft utilise souvent 'oid' ou 'sub' pour l'ID
-          name: profile.given_name || profile.givenName || profile.name,
-          last_name: profile.family_name || profile.surname || "",
+          id: profile.oid ?? profile.sub,
+          name: profile.given_name ?? profile.name ?? "",
+          last_name: profile.family_name ?? "",
           email: profile.email,
-          image: profile.picture,
+          image,
         };
       },
     }),
