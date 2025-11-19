@@ -32,6 +32,8 @@ interface OnboardingsProps {
   internalStep: number;
   formData: Record<string, any>;
   renderStep: RenderStepFn;
+  bgcolor?: string;
+  progresscolor?: string;
 }
 
 export const Onboardings = ({
@@ -40,6 +42,8 @@ export const Onboardings = ({
   currentStep,
   internalStep,
   renderStep,
+  bgcolor,
+  progresscolor,
 }: OnboardingsProps) => {
   const { id: userId } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
@@ -72,7 +76,13 @@ export const Onboardings = ({
         className="w-2/3 justify-between flex flex-col relative select-none"
       >
         {renderStep(currentStep, internalStep, userId, onboardings, dispatch)}
-        <div className="fixed bottom-10 items-center right-[20%] translate-[-50%] bg-blue px-5 py-5 rounded-full flex gap-10 text-white text-xl">
+        <div
+          className={`${
+            bgcolor
+              ? `bg-[${bgcolor}] fixed bottom-10 items-center left-[10%] translate-[-50%] px-5 py-5 rounded-full flex gap-10 text-white text-xl`
+              : "fixed bottom-10 items-center right-[30%] translate-[-50%] bg-blue px-5 py-5 rounded-full flex gap-10 text-white text-xl"
+          }`}
+        >
           <button
             type="submit"
             onClick={() => dispatch(handlePrevStep(prevStepPayload))}
@@ -98,7 +108,11 @@ export const Onboardings = ({
           </button>
         </div>
       </form>
-      <div className="bg-[#1F120E] w-[480px] rounded-l-4xl h-full px-16 py-20 flex flex-col gap-7 justify-center overflow-y-auto select-none">
+      <div
+        className={`${
+          bgcolor ? `bg-[${bgcolor}]` : "bg-[#1F120E]"
+        } w-[550px] rounded-l-4xl h-full px-16 py-20 flex flex-col gap-7 justify-center overflow-y-auto select-none`}
+      >
         {steps &&
           steps.length > 0 &&
           steps.map((onboarding: OnboardingStep, index) => (
@@ -112,6 +126,7 @@ export const Onboardings = ({
               dispatch={dispatch}
               onboardingDatas={onboardings}
               userId={userId}
+              progresscolor={progresscolor}
             />
           ))}
       </div>

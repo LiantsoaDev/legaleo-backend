@@ -3,12 +3,12 @@
 import { FullLoader } from "@/components/Loader";
 import { fetchOnboardings } from "@/lib/features/slice/onboardingSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hook";
-import { renderStep } from "@/utils/functions";
+import { renderStepReseauEtabli } from "@/utils/functions";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { Onboardings } from "./Onboarding";
 
-export const OnboardingGeneral = ({ user }: any) => {
+export const OnboardingReseauEtabli = ({ user }: any) => {
   const dispatch = useAppDispatch();
 
   const {
@@ -22,7 +22,7 @@ export const OnboardingGeneral = ({ user }: any) => {
   } = useAppSelector((state) => state.onboarding);
 
   useEffect(() => {
-    dispatch(fetchOnboardings({ title: "Onboarding principal" }));
+    dispatch(fetchOnboardings({ title: "Onboarding reseau etabli" }));
     console.log("steps", steps);
   }, [dispatch]);
 
@@ -52,7 +52,9 @@ export const OnboardingGeneral = ({ user }: any) => {
         currentStep={currentStep}
         internalStep={internalStep}
         formData={formData}
-        renderStep={renderStep}
+        renderStep={renderStepReseauEtabli}
+        bgcolor="#087F83"
+        progresscolor="bg-[#FFFFFF33] text-white"
       />
     </div>
   );

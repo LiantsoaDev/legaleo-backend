@@ -198,7 +198,8 @@ export type QuestionType =
   | "image"
   | "number"
   | "array"
-  | "textareaAndFile";
+  | "textareaAndFile"
+  | "list";
 
 export interface Subquestion {
   id: string;
@@ -216,16 +217,28 @@ interface Questions {
   showLogo?: boolean;
 }
 
+interface InputListQuestion {
+  label: string;
+  type: "text" | "number";
+  name: string;
+  placeholder: string;
+}
+
 export interface Question {
   id: string;
   label: string;
   type: QuestionType;
+  hasMultipleInputs?: boolean;
+  hasTextarea?: boolean;
+  hasAutre?: boolean;
   dependsOn?: string;
   condition?: string;
   placeholder?: string;
   needIA?: boolean;
   option?: string[];
   showLogo?: boolean;
+  inputList?: string[];
   subquestion?: Subquestion;
   questions?: Questions[];
+  inputListQuestions?: InputListQuestion[];
 }

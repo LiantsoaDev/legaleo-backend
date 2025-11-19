@@ -13,6 +13,7 @@ interface OnboardingCardProps {
   dispatch: AppDispatch;
   userId: string | null;
   onboardingDatas: OnboardingWithSteps | null;
+  progresscolor?: string;
 }
 
 export const OnboardingCard = ({
@@ -24,6 +25,7 @@ export const OnboardingCard = ({
   dispatch, // <-- Prop mise à jour
   userId,
   onboardingDatas,
+  progresscolor,
 }: OnboardingCardProps) => {
   const handleJump = () => {
     if (userId) {
@@ -46,13 +48,19 @@ export const OnboardingCard = ({
         className={`flex justify-center items-center font-manrope text-xl font-medium ${
           isActive || isCompleted
             ? "bg-primary text-secondary"
-            : "bg-[#413734] text-[#8C8C8C]"
+            : `${progresscolor ? progresscolor : "bg-[#413734]"} text-white`
         }  w-13 h-13 rounded-full relative ${
-          isActive || isCompleted ? "after:bg-primary" : "after:bg-[#413734]"
+          isActive || isCompleted
+            ? `before:bg-primary`
+            : ` ${
+                progresscolor
+                  ? "before:bg-[#FFFFFF33] z-0"
+                  : "before:bg-[#413734]"
+              } `
         } ${
           isLast
             ? ""
-            : "after:content-[''] after:w-0.5 after:h-10 after:block after:absolute after:bottom-[-60%] after:left-1/2 after:translate-x-[-50%]"
+            : "before:content-[''] before:w-0.5 before:h-10 before:block before:absolute before:bottom-[-60%] before:left-1/2 before:translate-x-[-50%]"
         }  `}
       >
         {step}

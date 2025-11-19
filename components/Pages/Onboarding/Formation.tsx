@@ -6,6 +6,7 @@ import { useAppDispatch } from "@/lib/hook";
 import { Question } from "@/utils/types";
 import { useEffect } from "react";
 import ConditionalForm from "./ConditionalForm";
+import { FinalisationReseauEtabli } from "./FinalisationReseauEtabli";
 
 interface FormationProps {
   internalStep: number;
@@ -200,5 +201,52 @@ export const Formation = ({ internalStep }: FormationProps) => {
         </>
       )}
     </div>
+  );
+};
+
+const question1: Question[] = [
+  {
+    id: "q1",
+    label: "Les formations ont-elles évolué ?",
+    type: "yesno",
+  },
+  {
+    id: "q2",
+    label: "Ajoutez une precision si besoin.",
+    type: "textarea",
+    dependsOn: "q1",
+    condition: "oui",
+  },
+];
+
+interface FormationReseauEtabliProps {
+  internalStep: number;
+}
+
+export const FormationReseauEtabli = ({
+  internalStep,
+}: FormationReseauEtabliProps) => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setMaxInternalStep(2));
+  }, [dispatch]);
+
+  return (
+    <>
+      {internalStep === 1 && (
+        <div className="flex flex-col gap-3 min-h-screen justify-center px-32 py-20 w-full max-w-5xl">
+          <Title className="font-bold text-4xl leading-[100%] mb-8 w-full">
+            Formation
+          </Title>
+          <ConditionalForm questions={question1} />
+        </div>
+      )}
+      {internalStep === 2 && (
+        <>
+          <FinalisationReseauEtabli />
+        </>
+      )}
+    </>
   );
 };

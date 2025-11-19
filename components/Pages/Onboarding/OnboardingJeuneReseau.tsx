@@ -1,5 +1,6 @@
 "use client";
 
+import { FullLoader } from "@/components/Loader";
 import { fetchOnboardings } from "@/lib/features/slice/onboardingSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hook";
 import { renderStepJeuneReseau } from "@/utils/functions";
@@ -29,7 +30,7 @@ export const OnboardingJeuneReseau = ({ user }: any) => {
     return (
       <div className="h-screen flex items-center justify-center">
         {/* <LoadingSpinner /> */}
-        <p>Chargement de votre onboarding...</p>
+        <FullLoader />
       </div>
     );
   }
