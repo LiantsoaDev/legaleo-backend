@@ -7,6 +7,7 @@ import { renderStepReseauEtabli } from "@/utils/functions";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { Onboardings } from "./Onboarding";
+import { OnboardingFormProvider } from "./OnboardingFormContext";
 
 export const OnboardingReseauEtabli = ({ user }: any) => {
   const dispatch = useAppDispatch();
@@ -21,10 +22,12 @@ export const OnboardingReseauEtabli = ({ user }: any) => {
     error,
   } = useAppSelector((state) => state.onboarding);
 
+  const { id: userId } = useAppSelector((state) => state.user);
+
   useEffect(() => {
-    dispatch(fetchOnboardings({ title: "Onboarding reseau etabli" }));
+    dispatch(fetchOnboardings({ title: "Onboarding reseau etabli", userId }));
     console.log("steps", steps);
-  }, [dispatch]);
+  }, [dispatch, userId]);
 
   if (isLoading) {
     return (
@@ -45,17 +48,19 @@ export const OnboardingReseauEtabli = ({ user }: any) => {
   }
 
   return (
-    <div className=" h-screen flex flex-col gap-7">
-      <Onboardings
-        steps={steps}
-        onboardings={onboardings}
-        currentStep={currentStep}
-        internalStep={internalStep}
-        formData={formData}
-        renderStep={renderStepReseauEtabli}
-        bgcolor="#087F83"
-        progresscolor="bg-[#FFFFFF33] text-white"
-      />
-    </div>
+    <OnboardingFormProvider value={formData}>
+      <div className=" h-screen flex flex-col gap-7">
+        <Onboardings
+          steps={steps}
+          onboardings={onboardings}
+          currentStep={currentStep}
+          internalStep={internalStep}
+          formData={formData}
+          renderStep={renderStepReseauEtabli}
+          bgcolor="#087F83"
+          progresscolor="bg-[#FFFFFF33] text-white"
+        />
+      </div>
+    </OnboardingFormProvider>
   );
 };
