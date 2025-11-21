@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./features/slice/authSlice";
 import onboardingReducer from "./features/slice/onboardingSlice";
 import userReducer from "./features/slice/userSlice";
+import workspaceReducer from "./features/slice/workspaceSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -9,6 +10,7 @@ export const makeStore = () => {
       user: userReducer,
       auth: authReducer,
       onboarding: onboardingReducer,
+      workspace: workspaceReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
