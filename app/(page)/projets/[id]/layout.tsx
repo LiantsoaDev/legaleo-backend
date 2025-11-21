@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "@/components/Button";
-import { Historique } from "@/components/Editor";
-import { DocumentAction } from "@/components/Editor/DocumentAction";
-import { EditorProvider } from "@/components/Editor/EditorProvider";
+import { Historique } from "@/components/editor";
+import { DocumentAction } from "@/components/editor/DocumentAction";
+import { EditorProvider } from "@/components/editor/EditorProvider";
 import {
   DeleteCard,
   Dupliquer,

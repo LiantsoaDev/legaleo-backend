@@ -53,10 +53,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           if (response.ok && typeof Buffer !== "undefined") {
             try {
               const pictureBuffer = await response.arrayBuffer();
-              const pictureBase64 = Buffer.from(pictureBuffer).toString("base64");
+              const pictureBase64 =
+                Buffer.from(pictureBuffer).toString("base64");
               image = `data:image/jpeg;base64, ${pictureBase64}`;
             } catch (error) {
-              console.error("Error while fetching Microsoft profile picture", error);
+              console.error(
+                "Error while fetching Microsoft profile picture",
+                error
+              );
             }
           }
         }
@@ -122,7 +126,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      // Ajoutez les données du token à la session
+      // Ajoutez les données du token à la sessions
 
       if (token && session.user) {
         session.user.id = token.id as string;

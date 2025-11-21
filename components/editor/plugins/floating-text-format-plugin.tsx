@@ -23,7 +23,7 @@ import {
 import { Dispatch, JSX, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { CommentPopup } from "@/components/Editor/CommentPopup";
+import { CommentPopup } from "@/components/editor/CommentPopup";
 import { getDOMRangeRect } from "@/components/editor/utils/get-dom-range-rect";
 import { getSelectedNode } from "@/components/editor/utils/get-selected-node";
 import { setFloatingElemPosition } from "@/components/editor/utils/set-floating-elem-position";

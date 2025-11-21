@@ -28,7 +28,7 @@ import { LinkPlugin } from "@/components/editor/plugins/link-plugin";
 import { ElementFormatToolbarPlugin } from "@/components/editor/plugins/toolbar/element-format-toolbar-plugin";
 import { LinkToolbarPlugin } from "@/components/editor/plugins/toolbar/link-toolbar-plugin";
 
-import { AddTablePopup } from "@/components/Editor/AddTablePopup";
+import { AddTablePopup } from "@/components/editor/AddTablePopup";
 import { ImagesPlugin } from "@/components/editor/plugins/images-plugin";
 import { BlockInsertPlugin } from "@/components/editor/plugins/toolbar/block-insert-plugin";
 import { InsertImage } from "@/components/editor/plugins/toolbar/block-insert/insert-image";
