@@ -8,16 +8,39 @@ import {
   TextareaIA,
 } from "@/components/Form";
 import { Paragraphe } from "@/components/Typography";
+import { updateFormData } from "@/lib/features/slice/onboardingSlice";
+import { useAppDispatch } from "@/lib/hook";
 import { Question } from "@/utils/types";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useOnboardingFormData } from "./OnboardingFormContext";
 
 interface ConditionnalFormProps {
   questions: Question[];
+  formKey?: string;
 }
 
-export default function ConditionalForm({ questions }: ConditionnalFormProps) {
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+export default function ConditionalForm({
+  questions,
+  formKey,
+}: ConditionnalFormProps) {
+  const onboardingFormData = useOnboardingFormData();
+  const dispatch = useAppDispatch();
+  const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [visibleQuestions, setVisibleQuestions] = useState<string[]>(["q1"]);
+
+  const getFieldName = (questionId: string) =>
+    formKey ? `${formKey}.${questionId}` : questionId;
+
+  const savedAnswers = useMemo(() => {
+    const initial: Record<string, string | string[]> = {};
+    questions.forEach((question) => {
+      const storedValue = onboardingFormData?.[getFieldName(question.id)];
+      if (typeof storedValue === "string" || Array.isArray(storedValue)) {
+        initial[question.id] = storedValue;
+      }
+    });
+    return initial;
+  }, [onboardingFormData, questions, formKey]);
 
   // Recalculer quelles questions doivent être visibles à chaque changement des réponses.
   useEffect(() => {
@@ -32,8 +55,12 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
       for (const q of questions) {
         if (q.dependsOn && visible.has(q.dependsOn)) {
           const parentValue = answers[q.dependsOn];
+          const normalizedParentValue =
+            typeof parentValue === "string" ? parentValue : undefined;
           // si condition non définie -> visible (optionnel)
-          const condMet = q.condition ? parentValue === q.condition : true;
+          const condMet = q.condition
+            ? normalizedParentValue === q.condition
+            : true;
           if (condMet && !visible.has(q.id)) {
             visible.add(q.id);
             changed = true;
@@ -47,12 +74,38 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
     // console.log("Recomputed visibleQuestions:", nextVisible, "answers:", answers);
 
     setVisibleQuestions(nextVisible);
-  }, [answers]);
+  }, [answers, questions]);
 
-  const handleAnswer = (id: string, value: string) => {
-    // debug
-    // console.log("handleAnswer", id, value);
+  useEffect(() => {
+    if (!Object.keys(savedAnswers).length) return;
+    setAnswers((prev) => ({ ...savedAnswers, ...prev }));
+  }, [savedAnswers]);
+
+  const persistAnswer = (
+    questionId: string,
+    value: string | string[],
+    { skipUpdate }: { skipUpdate?: boolean } = {}
+  ) => {
+    if (skipUpdate) return;
+    const fieldName = getFieldName(questionId);
+    dispatch(updateFormData({ [fieldName]: value }));
+  };
+
+  const handleAnswer = (
+    id: string,
+    value: string | string[],
+    options: { skipUpdate?: boolean } = {}
+  ) => {
     setAnswers((prev) => ({ ...prev, [id]: value }));
+    persistAnswer(id, value, options);
+  };
+
+  const resolveValue = (questionId: string) => {
+    const currentValue = answers[questionId];
+    if (typeof currentValue === "string") return currentValue;
+    const storedValue = onboardingFormData?.[getFieldName(questionId)];
+    if (typeof storedValue === "string") return storedValue;
+    return "";
   };
 
   return (
@@ -69,11 +122,14 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
                   options={
                     question.option ? question.option : ["✅ Oui", "❌ Non"]
                   }
-                  name={question.label}
+                  name={getFieldName(question.id)}
                   questionId={question.id}
-                  setAnswers={setAnswers}
                   id={question.label}
                   showLogo={question.showLogo ? true : false}
+                  defaultValue={resolveValue(question.id)}
+                  onChange={(normalizedValue) =>
+                    handleAnswer(question.id, normalizedValue)
+                  }
                 />
                 {question.hasAutre && (
                   <div className="flex items-center gap-2">
@@ -82,18 +138,26 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
                     </span>
                     <Input
                       type="text"
-                      name="autre"
+                      name={`${getFieldName(question.id)}.autre`}
                       placeholder="Autre"
                       classname="max-w-[600px] px-6 py-4"
+                      defaultValue={resolveValue(`${question.id}.autre`)}
+                      onChange={(e) =>
+                        handleAnswer(`${question.id}.autre`, e.target.value)
+                      }
                     />
                   </div>
                 )}
                 {question.hasTextarea && (
                   <Input
                     key={question.label}
-                    name={question.label}
+                    name={`${getFieldName(question.id)}.precision`}
                     placeholder="Ajouter des précisions si besoin."
                     type="textarea"
+                    defaultValue={resolveValue(`${question.id}.precision`)}
+                    onChange={(e) =>
+                      handleAnswer(`${question.id}.precision`, e.target.value)
+                    }
                   />
                 )}
               </div>
@@ -125,10 +189,21 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
                         {question.inputListQuestions.map((inputQst, index) => (
                           <Input
                             key={index}
-                            name={inputQst.name}
+                            name={getFieldName(
+                              `${question.id}.${inputQst.name ?? index}`
+                            )}
                             placeholder={inputQst.placeholder}
                             type={inputQst.type}
                             label={inputQst.label}
+                            defaultValue={resolveValue(
+                              `${question.id}.${inputQst.name ?? index}`
+                            )}
+                            onChange={(e) =>
+                              handleAnswer(
+                                `${question.id}.${inputQst.name ?? index}`,
+                                e.target.value
+                              )
+                            }
                           />
                         ))}
                       </div>
@@ -144,7 +219,7 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
                       <input
                         type="text"
                         className="w-full border border-opacity-60 rounded-sm px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black"
-                        name={question.label}
+                        name={getFieldName(question.id)}
                         placeholder={
                           question.placeholder
                             ? question.placeholder
@@ -154,6 +229,7 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
                         onChange={(e) =>
                           handleAnswer(question.id, e.target.value)
                         }
+                        value={resolveValue(question.id)}
                       />
                     </>
                   )}
@@ -161,9 +237,13 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
                   {question.hasTextarea && (
                     <Input
                       key={question.label}
-                      name={question.label}
+                      name={`${getFieldName(question.id)}.precision`}
                       placeholder="Ajouter des précisions si besoin."
                       type="textarea"
+                      defaultValue={resolveValue(`${question.id}.precision`)}
+                      onChange={(e) =>
+                        handleAnswer(`${question.id}.precision`, e.target.value)
+                      }
                     />
                   )}
                 </div>
@@ -178,13 +258,17 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
                     <input
                       type={question.subquestion.type}
                       className="w-full border border-opacity-60 rounded-sm px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black"
-                      name={question.subquestion.label}
+                      name={`${getFieldName(question.id)}.subquestion`}
                       placeholder={
                         question.subquestion.placeholder
                           ? question.subquestion.placeholder
                           : question.subquestion.label
                       }
                       id={question.subquestion.id}
+                      value={resolveValue(`${question.id}.subquestion`)}
+                      onChange={(e) =>
+                        handleAnswer(`${question.id}.subquestion`, e.target.value)
+                      }
                     />
                   </div>
                 )}
@@ -195,24 +279,25 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
             return (
               <div className="flex flex-col gap-5" key={question.id}>
                 <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor={question.id}
-                    className="font-semibold text-md text-black"
-                  >
-                    {question.label}
-                  </label>
-                  <input
-                    type="number"
-                    className="w-full border border-opacity-60 rounded-sm px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black"
-                    name={question.label}
-                    placeholder={
-                      question.placeholder
-                        ? question.placeholder
-                        : question.label
-                    }
-                    id={question.id}
-                    onChange={(e) => handleAnswer(question.id, e.target.value)}
-                  />
+                <label
+                  htmlFor={question.id}
+                  className="font-semibold text-md text-black"
+                >
+                  {question.label}
+                </label>
+                <input
+                  type="number"
+                  className="w-full border border-opacity-60 rounded-sm px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black"
+                  name={getFieldName(question.id)}
+                  placeholder={
+                    question.placeholder
+                      ? question.placeholder
+                      : question.label
+                  }
+                  id={question.id}
+                  onChange={(e) => handleAnswer(question.id, e.target.value)}
+                  value={resolveValue(question.id)}
+                />
                 </div>
                 {question.subquestion && (
                   <div className="flex flex-col gap-2">
@@ -225,13 +310,17 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
                     <input
                       type={question.subquestion.type}
                       className="w-full border border-opacity-60 rounded-sm px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black"
-                      name={question.subquestion.label}
+                      name={`${getFieldName(question.id)}.subquestion`}
                       placeholder={
                         question.subquestion.placeholder
                           ? question.subquestion.placeholder
                           : question.subquestion.label
                       }
                       id={question.subquestion.id}
+                      value={resolveValue(`${question.id}.subquestion`)}
+                      onChange={(e) =>
+                        handleAnswer(`${question.id}.subquestion`, e.target.value)
+                      }
                     />
                   </div>
                 )}
@@ -243,23 +332,26 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
               <div className="flex flex-col gap-8" key={question.id}>
                 <p className="font-medium mb-2">{question.label}</p>
                 <TextareaIA
-                  name={question.label}
+                  name={getFieldName(question.id)}
                   suggestions={[
                     "Générer un exemple selon mon secteur",
                     "M’aider à structurer ma réponse",
                     "Reformuler ma réponse actuelle",
                   ]}
+                  classname=""
                 />
               </div>
             ) : (
               <Input
                 key={question.id}
-                name={question.label}
+                name={getFieldName(question.id)}
                 label={question.label}
                 placeholder={
                   question.placeholder ? question.placeholder : question.label
                 }
                 type="textarea"
+                defaultValue={resolveValue(question.id)}
+                onChange={(e) => handleAnswer(question.id, e.target.value)}
               />
             );
           case "image":
@@ -324,9 +416,11 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
                   type="file"
                   className="hidden"
                   id={question.id}
+                  name={getFieldName(question.id)}
                   onChange={(e) => {
                     const file = e.target.files?.[0];
-                    if (file) handleAnswer(question.id, file.name);
+                    if (file)
+                      handleAnswer(question.id, file.name, { skipUpdate: true });
                   }}
                 />
               </div>
@@ -337,8 +431,8 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
               <div className="flex flex-col gap-2" key={question.id}>
                 <p className="font-medium">{question.label}</p>
                 <TextareaAndFiles
-                  id={question.id}
-                  name={question.label}
+                  id={getFieldName(question.id)}
+                  name={getFieldName(question.id)}
                   placeholder={
                     question.placeholder ? question.placeholder : question.label
                   }
@@ -359,11 +453,23 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
                         <input
                           type={qst.type}
                           className="w-full border border-opacity-60 rounded-sm px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black"
-                          name={qst.label}
+                          name={`${getFieldName(question.id)}.${index}`}
                           placeholder={
                             qst.placeholder ? qst.placeholder : qst.label
                           }
                           id={index}
+                          value={
+                            typeof answers[`${question.id}-${index}`] ===
+                            "string"
+                              ? (answers[`${question.id}-${index}`] as string)
+                              : ""
+                          }
+                          onChange={(e) =>
+                            handleAnswer(
+                              `${question.id}-${index}`,
+                              e.target.value
+                            )
+                          }
                         />
                       )}
                       {qst.type === "yesno" && (
@@ -371,10 +477,13 @@ export default function ConditionalForm({ questions }: ConditionnalFormProps) {
                           options={
                             qst.option ? qst.option : ["✅ Oui", "❌ Non"]
                           }
-                          name={qst.label}
-                          setAnswers={setAnswers}
+                          name={`${getFieldName(question.id)}.${index}`}
                           id={qst.label}
                           showLogo={qst.showLogo ? true : false}
+                          defaultValue={resolveValue(`${question.id}-${index}`)}
+                          onChange={(normalizedValue) =>
+                            handleAnswer(`${question.id}-${index}`, normalizedValue)
+                          }
                         />
                       )}
                     </div>
