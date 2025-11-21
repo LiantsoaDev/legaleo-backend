@@ -10,7 +10,16 @@ export const Logo = ({ className }: LogoProps) => {
   const { workspaceName, companyName } = useAppSelector(
     (state) => state.workspace
   );
-  const displayName = workspaceName || companyName || "IndianaCafe";
+  const onboardingData = useAppSelector((state) => state.onboarding.formData);
+
+  const displayName =
+    workspaceName ||
+    companyName ||
+    (onboardingData?.workspaceName as string | undefined) ||
+    (onboardingData?.brandName as string | undefined) ||
+    (onboardingData?.companyName as string | undefined) ||
+    (onboardingData?.enseigne_nom as string | undefined) ||
+    "IndianaCafe";
 
   return (
     <svg

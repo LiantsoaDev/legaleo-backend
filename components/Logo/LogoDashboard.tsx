@@ -19,9 +19,25 @@ export const LogoDashboard = () => {
   const { workspaceName, currentSpace, spaces } = useAppSelector(
     (state) => state.workspace
   );
+  const onboardingData = useAppSelector((state) => state.onboarding.formData);
+  const spacesFromOnboarding = Array.isArray(onboardingData?.workspaceSpaces)
+    ? onboardingData?.workspaceSpaces.filter(Boolean)
+    : onboardingData?.brandName
+    ? [onboardingData.brandName as string]
+    : [];
+  const resolvedWorkspaceName =
+    workspaceName ||
+    (onboardingData?.workspaceName as string | undefined) ||
+    (onboardingData?.companyName as string | undefined) ||
+    (onboardingData?.enseigne_nom as string | undefined) ||
+    "";
+  const resolvedSpaces = spaces.length ? spaces : spacesFromOnboarding;
   const [isOpen, setIsOpen] = useState(false);
   const currentWorkspaceSpace =
-    currentSpace || spaces[0] || workspaceName || "Nom de l'espace de travail";
+    currentSpace ||
+    resolvedSpaces[0] ||
+    resolvedWorkspaceName ||
+    "Nom de l'espace de travail";
 
   const handleSelectSpace = (space: string) => {
     dispatch(setCurrentWorkspaceSpace(space));
@@ -73,7 +89,7 @@ export const LogoDashboard = () => {
               Changer d’environnment de travail
             </span>
             <div className="flex flex-col gap-2.5 mt-3">
-              {(spaces.length ? spaces : [currentWorkspaceSpace]).map((space) => (
+              {(resolvedSpaces.length ? resolvedSpaces : [currentWorkspaceSpace]).map((space) => (
                 <div
                   key={space}
                   className="flex flex-row items-center gap-2.5 cursor-pointer"
