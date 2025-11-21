@@ -10,7 +10,7 @@ export const VotreEnseigne = ({}) => {
         Votre enseigne
       </Title>
       <Paragraphe className="font-medium text-xl">
-        Renseignez votre RCS afin que l’on puisse retrouver votre entreprise et
+        Renseignez votre SIRET afin que l’on puisse retrouver votre entreprise et
         renseigner automatiquement vos informations{" "}
       </Paragraphe>
       <div className="flex flex-row gap-5">
