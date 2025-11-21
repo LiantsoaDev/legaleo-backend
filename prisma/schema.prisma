@@ -149,3 +149,13 @@ model Authenticator {
 
   @@id([userId, credentialID])
 }
+
+model DataInfogreffeCache {
+  id          String   @id @default(cuid())
+  siret       String   @unique
+  companyName String?
+  responseJson Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
