@@ -7,19 +7,40 @@ export interface LogoProps {
 }
 
 export const Logo = ({ className }: LogoProps) => {
-  const { workspaceName, companyName } = useAppSelector(
+  const { workspaceName, companyName, currentSpace, spaces } = useAppSelector(
     (state) => state.workspace
   );
   const onboardingData = useAppSelector((state) => state.onboarding.formData);
 
+  const normalize = (value: unknown): string | undefined => {
+    if (typeof value !== "string") return undefined;
+    const trimmed = value.trim();
+    return trimmed.length ? trimmed : undefined;
+  };
+
   const displayName =
-    workspaceName ||
-    companyName ||
-    (onboardingData?.workspaceName as string | undefined) ||
-    (onboardingData?.brandName as string | undefined) ||
-    (onboardingData?.companyName as string | undefined) ||
-    (onboardingData?.enseigne_nom as string | undefined) ||
+    normalize(workspaceName) ||
+    normalize(companyName) ||
+    normalize(currentSpace) ||
+    normalize(spaces?.[0]) ||
+    normalize(onboardingData?.workspaceName) ||
+    normalize(onboardingData?.brandName) ||
+    normalize(onboardingData?.companyName) ||
+    normalize(onboardingData?.enseigne_nom) ||
     "IndianaCafe";
+
+  if (process.env.NODE_ENV !== "production") {
+    console.log("[Logo] Résolution du displayName", {
+      workspaceSlice: { workspaceName, companyName, currentSpace, spaces },
+      onboardingSlice: {
+        workspaceName: onboardingData?.workspaceName,
+        brandName: onboardingData?.brandName,
+        companyName: onboardingData?.companyName,
+        enseigne_nom: onboardingData?.enseigne_nom,
+      },
+      resolvedDisplayName: displayName,
+    });
+  }
 
   return (
     <svg
