@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
+import fs from "fs/promises";
+import path from "path";
 
 const toRecord = (value: unknown): Record<string, any> => {
   if (
@@ -10,6 +12,75 @@ const toRecord = (value: unknown): Record<string, any> => {
     return value as Record<string, any>;
   }
   return {};
+};
+
+type FileDescriptor = { name: string; type: string; content: string };
+
+const isFileDescriptor = (value: unknown): value is FileDescriptor =>
+  Boolean(
+    value &&
+    typeof value === "object" &&
+    "name" in value &&
+    "content" in value &&
+    typeof (value as any).content === "string"
+  );
+
+const ensureDirectory = async (dir: string) => {
+  await fs.mkdir(dir, { recursive: true });
+};
+
+const saveFileAndReturnPath = async (
+  descriptor: FileDescriptor,
+  userId: string
+): Promise<string> => {
+  const uploadDir = path.join(
+    process.cwd(),
+    "public",
+    "uploads",
+    "juridique",
+    userId
+  );
+  await ensureDirectory(uploadDir);
+
+  const sanitizedName = path.basename(descriptor.name);
+  const fileName = `${Date.now()}-${sanitizedName}`;
+  const base64Content = descriptor.content.includes("base64,")
+    ? descriptor.content.split("base64,")[1]
+    : descriptor.content;
+  const buffer = Buffer.from(base64Content, "base64");
+
+  const absolutePath = path.join(uploadDir, fileName);
+  await fs.writeFile(absolutePath, buffer);
+
+  return path.posix.join("/uploads", "juridique", userId, fileName);
+};
+
+const transformPayloadValue = async (
+  value: any,
+  userId: string
+): Promise<any> => {
+  if (isFileDescriptor(value)) {
+    return saveFileAndReturnPath(value, userId);
+  }
+
+  if (Array.isArray(value)) {
+    const resolved = await Promise.all(
+      value.map((item) => transformPayloadValue(item, userId))
+    );
+    return resolved;
+  }
+
+  if (value && typeof value === "object") {
+    const entries = await Promise.all(
+      Object.entries(value).map(async ([key, val]) => [
+        key,
+        await transformPayloadValue(val, userId),
+      ])
+    );
+    return Object.fromEntries(entries);
+  }
+
+  return value;
 };
 
 export async function POST(req: NextRequest) {
@@ -33,6 +104,9 @@ export async function POST(req: NextRequest) {
       onboarding_id: String(onboarding_id),
     };
 
+    const userIdString = String(userId);
+    const transformedValue = await transformPayloadValue(payloadValue, userIdString);
+
     const existing = await prisma.onboardingAnswer.findUnique({
       where: {
         userId_onboarding_id: identifier,
@@ -40,7 +114,7 @@ export async function POST(req: NextRequest) {
     });
 
     const existingValue = toRecord(existing?.value ?? {});
-    const mergedValue = { ...existingValue, ...payloadValue };
+    const mergedValue = { ...existingValue, ...transformedValue };
 
     const onboadingAnswer = await prisma.onboardingAnswer.upsert({
       where: {
