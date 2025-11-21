@@ -22,15 +22,7 @@ export const VotreEnseigne = ({}) => {
     () => (typeof onboardingFormData?.siret === "string" ? onboardingFormData.siret : ""),
     [onboardingFormData?.siret]
   );
-  const initialBrand = useMemo(
-    () =>
-      typeof onboardingFormData?.brandName === "string"
-        ? onboardingFormData.brandName
-        : "",
-    [onboardingFormData?.brandName]
-  );
   const [siret, setSiret] = useState(initialSiret);
-  const [brandName, setBrandName] = useState(initialBrand);
   const [companyName, setCompanyName] = useState<string | null>(
     (onboardingFormData?.companyName as string | null) ?? null
   );
@@ -44,18 +36,6 @@ export const VotreEnseigne = ({}) => {
   useEffect(() => {
     dispatch(updateFormData({ siret }));
   }, [dispatch, siret]);
-
-  useEffect(() => {
-    const spaces = brandName ? [brandName] : [];
-    dispatch(
-      updateFormData({
-        brandName,
-        workspaceSpaces: spaces,
-        currentWorkspaceSpace: brandName || null,
-      })
-    );
-    dispatch(setWorkspaceSpaces({ spaces, currentSpace: brandName || undefined }));
-  }, [brandName, dispatch]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,24 +64,38 @@ export const VotreEnseigne = ({}) => {
           );
         }
 
-        setCompanyName(companyName ?? null);
-        setWorkspaceName(workspaceName ?? companyName ?? null);
+        const resolvedCompany = companyName ?? null;
+        const resolvedWorkspace = workspaceName ?? companyName ?? null;
+        const resolvedBrand = resolvedCompany ?? resolvedWorkspace;
+
+        setCompanyName(resolvedCompany);
+        setWorkspaceName(resolvedWorkspace);
 
         dispatch(
           updateFormData({
-            companyName: companyName ?? null,
-            workspaceName: workspaceName ?? companyName ?? null,
+            companyName: resolvedCompany,
+            workspaceName: resolvedWorkspace,
+            shareholderName: shareholder?.denomination ?? null,
+            shareholderSiren: shareholder?.siren ?? null,
+            brandName: resolvedBrand ?? null,
+            workspaceSpaces: resolvedBrand ? [resolvedBrand] : [],
+            currentWorkspaceSpace: resolvedBrand ?? null,
+          })
+        );
+
+        dispatch(
+          setWorkspaceData({
+            workspaceName: resolvedWorkspace ?? undefined,
+            companyName: resolvedCompany,
             shareholderName: shareholder?.denomination ?? null,
             shareholderSiren: shareholder?.siren ?? null,
           })
         );
 
         dispatch(
-          setWorkspaceData({
-            workspaceName: workspaceName ?? companyName ?? undefined,
-            companyName: companyName ?? null,
-            shareholderName: shareholder?.denomination ?? null,
-            shareholderSiren: shareholder?.siren ?? null,
+          setWorkspaceSpaces({
+            spaces: resolvedBrand ? [resolvedBrand] : [],
+            currentSpace: resolvedBrand ?? undefined,
           })
         );
       } catch (error: any) {
@@ -117,10 +111,6 @@ export const VotreEnseigne = ({}) => {
   const handleSiretChange = (value: string) => {
     const sanitized = value.replace(/\D/g, "").slice(0, 14);
     setSiret(sanitized);
-  };
-
-  const handleBrandChange = (value: string) => {
-    setBrandName(value);
   };
 
   return (
@@ -140,14 +130,6 @@ export const VotreEnseigne = ({}) => {
           classname="text-xl px-6 py-4 w-full"
           defaultValue={initialSiret}
           onChange={(e) => handleSiretChange(e.target.value)}
-        />
-        <Input
-          type="text"
-          placeholder="Nom de votre marque"
-          name="brandName"
-          classname="text-xl px-6 py-4 w-full"
-          defaultValue={initialBrand}
-          onChange={(e) => handleBrandChange(e.target.value)}
         />
       </div>
       {isLoading && (
@@ -175,8 +157,8 @@ export const VotreEnseigne = ({}) => {
         </div>
       )}
       <Notices classname="mt-5 !text-xl">
-        Indiquez ici le nom de votre marque. Cela nous permettra de
-        personnaliser vos modèles de contrat.
+        Nous récupérons automatiquement le nom de votre marque à partir du
+        SIRET saisi afin de personnaliser vos modèles de contrat.
       </Notices>
     </div>
   );
