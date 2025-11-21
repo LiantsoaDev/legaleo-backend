@@ -100,22 +100,34 @@ export const InformationContractuel = ({
       )}
       {internalStep === 2 && (
         <>
-          <ConditionalForm questions={question1} />
+          <ConditionalForm
+            questions={question1}
+            formKey="information_contractuelle.contrats_affilies"
+          />
         </>
       )}
       {internalStep === 3 && (
         <>
-          <ConditionalForm questions={question2} />
+          <ConditionalForm
+            questions={question2}
+            formKey="information_contractuelle.non_concurrence"
+          />
         </>
       )}
       {internalStep === 4 && (
         <>
-          <ConditionalForm questions={question3} />
+          <ConditionalForm
+            questions={question3}
+            formKey="information_contractuelle.resiliation_anticipee"
+          />
         </>
       )}
       {internalStep === 5 && (
         <>
-          <ConditionalForm questions={question4} />
+          <ConditionalForm
+            questions={question4}
+            formKey="information_contractuelle.rgpd"
+          />
         </>
       )}
     </div>
