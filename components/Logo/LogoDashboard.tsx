@@ -8,12 +8,26 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import { setCurrentWorkspaceSpace } from "@/lib/features/slice/workspaceSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hook";
 import { Button } from "../Button";
 import { UserSettingInfo } from "../User";
 import { Logo } from "./Logo";
 
 export const LogoDashboard = () => {
+  const dispatch = useAppDispatch();
+  const { workspaceName, currentSpace, spaces } = useAppSelector(
+    (state) => state.workspace
+  );
   const [isOpen, setIsOpen] = useState(false);
+  const currentWorkspaceSpace =
+    currentSpace || spaces[0] || workspaceName || "Nom de l'espace de travail";
+
+  const handleSelectSpace = (space: string) => {
+    dispatch(setCurrentWorkspaceSpace(space));
+    setIsOpen(false);
+  };
+
   return (
     <div className="flex flex-col g px-2.5 py-1 relative w-[19.5em]">
       <div
@@ -29,7 +43,7 @@ export const LogoDashboard = () => {
             <div className="w-8 h-8 bg-[#FFE9BD] rounded-sm" />
             <div className="flex flex-col justify-between">
               <div className="text-sm font-semibold text-black">
-                Nom de l'espace de travail en cours
+                {currentWorkspaceSpace}
               </div>
               <div className="text-xs text-gray-500 flex items-center gap-1">
                 Plan en cours{" "}
@@ -59,18 +73,16 @@ export const LogoDashboard = () => {
               Changer d’environnment de travail
             </span>
             <div className="flex flex-col gap-2.5 mt-3">
-              <div className="flex flex-row items-center gap-2.5 cursor-pointer">
-                <div className="w-5 h-5 bg-gray rounded-sm" />
-                <span className="font-medium text-xs text-black">
-                  Nom de l'espace de travail
-                </span>
-              </div>
-              <div className="flex flex-row items-center gap-2.5 cursor-pointer">
-                <div className="w-5 h-5 bg-gray rounded-sm" />
-                <span className="font-medium text-xs text-black">
-                  Nom de l'espace de travail
-                </span>
-              </div>
+              {(spaces.length ? spaces : [currentWorkspaceSpace]).map((space) => (
+                <div
+                  key={space}
+                  className="flex flex-row items-center gap-2.5 cursor-pointer"
+                  onClick={() => handleSelectSpace(space)}
+                >
+                  <div className="w-5 h-5 bg-gray rounded-sm" />
+                  <span className="font-medium text-xs text-black">{space}</span>
+                </div>
+              ))}
             </div>
             <Button
               isLink
