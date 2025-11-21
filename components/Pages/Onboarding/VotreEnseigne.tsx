@@ -32,6 +32,82 @@ export const VotreEnseigne = ({}) => {
   const [apiError, setApiError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const debouncedSiret = useDebounce(siret, 500);
+  const cachePrefix = "datainfogreffe";
+
+  const buildCacheKey = (siren: string) => `${cachePrefix}:${siren}`;
+
+  const readCachedResponse = (siren: string): DataInfogreffeResponse | null => {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = sessionStorage.getItem(buildCacheKey(siren));
+      return raw ? (JSON.parse(raw) as DataInfogreffeResponse) : null;
+    } catch (error) {
+      console.error("Impossible de lire le cache DataInfogreffe", error);
+      return null;
+    }
+  };
+
+  const writeCachedResponse = (siren: string, data: DataInfogreffeResponse) => {
+    if (typeof window === "undefined") return;
+    try {
+      sessionStorage.setItem(buildCacheKey(siren), JSON.stringify(data));
+    } catch (error) {
+      console.error("Impossible d'écrire dans le cache DataInfogreffe", error);
+    }
+  };
+
+  const handleResolvedData = (
+    data: DataInfogreffeResponse,
+    siren: string
+  ) => {
+    const { workspaceName, companyName, shareholder } = resolveWorkspaceName(
+      data
+    );
+
+    if (!workspaceName && !companyName) {
+      throw new Error("Impossible d'interpréter la réponse de DataInfogreffe.");
+    }
+
+    const resolvedCompany = companyName ?? null;
+    const resolvedWorkspace = workspaceName ?? companyName ?? null;
+    const resolvedBrand = resolvedCompany ?? resolvedWorkspace;
+
+    setCompanyName(resolvedCompany);
+    setWorkspaceName(resolvedWorkspace);
+
+    dispatch(
+      updateFormData({
+        siret,
+        companyName: resolvedCompany,
+        workspaceName: resolvedWorkspace,
+        shareholderName: shareholder?.denomination ?? null,
+        shareholderSiren: shareholder?.siren ?? null,
+        brandName: resolvedBrand ?? null,
+        workspaceSpaces: resolvedBrand ? [resolvedBrand] : [],
+        currentWorkspaceSpace: resolvedBrand ?? null,
+        datainfogreffeData: data,
+        datainfogreffeSiren: siren,
+      })
+    );
+
+    dispatch(
+      setWorkspaceData({
+        workspaceName: resolvedWorkspace ?? undefined,
+        companyName: resolvedCompany,
+        shareholderName: shareholder?.denomination ?? null,
+        shareholderSiren: shareholder?.siren ?? null,
+      })
+    );
+
+    dispatch(
+      setWorkspaceSpaces({
+        spaces: resolvedBrand ? [resolvedBrand] : [],
+        currentSpace: resolvedBrand ?? undefined,
+      })
+    );
+
+    writeCachedResponse(siren, data);
+  };
 
   useEffect(() => {
     dispatch(updateFormData({ siret }));
@@ -39,13 +115,31 @@ export const VotreEnseigne = ({}) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!debouncedSiret || debouncedSiret.length < 9) return;
+      const normalized = debouncedSiret.replace(/\D/g, "");
+      const siren = normalized.slice(0, 9);
+      if (!siren || siren.length < 9) return;
+
+      const cachedResponse =
+        readCachedResponse(siren) ??
+        (onboardingFormData?.datainfogreffeSiren === siren
+          ? (onboardingFormData?.datainfogreffeData as DataInfogreffeResponse)
+          : null);
+
+      if (cachedResponse) {
+        try {
+          handleResolvedData(cachedResponse, siren);
+          return;
+        } catch (error: any) {
+          console.error("Erreur lors de l'utilisation du cache", error);
+          // continue to network fetch if cache parsing fails
+        }
+      }
       setIsLoading(true);
       setApiError(null);
 
       try {
         const response = await fetch(
-          `/api/datainfogreffe/repartition-capital?siret=${debouncedSiret}`
+          `/api/datainfogreffe/repartition-capital?siret=${normalized}`
         );
 
         if (!response.ok) {
@@ -56,48 +150,7 @@ export const VotreEnseigne = ({}) => {
         }
 
         const data = (await response.json()) as DataInfogreffeResponse;
-        const { workspaceName, companyName, shareholder } = resolveWorkspaceName(data);
-
-        if (!workspaceName && !companyName) {
-          throw new Error(
-            "Impossible d'interpréter la réponse de DataInfogreffe."
-          );
-        }
-
-        const resolvedCompany = companyName ?? null;
-        const resolvedWorkspace = workspaceName ?? companyName ?? null;
-        const resolvedBrand = resolvedCompany ?? resolvedWorkspace;
-
-        setCompanyName(resolvedCompany);
-        setWorkspaceName(resolvedWorkspace);
-
-        dispatch(
-          updateFormData({
-            companyName: resolvedCompany,
-            workspaceName: resolvedWorkspace,
-            shareholderName: shareholder?.denomination ?? null,
-            shareholderSiren: shareholder?.siren ?? null,
-            brandName: resolvedBrand ?? null,
-            workspaceSpaces: resolvedBrand ? [resolvedBrand] : [],
-            currentWorkspaceSpace: resolvedBrand ?? null,
-          })
-        );
-
-        dispatch(
-          setWorkspaceData({
-            workspaceName: resolvedWorkspace ?? undefined,
-            companyName: resolvedCompany,
-            shareholderName: shareholder?.denomination ?? null,
-            shareholderSiren: shareholder?.siren ?? null,
-          })
-        );
-
-        dispatch(
-          setWorkspaceSpaces({
-            spaces: resolvedBrand ? [resolvedBrand] : [],
-            currentSpace: resolvedBrand ?? undefined,
-          })
-        );
+        handleResolvedData(data, siren);
       } catch (error: any) {
         setApiError(error?.message ?? "Une erreur inconnue est survenue.");
       } finally {

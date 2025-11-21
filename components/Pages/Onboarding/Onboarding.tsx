@@ -41,6 +41,7 @@ export const Onboardings = ({
   onboardings,
   currentStep,
   internalStep,
+  formData,
   renderStep,
   bgcolor,
   progresscolor,
@@ -63,10 +64,16 @@ export const Onboardings = ({
     (e: FormEvent) => {
       e.preventDefault();
       if (userId && onboardings) {
-        dispatch(saveStepData({ userId, onboardingDatas: onboardings }));
+        dispatch(
+          saveStepData({
+            userId,
+            onboardingDatas: onboardings,
+            valuesOverride: formData,
+          })
+        );
       }
     },
-    [userId, dispatch, onboardings]
+    [userId, dispatch, onboardings, formData]
   );
 
   return (
