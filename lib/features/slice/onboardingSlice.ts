@@ -59,12 +59,18 @@ export const handleNextStep = createAsyncThunk(
     { dispatch, getState }
   ) => {
     const state = getState() as { onboarding: OnboardingState };
-    const { internalStep, currentStep, steps, maxInternalStep } =
+    const { internalStep, currentStep, steps, maxInternalStep, formData } =
       state.onboarding;
 
     // Sauvegarde d'abord les données
     if (onboardingDatas && userId)
-      await dispatch(saveStepData({ userId, onboardingDatas }));
+      await dispatch(
+        saveStepData({
+          userId,
+          onboardingDatas,
+          valuesOverride: formData,
+        })
+      );
 
     if (internalStep < maxInternalStep) {
       dispatch(incrementInternalStep());
@@ -91,7 +97,7 @@ export const handlePrevStep = createAsyncThunk(
     { dispatch, getState }
   ) => {
     const state = getState() as { onboarding: OnboardingState };
-    const { internalStep, currentStep } = state.onboarding;
+    const { internalStep, currentStep, formData } = state.onboarding;
 
     if (internalStep > 1) {
       dispatch(decrementInternalStep());
@@ -100,7 +106,13 @@ export const handlePrevStep = createAsyncThunk(
 
     if (internalStep === 1) {
       if (onboardingDatas && userId) {
-        await dispatch(saveStepData({ userId, onboardingDatas }));
+        await dispatch(
+          saveStepData({
+            userId,
+            onboardingDatas,
+            valuesOverride: formData,
+          })
+        );
       }
       if (currentStep > 1) {
         dispatch(prevStep());
@@ -124,12 +136,18 @@ export const jumpToStep = createAsyncThunk(
     { dispatch, getState }
   ) => {
     const state = getState() as { onboarding: OnboardingState };
-    const { currentStep } = state.onboarding;
+    const { currentStep, formData } = state.onboarding;
 
     if (step === currentStep) return;
 
     if (onboardingDatas) {
-      await dispatch(saveStepData({ userId, onboardingDatas }));
+      await dispatch(
+        saveStepData({
+          userId,
+          onboardingDatas,
+          valuesOverride: formData,
+        })
+      );
     }
 
     dispatch(setStep(step));
@@ -151,12 +169,9 @@ export const saveStepData = createAsyncThunk(
   ) => {
     let data: Record<string, any> = {};
 
-    if (valuesOverride && Object.keys(valuesOverride).length > 0) {
-      data = valuesOverride;
-    } else {
-      const formElement = document.querySelector("form");
-      if (!formElement) return;
+    const formElement = document.querySelector("form");
 
+    if (formElement) {
       const formData = new FormData(formElement as HTMLFormElement);
 
       const appendValue = (key: string, value: any) => {
@@ -183,6 +198,10 @@ export const saveStepData = createAsyncThunk(
           appendValue(key, value);
         }
       }
+    }
+
+    if (valuesOverride && Object.keys(valuesOverride).length > 0) {
+      data = { ...data, ...valuesOverride };
     }
 
     if (!Object.keys(data).length) return {};

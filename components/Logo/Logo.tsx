@@ -1,8 +1,26 @@
+"use client";
+
+import { useAppSelector } from "@/lib/hook";
+
 export interface LogoProps {
   className?: string;
 }
 
 export const Logo = ({ className }: LogoProps) => {
+  const { workspaceName, companyName } = useAppSelector(
+    (state) => state.workspace
+  );
+  const onboardingData = useAppSelector((state) => state.onboarding.formData);
+
+  const displayName =
+    workspaceName ||
+    companyName ||
+    (onboardingData?.workspaceName as string | undefined) ||
+    (onboardingData?.brandName as string | undefined) ||
+    (onboardingData?.companyName as string | undefined) ||
+    (onboardingData?.enseigne_nom as string | undefined) ||
+    "IndianaCafe";
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -11,6 +29,7 @@ export const Logo = ({ className }: LogoProps) => {
       height={80}
       role="img"
       aria-labelledby="logoTitle"
+      className={className}
     >
       <title id="logoTitle">Logo Legaleo</title>
 
@@ -31,7 +50,7 @@ export const Logo = ({ className }: LogoProps) => {
         fontSize="34"
         dominantBaseline="middle"
       >
-        IndianaCafe
+        {displayName}
       </text>
     </svg>
   );
@@ -45,6 +64,7 @@ export const LogoLegaleo = ({ className }: LogoProps) => {
       viewBox="0 0 255 79"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className={className}
     >
       <path
         d="M75.958 63.9758V23.5039H79.9836V63.9758H75.958Z"

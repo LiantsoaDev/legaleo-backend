@@ -1,6 +1,10 @@
 "use client";
 
 import { FullLoader } from "@/components/Loader";
+import {
+  setWorkspaceData,
+  setWorkspaceSpaces,
+} from "@/lib/features/slice/workspaceSlice";
 import { fetchOnboardings } from "@/lib/features/slice/onboardingSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hook";
 import { renderStep } from "@/utils/functions";
@@ -26,6 +30,39 @@ export const OnboardingGeneral = ({ user }: any) => {
   useEffect(() => {
     dispatch(fetchOnboardings({ title: "Onboarding principal", userId }));
   }, [dispatch, userId]);
+
+  useEffect(() => {
+    const spacesFromForm = Array.isArray(formData?.workspaceSpaces)
+      ? formData.workspaceSpaces.filter(Boolean)
+      : formData?.brandName
+      ? [formData.brandName]
+      : [];
+
+    if (spacesFromForm.length) {
+      dispatch(
+        setWorkspaceSpaces({
+          spaces: spacesFromForm,
+          currentSpace:
+            (formData?.currentWorkspaceSpace as string | undefined) ??
+            spacesFromForm[0],
+        })
+      );
+    }
+
+    if (formData?.workspaceName || formData?.companyName) {
+      dispatch(
+        setWorkspaceData({
+          workspaceName: formData.workspaceName as string | undefined,
+          companyName:
+            (formData.companyName as string | undefined) ??
+            (formData.enseigne_nom as string | undefined) ??
+            null,
+          shareholderName: formData.shareholderName as string | undefined,
+          shareholderSiren: formData.shareholderSiren as string | undefined,
+        })
+      );
+    }
+  }, [dispatch, formData]);
 
   if (isLoading) {
     return (
