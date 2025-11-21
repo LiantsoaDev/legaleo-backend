@@ -29,7 +29,7 @@ export const LogoDashboard = () => {
             <div className="w-8 h-8 bg-[#FFE9BD] rounded-sm" />
             <div className="flex flex-col justify-between">
               <div className="text-sm font-semibold text-black">
-                Nom du groupe
+                Nom de l'espace de travail en cours
               </div>
               <div className="text-xs text-gray-500 flex items-center gap-1">
                 Plan en cours{" "}
@@ -62,13 +62,13 @@ export const LogoDashboard = () => {
               <div className="flex flex-row items-center gap-2.5 cursor-pointer">
                 <div className="w-5 h-5 bg-gray rounded-sm" />
                 <span className="font-medium text-xs text-black">
-                  Nom du groupe
+                  Nom de l'espace de travail
                 </span>
               </div>
               <div className="flex flex-row items-center gap-2.5 cursor-pointer">
                 <div className="w-5 h-5 bg-gray rounded-sm" />
                 <span className="font-medium text-xs text-black">
-                  Nom du groupe
+                  Nom de l'espace de travail
                 </span>
               </div>
             </div>
