@@ -4,7 +4,7 @@ import {
 } from "@lexical/react/LexicalComposer";
 import { EditorState, SerializedEditorState } from "lexical";
 import { nodes } from "../blocks/editor-00/nodes";
-import { editorTheme } from "../editor/themes/editor-theme";
+import { editorTheme } from "./themes/editor-theme";
 
 const editorConfig: InitialConfigType = {
   namespace: "Editor",

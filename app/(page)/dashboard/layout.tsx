@@ -12,6 +12,16 @@ import { useAppDispatch, useAppSelector } from "@/lib/hook";
 import { Recharge } from "@/utils/types";
 import { useEffect, useState } from "react";
 
+const navMenu = [
+  { name: "Dashboard", href: "/dashboard" },
+  { name: "Contrat en cours", href: "/dashboard/contrat" },
+  { name: "Contrathèque", href: "/dashboard/contratheque" },
+  { name: "Cocontractant", href: "/dashboard/cocontractant" },
+  { name: "Modèles", href: "/dashboard/models" },
+  { name: "Clauses dynamiques", href: "/dashboard/clause-dynamiques" },
+  { name: "Assistant IA", href: "/dashboard/assistance-ia" },
+];
+
 const recharges: Recharge[] = [
   {
     duration: "5h",
@@ -93,7 +103,7 @@ export default function DashboardLayout({
         showCredit={showCreditCard}
       />
       <div className="flex h-[85%] flex-row gap-0">
-        <Left />
+        <Left menuItems={navMenu} />
         <div className="w-4/5 bg-white rounded-2xl py-8 px-10 shadow-md relative overflow-y-auto scrollable">
           {children}
         </div>

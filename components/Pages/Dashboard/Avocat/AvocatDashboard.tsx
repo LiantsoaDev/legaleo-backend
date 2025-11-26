@@ -1,22 +1,17 @@
 "use client";
-import { Decouvrir } from "@/components/Assistances";
-import { ImportDocument, ProjectCard } from "@/components/Card";
+
+import { CustomCalendar } from "@/components/Calendar/Calendar";
+import { ImportDocument } from "@/components/Card";
+import { MesActivite } from "@/components/Card/MesActivite";
 import { Notifications } from "@/components/Notifications";
 import { Title } from "@/components/Typography";
-import { Videos } from "@/components/Video";
 import { useAppSelector } from "@/lib/hook";
-import {
-  faDownload,
-  faFile,
-  faSignature,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
-import { OnboardingFinalisation } from "../Onboarding";
-import { LastProject } from "./Project";
+import { OnboardingFinalisation } from "../../Onboarding";
+import { LastProject } from "../Project";
 
-export const ClientDashboard = () => {
+export const AvocatDashboard = () => {
   const today = new Date();
   const [importDocument, setImportDocument] = useState(false);
   const { data: session } = useSession();
@@ -40,6 +35,7 @@ export const ClientDashboard = () => {
 
   const finalDate =
     formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+
   return (
     <div className="flex flex-row gap-12">
       <div className="w-3/5 flex flex-col gap-7">
@@ -52,51 +48,20 @@ export const ClientDashboard = () => {
             </Title>
           </div>
         </div>
-        <div className="flex flex-row w-full items-center gap-5">
-          <ProjectCard
-            icon={
-              <FontAwesomeIcon
-                icon={faFile}
-                className="text-primary !text-xl"
-              />
-            }
-            title="Nouveau projet"
-            href="/projets/nouveau"
-          />
-          <ProjectCard
-            icon={
-              <FontAwesomeIcon
-                icon={faSignature}
-                className="text-primary !text-xl"
-              />
-            }
-            title="Signer un document"
-            href="/projets/signer-projet"
-          />
-          <ProjectCard
-            icon={
-              <FontAwesomeIcon
-                icon={faDownload}
-                className="text-primary !text-xl"
-              />
-            }
-            title="Importer un document"
-            href="#"
-            onClick={() => setImportDocument(true)}
-          />
-        </div>
         <OnboardingFinalisation
-          title="Mes premiers pas sur Legaleo"
-          linkText="Afficher"
-          linkHref="/onboarding/juridique"
+          title="Complétez votre profil avocat"
+          linkText="Compléter mon profil"
+          linkHref="/onboarding/avocat"
+          bgColor="#FFE9BD"
+          onboardingStep="Ajoutez les informations manquantes pour finaliser votre espace et faciliter vos futures révisions"
         />
-        <LastProject />
+        <LastProject title="Activité récente" />
       </div>
       {importDocument && <ImportDocument setShow={setImportDocument} />}
       <div className="w-2/5 bg-[#F2F8F8] p-7 rounded-xl flex flex-col gap-7">
+        <MesActivite />
         <Notifications />
-        <Videos />
-        <Decouvrir />
+        <CustomCalendar />
       </div>
     </div>
   );

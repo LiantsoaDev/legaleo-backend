@@ -4,6 +4,7 @@ import { Button } from "@/components/Button";
 import { Historique } from "@/components/editor";
 import { DocumentAction } from "@/components/editor/DocumentAction";
 import { EditorProvider } from "@/components/editor/EditorProvider";
+
 import {
   DeleteCard,
   Dupliquer,

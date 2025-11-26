@@ -1,11 +1,15 @@
 import { Title } from "@/components/Typography";
 import { ProjectListCard } from "./ProjectListCard";
 
-export const LastProject = () => {
+interface LastProjectProps {
+  title?: string;
+}
+
+export const LastProject = ({ title }: LastProjectProps) => {
   return (
     <div className="flex flex-col gap-5 w-full">
       <Title className="font-bold text-xl" level={2}>
-        Mes derniers projets
+        {title ?? "Mes derniers projets"}
       </Title>
       <div className="flex flex-row justify-between flex-wrap gap-5 w-full">
         <ProjectListCard
