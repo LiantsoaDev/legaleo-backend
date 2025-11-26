@@ -1,9 +1,13 @@
 "use client";
 
 import { FullLoader } from "@/components/Loader";
-import { fetchOnboardings } from "@/lib/features/slice/onboardingSlice";
+import {
+  fetchOnboardings,
+  updateFormData,
+} from "@/lib/features/slice/onboardingSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hook";
 import { renderStepReseauEtabli } from "@/utils/functions";
+import { readJuridiqueOnboardingAnswers } from "@/utils/onboardingCookie";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { Onboardings } from "./Onboarding";
@@ -28,6 +32,13 @@ export const OnboardingReseauEtabli = ({ user }: any) => {
     dispatch(fetchOnboardings({ title: "Onboarding reseau etabli", userId }));
     console.log("steps", steps);
   }, [dispatch, userId]);
+
+  useEffect(() => {
+    const persistedAnswers = readJuridiqueOnboardingAnswers();
+    if (persistedAnswers && Object.keys(persistedAnswers).length) {
+      dispatch(updateFormData(persistedAnswers));
+    }
+  }, [dispatch]);
 
   if (isLoading) {
     return (

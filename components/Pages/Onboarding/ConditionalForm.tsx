@@ -13,11 +13,32 @@ import { useAppDispatch } from "@/lib/hook";
 import { Question } from "@/utils/types";
 import { useEffect, useMemo, useState } from "react";
 import { useOnboardingFormData } from "./OnboardingFormContext";
+import {
+  mergeJuridiqueOnboardingAnswers,
+  readJuridiqueOnboardingAnswers,
+} from "@/utils/onboardingCookie";
 
 interface ConditionnalFormProps {
   questions: Question[];
   formKey?: string;
 }
+
+type AnswerValue = string | string[] | { name: string; type: string; content: string };
+
+const serializeFile = (file: File) =>
+  new Promise<{ name: string; type: string; content: string }>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = (reader.result as string) || "";
+      resolve({
+        name: file.name,
+        type: file.type,
+        content: base64.split(",")[1] || base64,
+      });
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 
 export default function ConditionalForm({
   questions,
@@ -25,22 +46,28 @@ export default function ConditionalForm({
 }: ConditionnalFormProps) {
   const onboardingFormData = useOnboardingFormData();
   const dispatch = useAppDispatch();
-  const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
+  const [answers, setAnswers] = useState<Record<string, AnswerValue>>({});
   const [visibleQuestions, setVisibleQuestions] = useState<string[]>(["q1"]);
 
   const getFieldName = (questionId: string) =>
     formKey ? `${formKey}.${questionId}` : questionId;
 
+  const persistedCookies = useMemo(
+    () => readJuridiqueOnboardingAnswers(),
+    []
+  );
+
   const savedAnswers = useMemo(() => {
-    const initial: Record<string, string | string[]> = {};
+    const initial: Record<string, AnswerValue> = {};
     questions.forEach((question) => {
-      const storedValue = onboardingFormData?.[getFieldName(question.id)];
+      const fieldName = getFieldName(question.id);
+      const storedValue = onboardingFormData?.[fieldName] ?? persistedCookies[fieldName];
       if (typeof storedValue === "string" || Array.isArray(storedValue)) {
         initial[question.id] = storedValue;
       }
     });
     return initial;
-  }, [onboardingFormData, questions, formKey]);
+  }, [onboardingFormData, persistedCookies, questions, formKey]);
 
   // Recalculer quelles questions doivent être visibles à chaque changement des réponses.
   useEffect(() => {
@@ -83,17 +110,18 @@ export default function ConditionalForm({
 
   const persistAnswer = (
     questionId: string,
-    value: string | string[],
+    value: AnswerValue,
     { skipUpdate }: { skipUpdate?: boolean } = {}
   ) => {
-    if (skipUpdate) return;
     const fieldName = getFieldName(questionId);
+    mergeJuridiqueOnboardingAnswers({ [fieldName]: value });
+    if (skipUpdate) return;
     dispatch(updateFormData({ [fieldName]: value }));
   };
 
   const handleAnswer = (
     id: string,
-    value: string | string[],
+    value: AnswerValue,
     options: { skipUpdate?: boolean } = {}
   ) => {
     setAnswers((prev) => ({ ...prev, [id]: value }));
@@ -103,7 +131,8 @@ export default function ConditionalForm({
   const resolveValue = (questionId: string) => {
     const currentValue = answers[questionId];
     if (typeof currentValue === "string") return currentValue;
-    const storedValue = onboardingFormData?.[getFieldName(questionId)];
+    const fieldName = getFieldName(questionId);
+    const storedValue = onboardingFormData?.[fieldName] ?? persistedCookies[fieldName];
     if (typeof storedValue === "string") return storedValue;
     return "";
   };
@@ -417,10 +446,12 @@ export default function ConditionalForm({
                   className="hidden"
                   id={question.id}
                   name={getFieldName(question.id)}
-                  onChange={(e) => {
+                  onChange={async (e) => {
                     const file = e.target.files?.[0];
-                    if (file)
-                      handleAnswer(question.id, file.name, { skipUpdate: true });
+                    if (file) {
+                      const serializedFile = await serializeFile(file);
+                      handleAnswer(question.id, serializedFile);
+                    }
                   }}
                 />
               </div>
