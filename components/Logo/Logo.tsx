@@ -27,7 +27,7 @@ export const Logo = ({ className }: LogoProps) => {
     normalize(onboardingData?.brandName) ||
     normalize(onboardingData?.companyName) ||
     normalize(onboardingData?.enseigne_nom) ||
-    "IndianaCafe";
+    "Mon espace de travail";
 
   if (process.env.NODE_ENV !== "production") {
     console.log("[Logo] Résolution du displayName", {

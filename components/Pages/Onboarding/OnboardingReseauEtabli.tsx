@@ -22,9 +22,12 @@ export const OnboardingReseauEtabli = ({ user }: any) => {
     error,
   } = useAppSelector((state) => state.onboarding);
 
+  const { id: userId } = useAppSelector((state) => state.user);
+
   useEffect(() => {
-    dispatch(fetchOnboardings({ title: "Onboarding reseau etabli" }));
-  }, [dispatch]);
+    dispatch(fetchOnboardings({ title: "Onboarding reseau etabli", userId }));
+    console.log("steps", steps);
+  }, [dispatch, userId]);
 
   if (isLoading) {
     return (

@@ -3,6 +3,24 @@ import { fileToBase64, getOnboardings, postOnboardingData } from "@/server";
 import { OnboardingWithSteps } from "@/utils/types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+const normalizeObject = (value: any): any => {
+  if (Array.isArray(value)) {
+    return value.map(normalizeObject);
+  }
+  if (value && typeof value === "object") {
+    return Object.keys(value)
+      .sort()
+      .reduce<Record<string, any>>((acc, key) => {
+        acc[key] = normalizeObject(value[key]);
+        return acc;
+      }, {});
+  }
+  return value;
+};
+
+const getPayloadHash = (value: Record<string, any>) =>
+  JSON.stringify(normalizeObject(value));
+
 export interface OnboardingState {
   steps: OnboardingStep[];
   onboardings: OnboardingWithSteps | null;
@@ -10,6 +28,7 @@ export interface OnboardingState {
   internalStep: number;
   maxInternalStep: number;
   formData: Record<string, any>;
+  lastSyncedPayloadHash: string | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -21,6 +40,7 @@ const initialState: OnboardingState = {
   internalStep: 1,
   maxInternalStep: 1,
   formData: {},
+  lastSyncedPayloadHash: null,
   isLoading: false,
   error: null,
 };
@@ -165,7 +185,8 @@ export const saveStepData = createAsyncThunk(
       userId: string;
       onboardingDatas: OnboardingWithSteps;
       valuesOverride?: Record<string, any>;
-    }
+    },
+    { getState }
   ) => {
     let data: Record<string, any> = {};
 
@@ -204,11 +225,21 @@ export const saveStepData = createAsyncThunk(
       data = { ...data, ...valuesOverride };
     }
 
-    if (!Object.keys(data).length) return {};
+    if (!Object.keys(data).length) {
+      return { saved: false as const };
+    }
 
     const onboarding_id = onboardingDatas && onboardingDatas?.id;
 
-    if (!onboarding_id) return {};
+    if (!onboarding_id) {
+      return { saved: false as const };
+    }
+
+    const nextPayloadHash = getPayloadHash(data);
+    const state = getState() as { onboarding: OnboardingState };
+    if (state.onboarding.lastSyncedPayloadHash === nextPayloadHash) {
+      return { saved: false as const };
+    }
 
     const dataToSend = {
       userId,
@@ -217,7 +248,11 @@ export const saveStepData = createAsyncThunk(
     };
 
     await postOnboardingData(dataToSend);
-    return data;
+    return {
+      saved: true as const,
+      data,
+      hash: nextPayloadHash,
+    };
   }
 );
 
@@ -281,8 +316,9 @@ export const onboardingSlice = createSlice({
       })
       .addCase(saveStepData.fulfilled, (state, action) => {
         state.isLoading = false;
-        if (action.payload) {
-          state.formData = { ...state.formData, ...action.payload };
+        if (action.payload?.saved && action.payload.data && action.payload.hash) {
+          state.formData = { ...state.formData, ...action.payload.data };
+          state.lastSyncedPayloadHash = action.payload.hash;
         }
       })
       .addCase(saveStepData.rejected, (state, action) => {
