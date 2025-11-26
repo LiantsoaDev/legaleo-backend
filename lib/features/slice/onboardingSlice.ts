@@ -2,6 +2,10 @@ import { OnboardingStep } from "@/app/generated/prisma";
 import { fileToBase64, getOnboardings, postOnboardingData } from "@/server";
 import { OnboardingWithSteps } from "@/utils/types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  clearJuridiqueOnboardingAnswers,
+  readJuridiqueOnboardingAnswers,
+} from "@/utils/onboardingCookie";
 
 export interface OnboardingState {
   steps: OnboardingStep[];
@@ -62,15 +66,43 @@ export const handleNextStep = createAsyncThunk(
     const { internalStep, currentStep, steps, maxInternalStep, formData } =
       state.onboarding;
 
+    const isJuridiqueOnboarding = (() => {
+      const title = onboardingDatas?.title?.toLowerCase() ?? "";
+      const pathIsJuridique =
+        typeof window !== "undefined" &&
+        window.location.pathname.includes("/onboarding/juridique");
+
+      return (
+        pathIsJuridique ||
+        title.includes("juridique") ||
+        title.includes("reseau etabli")
+      );
+    })();
+
+    const isFinalJuridiqueQuestion =
+      isJuridiqueOnboarding && currentStep === 8 && internalStep === 1;
+
+    const shouldPersistImmediately =
+      !isJuridiqueOnboarding || isFinalJuridiqueQuestion;
+
     // Sauvegarde d'abord les données
-    if (onboardingDatas && userId)
+    if (shouldPersistImmediately && onboardingDatas && userId) {
+      const valuesOverride = isFinalJuridiqueQuestion
+        ? { ...formData, ...readJuridiqueOnboardingAnswers() }
+        : formData;
+
       await dispatch(
         saveStepData({
           userId,
           onboardingDatas,
-          valuesOverride: formData,
+          valuesOverride,
         })
       );
+
+      if (isFinalJuridiqueQuestion) {
+        clearJuridiqueOnboardingAnswers();
+      }
+    }
 
     if (internalStep < maxInternalStep) {
       dispatch(incrementInternalStep());
@@ -99,20 +131,43 @@ export const handlePrevStep = createAsyncThunk(
     const state = getState() as { onboarding: OnboardingState };
     const { internalStep, currentStep, formData } = state.onboarding;
 
+    const isJuridiqueOnboarding = (() => {
+      const title = onboardingDatas?.title?.toLowerCase() ?? "";
+      const pathIsJuridique =
+        typeof window !== "undefined" &&
+        window.location.pathname.includes("/onboarding/juridique");
+
+      return (
+        pathIsJuridique ||
+        title.includes("juridique") ||
+        title.includes("reseau etabli")
+      );
+    })();
+    const isFinalJuridiqueQuestion =
+      isJuridiqueOnboarding && currentStep === 8 && internalStep === 1;
+    const shouldPersistImmediately =
+      !isJuridiqueOnboarding || isFinalJuridiqueQuestion;
+
     if (internalStep > 1) {
       dispatch(decrementInternalStep());
       return;
     }
 
     if (internalStep === 1) {
-      if (onboardingDatas && userId) {
+      if (shouldPersistImmediately && onboardingDatas && userId) {
         await dispatch(
           saveStepData({
             userId,
             onboardingDatas,
-            valuesOverride: formData,
+            valuesOverride: isFinalJuridiqueQuestion
+              ? { ...formData, ...readJuridiqueOnboardingAnswers() }
+              : formData,
           })
         );
+
+        if (isFinalJuridiqueQuestion) {
+          clearJuridiqueOnboardingAnswers();
+        }
       }
       if (currentStep > 1) {
         dispatch(prevStep());
@@ -136,18 +191,41 @@ export const jumpToStep = createAsyncThunk(
     { dispatch, getState }
   ) => {
     const state = getState() as { onboarding: OnboardingState };
-    const { currentStep, formData } = state.onboarding;
+    const { currentStep, formData, internalStep } = state.onboarding;
+
+    const isJuridiqueOnboarding = (() => {
+      const title = onboardingDatas?.title?.toLowerCase() ?? "";
+      const pathIsJuridique =
+        typeof window !== "undefined" &&
+        window.location.pathname.includes("/onboarding/juridique");
+
+      return (
+        pathIsJuridique ||
+        title.includes("juridique") ||
+        title.includes("reseau etabli")
+      );
+    })();
+    const isFinalJuridiqueQuestion =
+      isJuridiqueOnboarding && currentStep === 8 && internalStep === 1;
+    const shouldPersistImmediately =
+      !isJuridiqueOnboarding || isFinalJuridiqueQuestion;
 
     if (step === currentStep) return;
 
-    if (onboardingDatas) {
+    if (shouldPersistImmediately && onboardingDatas) {
       await dispatch(
         saveStepData({
           userId,
           onboardingDatas,
-          valuesOverride: formData,
+          valuesOverride: isFinalJuridiqueQuestion
+            ? { ...formData, ...readJuridiqueOnboardingAnswers() }
+            : formData,
         })
       );
+
+      if (isFinalJuridiqueQuestion) {
+        clearJuridiqueOnboardingAnswers();
+      }
     }
 
     dispatch(setStep(step));
