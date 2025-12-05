@@ -991,63 +991,89 @@ interface Question {
 interface DynamicTextInputsProps {
   question: Question;
   onChange: (values: string[]) => void;
+  defaultValues?: string[];
 }
 
 export const DynamicTextInputs: React.FC<DynamicTextInputsProps> = ({
   question,
   onChange,
+  defaultValues = [],
 }) => {
-  const [fields, setFields] = useState<string[]>([""]);
+  const [fields, setFields] = useState<string[]>(
+    defaultValues.length ? defaultValues : []
+  );
+  const [newValue, setNewValue] = useState<string>("");
 
-  const handleFieldChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    const newFields = [...fields];
-    newFields[index] = e.target.value;
-
-    setFields(newFields);
-    onChange(newFields);
-  };
+  useEffect(() => {
+    if (defaultValues && defaultValues.length) {
+      setFields(defaultValues);
+    }
+  }, [defaultValues]);
 
   const addField = () => {
+    const trimmed = newValue.trim();
+    if (!trimmed) return;
     setFields((prev) => {
-      const updated = [...prev, ""];
+      const updated = [...prev, trimmed];
+      onChange(updated);
+      return updated;
+    });
+    setNewValue("");
+  };
+
+  const removeField = (index: number) => {
+    setFields((prev) => {
+      const updated = prev.filter((_, i) => i !== index);
       onChange(updated);
       return updated;
     });
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3">
       <label className="font-semibold text-md text-black">
         {question.label}
       </label>
 
-      {fields.map((value, index) => (
-        <div key={index} className="flex items-center gap-3">
-          <input
-            type="text"
-            value={value}
-            id={`${question.id}-${index}`}
-            placeholder={question.placeholder || question.label}
-            onChange={(e) => handleFieldChange(e, index)}
-            className="w-full border border-opacity-60 rounded-sm px-2 py-3 
-                       focus:outline-none text-black"
-          />
-
-          {/* Ajouter un champ seulement sur le dernier input */}
-          {index === fields.length - 1 && (
+      <div className="flex flex-wrap gap-2">
+        {fields.length === 0 && (
+          <span className="text-sm text-gray-500">Aucun nom de domaine</span>
+        )}
+        {fields.map((value, index) => (
+          <span
+            key={`${question.id}-chip-${index}`}
+            className="flex items-center gap-2 bg-blue-50 text-blue-800 px-3 py-1 rounded-full text-sm"
+          >
+            {value}
             <button
               type="button"
-              onClick={addField}
-              className="px-3 py-2 border rounded font-bold text-black"
+              className="text-red-600 hover:text-red-700"
+              aria-label="Supprimer le nom de domaine"
+              onClick={() => removeField(index)}
             >
-              +
+              ×
             </button>
-          )}
-        </div>
-      ))}
+          </span>
+        ))}
+      </div>
+
+      <div className="flex items-center gap-2">
+        <input
+          type="text"
+          value={newValue}
+          id={`${question.id}-new`}
+          placeholder={question.placeholder || question.label}
+          onChange={(e) => setNewValue(e.target.value)}
+          className="w-full border border-opacity-60 rounded-sm px-2 py-3 focus:outline-none text-black"
+        />
+        <button
+          type="button"
+          onClick={addField}
+          className="px-3 py-2 border rounded font-bold text-black"
+        >
+          +
+        </button>
+      </div>
     </div>
   );
 };

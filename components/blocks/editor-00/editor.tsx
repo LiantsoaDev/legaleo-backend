@@ -13,6 +13,7 @@ import {
 import { useEffect } from "react";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { toast } from "react-toastify";
 
 import { Plugins } from "./plugins";
 
@@ -59,7 +60,21 @@ const ContractContentLoader = () => {
         });
 
         if (!response.ok) {
-          throw new Error(`Erreur API: ${response.status}`);
+          let details = "";
+          try {
+            const payload = await response.json();
+            details =
+              (payload as { message?: string })?.message ??
+              JSON.stringify(payload);
+          } catch {
+            details = await response.text();
+          }
+
+          throw new Error(
+            `Erreur API ${response.status}${
+              details ? ` : ${details}` : ""
+            }`.trim()
+          );
         }
 
         const { contract } = (await response.json()) as { contract?: string };
@@ -68,6 +83,17 @@ const ContractContentLoader = () => {
           replaceContent(contract);
         }
       } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Erreur inconnue lors du chargement du contrat.";
+        toast.error(
+          `Impossible de charger le contrat de franchise : ${message}`,
+          {
+            position: "top-right",
+            theme: "colored",
+          }
+        );
         console.error("Impossible de charger le contrat de franchise", error);
       }
     };

@@ -156,6 +156,15 @@ export default function ConditionalForm({
     return "";
   };
 
+  const resolveArray = (questionId: string) => {
+    const currentValue = answers[questionId];
+    if (Array.isArray(currentValue)) return currentValue;
+    const fieldName = getFieldName(questionId);
+    const storedValue = onboardingFormData?.[fieldName] ?? persistedCookies[fieldName];
+    if (Array.isArray(storedValue)) return storedValue;
+    return [];
+  };
+
   const resolveFileDescriptor = (questionId: string): FileDescriptor | null => {
     const currentValue = answers[questionId];
     if (
@@ -236,16 +245,20 @@ export default function ConditionalForm({
                   </div>
                 )}
                 {question.hasTextarea && (
-                  <Input
-                    key={question.label}
-                    name={`${getFieldName(question.id)}.precision`}
-                    placeholder="Ajouter des précisions si besoin."
-                    type="textarea"
-                    defaultValue={resolveValue(`${question.id}.precision`)}
-                    onChange={(e) =>
-                      handleAnswer(`${question.id}.precision`, e.target.value)
-                    }
-                  />
+                  <div className="flex flex-col gap-2">
+                    <label className="font-semibold text-md text-black">
+                      Ajouter des précisions si besoin.
+                    </label>
+                    <textarea
+                      className="w-full border rounded-md px-2 py-3 md:px-4 md:py-4 lg:px-2 lg:py-3 md:text-lg lg:text-base focus:outline-none focus:bg-white focus:text-black outline-none text-black resize-none border-gray"
+                      name={`${getFieldName(question.id)}.precision`}
+                      placeholder="Ajouter des précisions si besoin."
+                      value={resolveValue(`${question.id}.precision`)}
+                      onChange={(e) =>
+                        handleAnswer(`${question.id}.precision`, e.target.value)
+                      }
+                    />
+                  </div>
                 )}
               </div>
             );
@@ -259,6 +272,7 @@ export default function ConditionalForm({
                       <DynamicTextInputs
                         key={question.id}
                         question={question}
+                        defaultValues={resolveArray(question.id)}
                         onChange={(values: any) =>
                           handleAnswer(question.id, values)
                         }

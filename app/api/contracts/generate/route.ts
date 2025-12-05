@@ -2,11 +2,17 @@ import fs from "fs/promises";
 import path from "path";
 
 import { NextResponse } from "next/server";
+import { Agent, fetch as undiciFetch } from "undici";
 
 interface QAItem {
   question: string;
   answer: string;
 }
+
+const anthropicAgent = new Agent({
+  headersTimeout: 940_000, // attendre les headers jusqu'à 2 min
+  bodyTimeout: 0, // laisser le flux de body se terminer sans limite stricte
+});
 
 const franchiseQA: QAItem[] = [
   { question: "Prénom/Nom", answer: "Jean DURAND" },
@@ -257,20 +263,18 @@ const franchiseQA: QAItem[] = [
   },
 ];
 
-const buildPrompt = (pdfBase64: string) => {
+const buildPromptContent = () => {
   const qaContent = franchiseQA
     .map((item) => `Q: ${item.question}\nR: ${item.answer}`)
     .join("\n\n");
 
   return [
     "Tu es un juriste expert qui rédige un contrat de franchise complet en français.",
-    "Utilise le PDF de référence fourni (base64) pour calquer la structure, le plan et le ton du contrat.",
+    "Utilise le document PDF de référence fourni en pièce jointe pour calquer la structure, le plan et le ton du contrat.",
     "Réutilise toutes les données du questionnaire ci-dessous pour pré-remplir les parties pertinentes : identité, réseau, marque, obligations financières, approvisionnement, formation, assistance, territoire, prix, communication digitale, logiciel de gestion, critères locaux, stock, commissions, etc.",
     "Produit un contrat intégral prêt à signer, avec clauses structurées, définitions, obligations réciproques, modalités financières, durée, conditions de résiliation, pénalités, propriété intellectuelle, communication, accompagnement, formation, exclusivité territoriale et annexes.",
     "Rédige dans un langage juridique clair, précis et conforme au droit français de la franchise.",
-    "Voici le PDF de référence encodé en base64 :",
-    pdfBase64,
-    "Voici le questionnaire (Q/R) à intégrer dans le contrat :",
+    "Voici le questionnaire (Q/R) à prendre en compte pour la rédaction du contrat :",
     qaContent,
   ].join("\n\n");
 };
@@ -291,29 +295,55 @@ export async function POST() {
     const pdfBuffer = await fs.readFile(pdfPath);
     const pdfBase64 = pdfBuffer.toString("base64");
 
-    const prompt = buildPrompt(pdfBase64);
+    const promptText = buildPromptContent();
+    const messageContent = [
+      {
+        type: "text",
+        text: promptText,
+      },
+      {
+        type: "document",
+        source: {
+          type: "base64",
+          media_type: "application/pdf",
+          data: pdfBase64,
+        },
+      },
+    ];
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    console.log("[contracts/generate] Appel Anthropic en cours…");
+    const response = await undiciFetch(
+      "https://api.anthropic.com/v1/messages",
+      {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
       },
-      body: JSON.stringify({
-        model: "claude-3-5-sonnet-20240620",
-        max_tokens: 8192,
-        temperature: 0.2,
-        system:
-          "Génère un contrat de franchise complet, directement exploitable et aligné sur le document de référence fourni en base64.",
-        messages: [
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
-      }),
-    });
+      dispatcher: anthropicAgent,
+        body: JSON.stringify({
+          model: "claude-sonnet-4-5-20250929",
+          max_tokens: 64000,
+          temperature: 0.2,
+          system:
+            "Génère un contrat de franchise complet, directement exploitable et aligné sur le document de référence joint.",
+          messages: [
+            {
+              role: "user",
+              content: messageContent,
+            },
+          ],
+        }),
+      }
+    );
+    const anthropicRequestId =
+      response.headers.get("x-request-id") ||
+      response.headers.get("anthropic-request-id") ||
+      "inconnu";
+    console.log(
+      `[contracts/generate] Réponse Anthropic reçue (status ${response.status}, requestId: ${anthropicRequestId})`
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -336,6 +366,10 @@ export async function POST() {
         { status: 502 },
       );
     }
+
+    console.log(
+      `[contracts/generate] Contrat reçu (${contract.length} caractères).`
+    );
 
     return NextResponse.json({ contract });
   } catch (error) {

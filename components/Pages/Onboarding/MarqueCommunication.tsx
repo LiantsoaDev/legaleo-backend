@@ -81,17 +81,26 @@ export const MarqueCommunication = ({
       </Title>
       {internalStep === 1 && (
         <>
-          <ConditionalForm questions={question1} />
+          <ConditionalForm
+            questions={question1}
+            formKey="marque_communication.noms_domaine"
+          />
         </>
       )}
       {internalStep === 2 && (
         <>
-          <ConditionalForm questions={question2} />
+          <ConditionalForm
+            questions={question2}
+            formKey="marque_communication.evolution_site_reseaux"
+          />
         </>
       )}
       {internalStep === 3 && (
         <>
-          <ConditionalForm questions={question3} />
+          <ConditionalForm
+            questions={question3}
+            formKey="marque_communication.evolution_communication_publicite"
+          />
         </>
       )}
     </div>
