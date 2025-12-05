@@ -23,15 +23,25 @@ interface ConditionnalFormProps {
   formKey?: string;
 }
 
-type AnswerValue = string | string[] | { name: string; type: string; content: string };
+type FileDescriptor = { name: string; type: string; content: string };
+type AnswerValue = string | string[] | FileDescriptor;
 
 const serializeFile = (file: File) =>
-  new Promise<{ name: string; type: string; content: string }>((resolve, reject) => {
+  new Promise<FileDescriptor>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
       const base64 = (reader.result as string) || "";
+      const extFromType = file.type?.split("/").pop() || "";
+      const extension =
+        extFromType === "vnd.openxmlformats-officedocument.wordprocessingml.document"
+          ? "docx"
+          : extFromType || "dat";
+      const name =
+        file.name && file.name.trim().length
+          ? file.name
+          : `contrat_${new Date().toISOString().split("T")[0]}.${extension}`;
       resolve({
-        name: file.name,
+        name,
         type: file.type,
         content: base64.split(",")[1] || base64,
       });
@@ -119,6 +129,15 @@ export default function ConditionalForm({
     dispatch(updateFormData({ [fieldName]: value }));
   };
 
+  const handleRemoveFile = (id: string) => {
+    setAnswers((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
+    persistAnswer(id, "", {});
+  };
+
   const handleAnswer = (
     id: string,
     value: AnswerValue,
@@ -135,6 +154,45 @@ export default function ConditionalForm({
     const storedValue = onboardingFormData?.[fieldName] ?? persistedCookies[fieldName];
     if (typeof storedValue === "string") return storedValue;
     return "";
+  };
+
+  const resolveFileDescriptor = (questionId: string): FileDescriptor | null => {
+    const currentValue = answers[questionId];
+    if (
+      currentValue &&
+      typeof currentValue === "object" &&
+      "name" in currentValue &&
+      "content" in currentValue
+    ) {
+      return currentValue as FileDescriptor;
+    }
+    const fieldName = getFieldName(questionId);
+    const storedValue = onboardingFormData?.[fieldName] ?? persistedCookies[fieldName];
+    if (
+      storedValue &&
+      typeof storedValue === "object" &&
+      "name" in storedValue &&
+      "content" in storedValue
+    ) {
+      return storedValue as FileDescriptor;
+    }
+    return null;
+  };
+
+  const resolveFileName = (questionId: string) => {
+    const descriptor = resolveFileDescriptor(questionId);
+    if (descriptor?.name) return descriptor.name;
+    const directValue = resolveValue(questionId);
+    if (directValue && typeof directValue === "string") {
+      const parts = directValue.split("/").pop();
+      if (parts) return parts;
+    }
+    const fallbackExt =
+      descriptor?.type?.split("/").pop() ||
+      (directValue && directValue.includes(".")
+        ? directValue.split(".").pop()
+        : "dat");
+    return `contrat_${new Date().toISOString().split("T")[0]}.${fallbackExt}`;
   };
 
   return (
@@ -400,6 +458,30 @@ export default function ConditionalForm({
                 <Paragraphe className="font-medium text-xl">
                   {question.label}
                 </Paragraphe>
+                {/* Affichage du fichier comme pièce jointe (nom + extension, sans téléchargement auto) */}
+                {resolveFileDescriptor(question.id) || resolveValue(question.id) ? (
+                  <div className="flex items-center gap-3 border border-gray-200 rounded-md px-3 py-2 bg-white">
+                    <div className="h-10 w-10 flex items-center justify-center rounded bg-blue-50 text-blue-600 font-semibold">
+                      📎
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-gray-800">
+                        {resolveFileName(question.id)}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        Pièce jointe (aperçu non téléchargé)
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveFile(question.id)}
+                      className="ml-auto text-sm text-red-600 hover:text-red-700"
+                      aria-label="Supprimer la pièce jointe"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                ) : null}
                 <label
                   htmlFor={question.id}
                   className="flex flex-col gap-3 bg-[#F8F9FA] p-5 rounded-md items-center w-[526px] cursor-pointer"

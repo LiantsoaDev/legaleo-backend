@@ -1,11 +1,16 @@
 "use client";
 import { Input } from "@/components/Form";
 import { Paragraphe, Title } from "@/components/Typography";
-import { setMaxInternalStep } from "@/lib/features/slice/onboardingSlice";
+import { setMaxInternalStep, updateFormData } from "@/lib/features/slice/onboardingSlice";
 import { useAppDispatch } from "@/lib/hook";
 import { Question } from "@/utils/types";
 import { useEffect } from "react";
 import ConditionalForm from "./ConditionalForm";
+import {
+  mergeJuridiqueOnboardingAnswers,
+  readJuridiqueOnboardingAnswers,
+} from "@/utils/onboardingCookie";
+import { useOnboardingFormData } from "./OnboardingFormContext";
 
 interface InformationContractuelProps {
   internalStep: number;
@@ -76,10 +81,27 @@ export const InformationContractuel = ({
   internalStep,
 }: InformationContractuelProps) => {
   const dispatch = useAppDispatch();
+  const onboardingFormData = useOnboardingFormData();
+  const persistedCookies = readJuridiqueOnboardingAnswers();
+
+  const fieldNombreContrat = "information_contractuelle.nombre_contrat";
+  const legacyFieldNombreContrat = "nombre_contrat"; // compat éventuelle
+
+  const defaultNombreContrat =
+    (onboardingFormData?.[fieldNombreContrat] as string) ||
+    (onboardingFormData?.[legacyFieldNombreContrat] as string) ||
+    (persistedCookies?.[fieldNombreContrat] as string) ||
+    (persistedCookies?.[legacyFieldNombreContrat] as string) ||
+    "";
 
   useEffect(() => {
     dispatch(setMaxInternalStep(5));
   }, [dispatch]);
+
+  const handleNombreContratChange = (value: string) => {
+    mergeJuridiqueOnboardingAnswers({ [fieldNombreContrat]: value });
+    dispatch(updateFormData({ [fieldNombreContrat]: value }));
+  };
   return (
     <div className="flex flex-col gap-3 min-h-screen justify-center px-32 py-20 w-full max-w-5xl">
       <Title className="font-bold text-4xl leading-[100%] mb-8 w-full">
@@ -92,9 +114,11 @@ export const InformationContractuel = ({
           </Paragraphe>
           <Input
             label="Nombres de contrats d’affiliation signé"
-            name="nombre_contrat"
+            name={fieldNombreContrat}
             placeholder="Nombre contrat signé"
             type="text"
+            defaultValue={defaultNombreContrat}
+            onChange={(e) => handleNombreContratChange(e.target.value)}
           />
         </>
       )}
