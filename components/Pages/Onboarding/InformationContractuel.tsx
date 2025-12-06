@@ -4,7 +4,7 @@ import { Paragraphe, Title } from "@/components/Typography";
 import { setMaxInternalStep, updateFormData } from "@/lib/features/slice/onboardingSlice";
 import { useAppDispatch } from "@/lib/hook";
 import { Question } from "@/utils/types";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import ConditionalForm from "./ConditionalForm";
 import {
   mergeJuridiqueOnboardingAnswers,
@@ -87,12 +87,14 @@ export const InformationContractuel = ({
   const fieldNombreContrat = "information_contractuelle.nombre_contrat";
   const legacyFieldNombreContrat = "nombre_contrat"; // compat éventuelle
 
-  const defaultNombreContrat =
-    (onboardingFormData?.[fieldNombreContrat] as string) ||
-    (onboardingFormData?.[legacyFieldNombreContrat] as string) ||
-    (persistedCookies?.[fieldNombreContrat] as string) ||
-    (persistedCookies?.[legacyFieldNombreContrat] as string) ||
-    "";
+  const defaultNombreContrat = useMemo(() => {
+    const fromFormData = onboardingFormData?.[fieldNombreContrat] as string | undefined;
+    const fromLegacyFormData = onboardingFormData?.[legacyFieldNombreContrat] as string | undefined;
+    const fromCookies = persistedCookies?.[fieldNombreContrat] as string | undefined;
+    const fromLegacyCookies = persistedCookies?.[legacyFieldNombreContrat] as string | undefined;
+    
+    return fromFormData || fromLegacyFormData || fromCookies || fromLegacyCookies || "";
+  }, [onboardingFormData, persistedCookies]);
 
   useEffect(() => {
     dispatch(setMaxInternalStep(5));

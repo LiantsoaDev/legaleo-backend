@@ -26,6 +26,55 @@ interface ConditionnalFormProps {
 type FileDescriptor = { name: string; type: string; content: string };
 type AnswerValue = string | string[] | FileDescriptor;
 
+interface TextareaInputProps {
+  question: Question;
+  getFieldName: (questionId: string) => string;
+  resolveValue: (questionId: string) => string;
+  handleAnswer: (id: string, value: string) => void;
+  answers: Record<string, AnswerValue>;
+  onboardingFormData: Record<string, any> | undefined;
+  persistedCookies: Record<string, any>;
+  formKey?: string;
+}
+
+const TextareaInput = ({ 
+  question, 
+  getFieldName, 
+  resolveValue, 
+  handleAnswer,
+  answers,
+  onboardingFormData,
+  persistedCookies,
+  formKey
+}: TextareaInputProps) => {
+  const defaultValue = useMemo(() => {
+    // Chercher d'abord dans answers (état local)
+    const currentValue = answers[question.id];
+    if (typeof currentValue === "string" && currentValue !== "") {
+      return currentValue;
+    }
+    // Chercher ensuite dans onboardingFormData ou persistedCookies
+    const fieldName = formKey ? `${formKey}.${question.id}` : question.id;
+    const storedValue = onboardingFormData?.[fieldName] ?? persistedCookies?.[fieldName];
+    if (typeof storedValue === "string" && storedValue !== "") {
+      return storedValue;
+    }
+    return "";
+  }, [answers, question.id, onboardingFormData, persistedCookies, formKey]);
+  
+  return (
+    <Input
+      key={question.id}
+      name={getFieldName(question.id)}
+      label={question.label}
+      placeholder={question.placeholder ? question.placeholder : question.label}
+      type="textarea"
+      defaultValue={defaultValue}
+      onChange={(e) => handleAnswer(question.id, e.target.value)}
+    />
+  );
+};
+
 const serializeFile = (file: File) =>
   new Promise<FileDescriptor>((resolve, reject) => {
     const reader = new FileReader();
@@ -75,6 +124,33 @@ export default function ConditionalForm({
       if (typeof storedValue === "string" || Array.isArray(storedValue)) {
         initial[question.id] = storedValue;
       }
+      // Charger aussi les valeurs pour les sous-champs potentiels (comme .precision, .autre, etc.)
+      // en cherchant toutes les clés qui commencent par fieldName
+      if (onboardingFormData) {
+        Object.keys(onboardingFormData).forEach((key) => {
+          if (key.startsWith(`${fieldName}.`)) {
+            const subKey = key.substring(fieldName.length + 1);
+            const subValue = onboardingFormData[key];
+            if (typeof subValue === "string" || Array.isArray(subValue)) {
+              initial[`${question.id}.${subKey}`] = subValue;
+            }
+          }
+        });
+      }
+      if (persistedCookies) {
+        Object.keys(persistedCookies).forEach((key) => {
+          if (key.startsWith(`${fieldName}.`)) {
+            const subKey = key.substring(fieldName.length + 1);
+            const subValue = persistedCookies[key];
+            if (typeof subValue === "string" || Array.isArray(subValue)) {
+              // Ne pas écraser si déjà chargé depuis onboardingFormData
+              if (!initial[`${question.id}.${subKey}`]) {
+                initial[`${question.id}.${subKey}`] = subValue;
+              }
+            }
+          }
+        });
+      }
     });
     return initial;
   }, [onboardingFormData, persistedCookies, questions, formKey]);
@@ -115,7 +191,22 @@ export default function ConditionalForm({
 
   useEffect(() => {
     if (!Object.keys(savedAnswers).length) return;
-    setAnswers((prev) => ({ ...savedAnswers, ...prev }));
+    // Charger les valeurs sauvegardées au montage initial
+    // Ne charger que si answers est vide (montage initial) ou si savedAnswers a changé
+    setAnswers((prev) => {
+      // Si answers est vide, charger toutes les valeurs sauvegardées
+      if (!Object.keys(prev).length) {
+        return { ...savedAnswers };
+      }
+      // Sinon, fusionner en préservant les valeurs actuelles
+      const merged = { ...savedAnswers };
+      Object.keys(prev).forEach((key) => {
+        if (!(key in merged)) {
+          merged[key] = prev[key];
+        }
+      });
+      return merged;
+    });
   }, [savedAnswers]);
 
   const persistAnswer = (
@@ -148,11 +239,17 @@ export default function ConditionalForm({
   };
 
   const resolveValue = (questionId: string) => {
+    // Chercher d'abord dans answers (état local)
     const currentValue = answers[questionId];
-    if (typeof currentValue === "string") return currentValue;
+    if (typeof currentValue === "string" && currentValue !== "") {
+      return currentValue;
+    }
+    // Chercher ensuite dans onboardingFormData ou persistedCookies
     const fieldName = getFieldName(questionId);
-    const storedValue = onboardingFormData?.[fieldName] ?? persistedCookies[fieldName];
-    if (typeof storedValue === "string") return storedValue;
+    const storedValue = onboardingFormData?.[fieldName] ?? persistedCookies?.[fieldName];
+    if (typeof storedValue === "string" && storedValue !== "") {
+      return storedValue;
+    }
     return "";
   };
 
@@ -443,16 +540,16 @@ export default function ConditionalForm({
                 />
               </div>
             ) : (
-              <Input
+              <TextareaInput
                 key={question.id}
-                name={getFieldName(question.id)}
-                label={question.label}
-                placeholder={
-                  question.placeholder ? question.placeholder : question.label
-                }
-                type="textarea"
-                defaultValue={resolveValue(question.id)}
-                onChange={(e) => handleAnswer(question.id, e.target.value)}
+                question={question}
+                getFieldName={getFieldName}
+                resolveValue={resolveValue}
+                handleAnswer={handleAnswer}
+                answers={answers}
+                onboardingFormData={onboardingFormData}
+                persistedCookies={persistedCookies}
+                formKey={formKey}
               />
             );
           case "image":
@@ -563,6 +660,8 @@ export default function ConditionalForm({
                   placeholder={
                     question.placeholder ? question.placeholder : question.label
                   }
+                  defaultValue={resolveValue(question.id)}
+                  onChange={(value) => handleAnswer(question.id, value)}
                 />
               </div>
             );

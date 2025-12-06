@@ -58,6 +58,7 @@ export const Input = ({
   useEffect(() => {}, [value, error, showPassword]);
 
   useEffect(() => {
+    // Priorité: contextValue > defaultValue > ""
     if (typeof contextValue === "string") {
       setValue(contextValue);
       setError(false);
@@ -882,6 +883,8 @@ interface TextareaAndFilesProps {
   id: string;
   classname?: string;
   placeholder: string;
+  defaultValue?: string;
+  onChange?: (value: string) => void;
 }
 
 export const TextareaAndFiles = ({
@@ -889,17 +892,29 @@ export const TextareaAndFiles = ({
   name,
   classname,
   placeholder,
+  defaultValue = "",
+  onChange,
 }: TextareaAndFilesProps) => {
-  const [value, setValue] = useState<string | File | null>(null);
+  const [value, setValue] = useState<string>(defaultValue);
+  const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
+  useEffect(() => {
+    if (defaultValue !== undefined && defaultValue !== value) {
+      setValue(defaultValue);
+    }
+  }, [defaultValue]);
+
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setValue(e.target.value);
+    const newValue = e.target.value;
+    setValue(newValue);
+    onChange?.(newValue);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setValue(file);
+    const selectedFile = e.target.files?.[0] || null;
+    setFile(selectedFile);
+    // Ne pas changer la valeur du textarea quand un fichier est sélectionné
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -907,9 +922,9 @@ export const TextareaAndFiles = ({
     e.stopPropagation();
     setIsDragging(false);
 
-    const file = e.dataTransfer.files?.[0];
-    if (file) {
-      setValue(file);
+    const droppedFile = e.dataTransfer.files?.[0];
+    if (droppedFile) {
+      setFile(droppedFile);
     }
   };
 
@@ -937,6 +952,7 @@ export const TextareaAndFiles = ({
         id={`textarea-${id}`}
         className="appearance-none p-0 text-xl font-medium text-black h-full w-full resize-none outline-none"
         placeholder={placeholder}
+        value={value}
         onChange={handleTextChange}
       ></textarea>
       <label htmlFor={`file-${id}`} className="absolute bottom-7 right-5">
