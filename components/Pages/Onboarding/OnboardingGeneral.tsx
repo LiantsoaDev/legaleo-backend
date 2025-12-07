@@ -8,7 +8,7 @@ import {
 import { fetchOnboardings } from "@/lib/features/slice/onboardingSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hook";
 import { renderStep } from "@/utils/functions";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import { Onboardings } from "./Onboarding";
 import { OnboardingFormProvider } from "./OnboardingFormContext";
@@ -28,6 +28,7 @@ export const OnboardingGeneral = ({ user }: any) => {
     error,
   } = useAppSelector((state) => state.onboarding);
   const { id: userId, isAuthenticated } = useAppSelector((state) => state.user);
+  const hasFetchedRef = useRef(false);
 
   // Charger les données de l'onboarding
   useEffect(() => {
@@ -43,8 +44,14 @@ export const OnboardingGeneral = ({ user }: any) => {
       return;
     }
 
+    // Ne pas refetch si les données sont déjà chargées ou si on a déjà fait un fetch
+    if (hasFetchedRef.current || (onboardings && !isLoading)) {
+      return;
+    }
+
+    hasFetchedRef.current = true;
     dispatch(fetchOnboardings({ title: "Onboarding principal", userId: effectiveUserId }));
-  }, [dispatch, userId, status, session]);
+  }, [dispatch, userId, status, session, onboardings, isLoading]);
 
   useEffect(() => {
     const spacesFromForm = Array.isArray(formData?.workspaceSpaces)

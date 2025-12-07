@@ -107,9 +107,12 @@ export const handleNextStep = createAsyncThunk(
 
     // Sauvegarde d'abord les données
     if (shouldPersistImmediately && onboardingDatas && userId) {
+      // Pour l'onboarding général, ne pas utiliser formData du state comme valuesOverride
+      // car cela pourrait écraser les nouvelles valeurs du formulaire
+      // On laisse saveStepData récupérer directement depuis le formulaire
       const valuesOverride = isFinalJuridiqueQuestion
         ? { ...formData, ...readJuridiqueOnboardingAnswers() }
-        : formData;
+        : undefined; // Ne pas passer formData pour l'onboarding général
 
       await dispatch(
         saveStepData({
@@ -268,11 +271,13 @@ export const saveStepData = createAsyncThunk(
   ) => {
     let data: Record<string, any> = {};
 
-    const formElement = document.querySelector("form");
+    // Récupérer le formulaire de manière synchrone d'abord
+    const formElement = document.querySelector("form") as HTMLFormElement | null;
 
-    if (formElement) {
-      const formData = new FormData(formElement as HTMLFormElement);
-
+    if (formElement && formElement.isConnected) {
+      // Récupérer directement depuis les inputs pour éviter les problèmes avec FormData
+      const formInputs = formElement.querySelectorAll("input, textarea, select");
+      
       const appendValue = (key: string, value: any) => {
         if (key in data) {
           const current = data[key];
@@ -284,6 +289,45 @@ export const saveStepData = createAsyncThunk(
         }
       };
 
+      formInputs.forEach((input) => {
+        const htmlInput = input as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
+        const name = htmlInput.name;
+        
+        if (!name) return;
+
+        if (htmlInput instanceof HTMLInputElement && htmlInput.type === "file") {
+          const files = htmlInput.files;
+          if (files && files.length > 0) {
+            const file = files[0];
+            if (file.size > 0) {
+              appendValue(name, file);
+            }
+          }
+        } else {
+          // Récupérer la valeur directement depuis l'input
+          const value = htmlInput.value;
+          
+          // Enregistrer toutes les valeurs non-null/undefined
+          if (value !== undefined && value !== null) {
+            // Pour les selects, ignorer les valeurs par défaut comme "Indiquez votre fonction"
+            if (htmlInput instanceof HTMLSelectElement) {
+              if (value && value !== "Indiquez votre fonction" && value !== "") {
+                appendValue(name, value);
+              }
+            } else {
+              // Pour les autres inputs (text, email, etc.), enregistrer la valeur
+              // Même si elle est vide, on l'enregistre pour permettre de vider un champ
+              appendValue(name, value);
+            }
+          }
+        }
+      });
+
+      // Log pour déboguer
+      console.log("Données récupérées du formulaire:", data);
+
+      // Traiter les fichiers séparément avec FormData
+      const formData = new FormData(formElement);
       for (const [key, value] of formData.entries()) {
         if (value instanceof File) {
           if (value.size === 0) continue;
@@ -293,14 +337,14 @@ export const saveStepData = createAsyncThunk(
             type: value.type,
             content: base64,
           });
-        } else {
-          appendValue(key, value);
         }
       }
     }
 
+    // Fusionner avec valuesOverride, mais les valeurs du formulaire ont la priorité
     if (valuesOverride && Object.keys(valuesOverride).length > 0) {
-      data = { ...data, ...valuesOverride };
+      // Les valeurs du formulaire écrasent celles de valuesOverride
+      data = { ...valuesOverride, ...data };
     }
 
     if (!Object.keys(data).length) {

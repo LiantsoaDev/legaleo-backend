@@ -38,21 +38,14 @@ export const Input = ({
   defaultValue,
 }: InputProps) => {
   const onboardingFormData = useOnboardingFormData();
-  // Pour l'email, ignorer contextValue et utiliser seulement defaultValue pour repartir de zéro
+  // Récupérer la valeur depuis les données sauvegardées
   const contextValue =
-    name === "email"
-      ? undefined
-      : onboardingFormData && name && name in onboardingFormData
+    onboardingFormData && name && name in onboardingFormData
       ? onboardingFormData[name]
       : undefined;
   
   // Calculer la valeur initiale avec priorité: contextValue > defaultValue > ""
-  // Pour l'email, utiliser seulement defaultValue
   const getInitialValue = useMemo(() => {
-    if (name === "email") {
-      // Pour l'email, ignorer contextValue et utiliser seulement defaultValue
-      return typeof defaultValue === "string" && defaultValue !== "" ? defaultValue : "";
-    }
     if (typeof contextValue === "string" && contextValue !== "") {
       return contextValue;
     }
@@ -60,7 +53,7 @@ export const Input = ({
       return defaultValue;
     }
     return "";
-  }, [contextValue, defaultValue, name]);
+  }, [contextValue, defaultValue]);
 
   const [value, setValue] = useState<string>(getInitialValue);
   const [error, setError] = useState<boolean>(false);
@@ -75,15 +68,21 @@ export const Input = ({
   
   useEffect(() => {
     // Priorité: contextValue > defaultValue > ""
-    // Ne réinitialiser que lors du montage initial ou si la valeur actuelle est vide
+    // Au montage initial, utiliser getInitialValue
     if (!isMountedRef.current) {
       setValue(getInitialValue);
       isMountedRef.current = true;
-    } else if (getInitialValue && value === "") {
-      // Seulement mettre à jour si la valeur actuelle est vide
-      setValue(getInitialValue);
+    } else {
+      // Après le montage, mettre à jour seulement si contextValue change (données sauvegardées)
+      // Cela permet d'afficher la valeur sauvegardée quand on revient sur la page
+      if (typeof contextValue === "string" && contextValue !== value) {
+        setValue(contextValue);
+      } else if (!contextValue && getInitialValue && value === "") {
+        // Si pas de contextValue mais qu'on a une defaultValue et que la valeur est vide
+        setValue(getInitialValue);
+      }
     }
-  }, [getInitialValue]);
+  }, [getInitialValue, contextValue, value]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

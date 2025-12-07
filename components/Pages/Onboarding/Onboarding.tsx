@@ -91,8 +91,12 @@ export const Onboardings = ({
           }`}
         >
           <button
-            type="submit"
-            onClick={() => dispatch(handlePrevStep(prevStepPayload))}
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              dispatch(handlePrevStep(prevStepPayload));
+            }}
           >
             <FontAwesomeIcon
               icon={faLongArrowLeft}
@@ -105,8 +109,12 @@ export const Onboardings = ({
           </button>
 
           <button
-            type="submit"
-            onClick={() => dispatch(handleNextStep(nextStepPayload))}
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              dispatch(handleNextStep(nextStepPayload));
+            }}
           >
             <FontAwesomeIcon
               icon={faLongArrowRight}
