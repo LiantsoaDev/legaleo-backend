@@ -56,6 +56,7 @@ export const Input = ({
 
   const [value, setValue] = useState<string>(getInitialValue);
   const [error, setError] = useState<boolean>(false);
+  const [touched, setTouched] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const computedType =
     type === "password" ? (showPassword ? "text" : "password") : type;
@@ -67,13 +68,34 @@ export const Input = ({
     const newValue = getInitialValue;
     setValue(newValue);
     setError(false);
+    setTouched(false);
   }, [getInitialValue]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    getInputValue(e, setValue, setError);
+    const newValue = e.target.value;
+    setValue(newValue);
+    // Ne valider que si le champ a été touché (blur)
+    if (touched) {
+      getInputValue(e, setValue, setError);
+    } else {
+      setError(false);
+    }
     onChange?.(e);
+  };
+
+  const handleBlur = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setTouched(true);
+    // Valider au blur
+    const syntheticEvent = {
+      ...e,
+      target: e.target,
+      preventDefault: () => {},
+    } as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
+    getInputValue(syntheticEvent, setValue, setError);
   };
 
   return (
@@ -95,6 +117,7 @@ export const Input = ({
           id={name}
           value={value}
           onChange={handleChange}
+          onBlur={handleBlur}
         />
       ) : (
         <div className="relative">
@@ -110,6 +133,7 @@ export const Input = ({
             formNoValidate
             value={value}
             onChange={handleChange}
+            onBlur={handleBlur}
           />
           {type === "password" && (
             <FontAwesomeIcon
@@ -1036,29 +1060,54 @@ export const DynamicTextInputs: React.FC<DynamicTextInputsProps> = ({
     defaultValues.length ? defaultValues : []
   );
   const [newValue, setNewValue] = useState<string>("");
+  const isInitialMount = useRef(true);
+  const prevFieldsRef = useRef<string[]>(fields);
+  const onChangeRef = useRef(onChange);
+
+  // Mettre à jour la ref quand onChange change
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   useEffect(() => {
     if (defaultValues && defaultValues.length) {
       setFields(defaultValues);
     }
+    // Marquer que l'initialisation est terminée après le premier rendu
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    }
   }, [defaultValues]);
+
+  // Notifier le parent des changements après la mise à jour de l'état
+  // Seulement si les champs ont vraiment changé (pas juste l'initialisation)
+  useEffect(() => {
+    if (!isInitialMount.current) {
+      const fieldsChanged = JSON.stringify(prevFieldsRef.current) !== JSON.stringify(fields);
+      if (fieldsChanged) {
+        prevFieldsRef.current = fields;
+        // Utiliser queueMicrotask pour différer l'appel après le rendu
+        queueMicrotask(() => {
+          onChangeRef.current(fields);
+        });
+      }
+    } else {
+      prevFieldsRef.current = fields;
+    }
+  }, [fields]);
 
   const addField = () => {
     const trimmed = newValue.trim();
     if (!trimmed) return;
     setFields((prev) => {
-      const updated = [...prev, trimmed];
-      onChange(updated);
-      return updated;
+      return [...prev, trimmed];
     });
     setNewValue("");
   };
 
   const removeField = (index: number) => {
     setFields((prev) => {
-      const updated = prev.filter((_, i) => i !== index);
-      onChange(updated);
-      return updated;
+      return prev.filter((_, i) => i !== index);
     });
   };
 

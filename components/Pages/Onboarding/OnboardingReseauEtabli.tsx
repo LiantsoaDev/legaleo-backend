@@ -8,7 +8,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/lib/hook";
 import { renderStepReseauEtabli } from "@/utils/functions";
 import { readJuridiqueOnboardingAnswers } from "@/utils/onboardingCookie";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import { Onboardings } from "./Onboarding";
 import { OnboardingFormProvider } from "./OnboardingFormContext";
@@ -29,30 +29,31 @@ export const OnboardingReseauEtabli = ({ user }: any) => {
   } = useAppSelector((state) => state.onboarding);
 
   const { id: userId, isAuthenticated } = useAppSelector((state) => state.user);
+  const hasFetchedRef = useRef(false);
 
-  // Vérifier que l'utilisateur est authentifié
+  // Charger les données de l'onboarding
   useEffect(() => {
-    // Attendre que la session soit chargée
-    if (status === "loading") {
+    // Attendre que la session soit chargée ou que userId soit disponible
+    if (status === "loading" && !userId) {
       return;
     }
 
-    // Vérifier l'authentification via la session ou le store Redux
-    const userIsAuthenticated = status === "authenticated" || (isAuthenticated && userId);
-    
-    if (!userIsAuthenticated || !userId) {
-      // Ne pas afficher l'erreur si la session est encore en cours de chargement
-      if (status !== "loading") {
-        toast.error("Vous devez être connecté pour accéder à l'onboarding juridique", {
-          position: "top-right",
-          theme: "colored",
-        });
-      }
+    // Utiliser userId du store Redux ou de la session
+    const effectiveUserId = userId || session?.user?.id;
+
+    if (!effectiveUserId) {
       return;
     }
-    dispatch(fetchOnboardings({ title: "Onboarding reseau etabli", userId }));
+
+    // Ne pas refetch si les données sont déjà chargées ou si on a déjà fait un fetch
+    if (hasFetchedRef.current || (onboardings && !isLoading)) {
+      return;
+    }
+
+    hasFetchedRef.current = true;
+    dispatch(fetchOnboardings({ title: "Onboarding reseau etabli", userId: effectiveUserId }));
     console.log("steps", steps);
-  }, [dispatch, userId, isAuthenticated, status, session]);
+  }, [dispatch, userId, status, session, onboardings, isLoading]);
 
   useEffect(() => {
     const persistedAnswers = readJuridiqueOnboardingAnswers();
