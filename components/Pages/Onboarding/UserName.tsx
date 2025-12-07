@@ -3,7 +3,6 @@ import { useSession } from "next-auth/react";
 import { Input, Select } from "../../Form";
 import { Title } from "../../Typography";
 import { Notices } from "../../Typography/Tips";
-import { useOnboardingFormData } from "./OnboardingFormContext";
 
 const option: string[] = [
   "Fondateur",
@@ -18,12 +17,9 @@ const option: string[] = [
 export const UserName = () => {
   const { data: session } = useSession();
   const { name, lastName } = useAppSelector((state) => state.user);
-  const onboardingFormData = useOnboardingFormData();
 
   const resolvedFirstName = name ?? session?.user?.name ?? "";
   const resolvedLastName = lastName ?? session?.user?.last_name ?? "";
-  // Récupérer l'email uniquement depuis les données sauvegardées du formulaire d'onboarding
-  const resolvedEmail = (onboardingFormData?.email as string | undefined) ?? "";
 
   return (
     <div className="flex flex-col min-h-screen justify-center px-32 py-20 w-[788px] items-start">
@@ -52,7 +48,6 @@ export const UserName = () => {
           placeholder="Email professionnel"
           name="email"
           classname="text-xl px-6 py-4"
-          defaultValue={resolvedEmail}
         />
         <Select
           options={option}

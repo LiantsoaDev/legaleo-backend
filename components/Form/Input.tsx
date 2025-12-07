@@ -1,5 +1,5 @@
 "use client";
-import { getErrorMessage, getInputValue } from "@/utils/functions";
+import { getErrorMessage, getInputValue, validateEmail } from "@/utils/functions";
 import {
   CheckBoxProps,
   InputFilesProps,
@@ -38,13 +38,21 @@ export const Input = ({
   defaultValue,
 }: InputProps) => {
   const onboardingFormData = useOnboardingFormData();
+  // Pour l'email, ignorer contextValue et utiliser seulement defaultValue pour repartir de zéro
   const contextValue =
-    onboardingFormData && name && name in onboardingFormData
+    name === "email"
+      ? undefined
+      : onboardingFormData && name && name in onboardingFormData
       ? onboardingFormData[name]
       : undefined;
   
   // Calculer la valeur initiale avec priorité: contextValue > defaultValue > ""
+  // Pour l'email, utiliser seulement defaultValue
   const getInitialValue = useMemo(() => {
+    if (name === "email") {
+      // Pour l'email, ignorer contextValue et utiliser seulement defaultValue
+      return typeof defaultValue === "string" && defaultValue !== "" ? defaultValue : "";
+    }
     if (typeof contextValue === "string" && contextValue !== "") {
       return contextValue;
     }
@@ -52,7 +60,7 @@ export const Input = ({
       return defaultValue;
     }
     return "";
-  }, [contextValue, defaultValue]);
+  }, [contextValue, defaultValue, name]);
 
   const [value, setValue] = useState<string>(getInitialValue);
   const [error, setError] = useState<boolean>(false);
@@ -63,12 +71,18 @@ export const Input = ({
 
   useEffect(() => {}, [value, error, showPassword]);
 
+  const isMountedRef = useRef(false);
+  
   useEffect(() => {
     // Priorité: contextValue > defaultValue > ""
-    const newValue = getInitialValue;
-    setValue(newValue);
-    setError(false);
-    setTouched(false);
+    // Ne réinitialiser que lors du montage initial ou si la valeur actuelle est vide
+    if (!isMountedRef.current) {
+      setValue(getInitialValue);
+      isMountedRef.current = true;
+    } else if (getInitialValue && value === "") {
+      // Seulement mettre à jour si la valeur actuelle est vide
+      setValue(getInitialValue);
+    }
   }, [getInitialValue]);
 
   const handleChange = (
@@ -78,7 +92,16 @@ export const Input = ({
     setValue(newValue);
     // Ne valider que si le champ a été touché (blur)
     if (touched) {
-      getInputValue(e, setValue, setError);
+      // Valider sans preventDefault pour ne pas bloquer la mise à jour
+      if (e.target.type === "email" && newValue && !validateEmail(newValue)) {
+        setError(true);
+      } else if (newValue === "" && isrequired) {
+        setError(true);
+      } else if (e.target.type === "textarea" && newValue.length < 20) {
+        setError(true);
+      } else {
+        setError(false);
+      }
     } else {
       setError(false);
     }
@@ -89,13 +112,17 @@ export const Input = ({
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setTouched(true);
-    // Valider au blur
-    const syntheticEvent = {
-      ...e,
-      target: e.target,
-      preventDefault: () => {},
-    } as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
-    getInputValue(syntheticEvent, setValue, setError);
+    // Valider au blur sans preventDefault
+    const currentValue = e.target.value;
+    if (e.target.type === "email" && currentValue && !validateEmail(currentValue)) {
+      setError(true);
+    } else if (currentValue === "" && isrequired) {
+      setError(true);
+    } else if (e.target.type === "textarea" && currentValue.length < 20) {
+      setError(true);
+    } else {
+      setError(false);
+    }
   };
 
   return (
