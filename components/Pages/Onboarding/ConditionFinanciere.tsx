@@ -1,7 +1,10 @@
 "use client";
 
 import { Title } from "@/components/Typography";
+import { setMaxInternalStep } from "@/lib/features/slice/onboardingSlice";
+import { useAppDispatch } from "@/lib/hook";
 import { Question } from "@/utils/types";
+import { useEffect } from "react";
 import ConditionalForm from "./ConditionalForm";
 
 const question1: Question[] = [
@@ -42,6 +45,12 @@ const question1: Question[] = [
 ];
 
 export const ConditionFinanciere = ({}) => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setMaxInternalStep(1));
+  }, [dispatch]);
+
   return (
     <div className="flex flex-col gap-3 min-h-screen justify-center px-32 py-20 w-full max-w-5xl">
       <Title className="font-bold text-4xl leading-[100%] mb-8 w-full">
