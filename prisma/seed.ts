@@ -133,6 +133,33 @@ async function main() {
     },
   });
 
+  // Créer les types de contrats
+  console.log("📝 Création des types de contrats...");
+  const contractTypes = [
+    "Contrat de franchise",
+    "Contrat de licence de marque",
+    "Document d'Information Précontractuel",
+    "Convention d'enseigne",
+    "Pacte d'associés",
+    "Lettre de résiliation",
+    "Contrat de réservation de zone",
+  ];
+
+  for (const typeName of contractTypes) {
+    const existingType = await prisma.contractType.findUnique({
+      where: { name: typeName },
+    });
+
+    if (!existingType) {
+      await prisma.contractType.create({
+        data: { name: typeName },
+      });
+      console.log(`  ✅ Type créé : ${typeName}`);
+    } else {
+      console.log(`  ⏭️  Type déjà existant : ${typeName}`);
+    }
+  }
+
   console.log("✅ Seed terminé avec succès !");
 }
 

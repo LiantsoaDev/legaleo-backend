@@ -96,6 +96,21 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Vérifier que l'utilisateur existe dans la base de données
+  const userExists = await prisma.user.findUnique({
+    where: { id: String(userId) },
+  });
+
+  if (!userExists) {
+    return new Response(
+      JSON.stringify({
+        success: 0,
+        message: "Utilisateur non trouvé",
+      }),
+      { status: 404 }
+    );
+  }
+
   const payloadValue = toRecord(value);
 
   try {
@@ -184,6 +199,21 @@ export async function GET(req: NextRequest) {
 
       let answer = null;
       if (userId) {
+        // Vérifier que l'utilisateur existe
+        const userExists = await prisma.user.findUnique({
+          where: { id: userId },
+        });
+
+        if (!userExists) {
+          return new Response(
+            JSON.stringify({
+              success: 0,
+              message: "Utilisateur non trouvé",
+            }),
+            { status: 404 }
+          );
+        }
+
         const storedAnswer = await prisma.onboardingAnswer.findUnique({
           where: {
             userId_onboarding_id: {

@@ -17,7 +17,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../Button";
 import { WorkspaceItem } from "../Pages/MonCompte";
 import { Documents } from "../Pages/Onboarding/Documents";
@@ -39,17 +39,22 @@ export const Input = ({
 }: InputProps) => {
   const onboardingFormData = useOnboardingFormData();
   const contextValue =
-    onboardingFormData && name in onboardingFormData
+    onboardingFormData && name && name in onboardingFormData
       ? onboardingFormData[name]
       : undefined;
-  const initialValue =
-    typeof contextValue === "string"
-      ? contextValue
-      : typeof defaultValue === "string"
-      ? defaultValue
-      : "";
+  
+  // Calculer la valeur initiale avec priorité: contextValue > defaultValue > ""
+  const getInitialValue = useMemo(() => {
+    if (typeof contextValue === "string" && contextValue !== "") {
+      return contextValue;
+    }
+    if (typeof defaultValue === "string" && defaultValue !== "") {
+      return defaultValue;
+    }
+    return "";
+  }, [contextValue, defaultValue]);
 
-  const [value, setValue] = useState<string>(initialValue);
+  const [value, setValue] = useState<string>(getInitialValue);
   const [error, setError] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const computedType =
@@ -59,17 +64,10 @@ export const Input = ({
 
   useEffect(() => {
     // Priorité: contextValue > defaultValue > ""
-    if (typeof contextValue === "string") {
-      setValue(contextValue);
-      setError(false);
-    } else if (typeof defaultValue === "string") {
-      setValue(defaultValue);
-      setError(false);
-    } else if (contextValue === undefined && defaultValue === undefined) {
-      setValue("");
-      setError(false);
-    }
-  }, [contextValue, defaultValue]);
+    const newValue = getInitialValue;
+    setValue(newValue);
+    setError(false);
+  }, [getInitialValue]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -898,12 +896,23 @@ export const TextareaAndFiles = ({
   const [value, setValue] = useState<string>(defaultValue);
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (defaultValue !== undefined && defaultValue !== value) {
       setValue(defaultValue);
     }
   }, [defaultValue]);
+
+  // Synchroniser l'input file avec l'état file pour que FormData puisse le récupérer
+  useEffect(() => {
+    if (file && fileInputRef.current) {
+      // Créer un DataTransfer pour mettre à jour l'input file
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+      fileInputRef.current.files = dataTransfer.files;
+    }
+  }, [file]);
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
@@ -914,7 +923,8 @@ export const TextareaAndFiles = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null;
     setFile(selectedFile);
-    // Ne pas changer la valeur du textarea quand un fichier est sélectionné
+    // Notifier le parent qu'un fichier a été sélectionné
+    // Le fichier sera accessible via FormData lors de la soumission
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -925,6 +935,12 @@ export const TextareaAndFiles = ({
     const droppedFile = e.dataTransfer.files?.[0];
     if (droppedFile) {
       setFile(droppedFile);
+      // Synchroniser l'input file immédiatement
+      if (fileInputRef.current) {
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(droppedFile);
+        fileInputRef.current.files = dataTransfer.files;
+      }
     }
   };
 
@@ -988,6 +1004,7 @@ export const TextareaAndFiles = ({
         </svg>
       </label>
       <input
+        ref={fileInputRef}
         type="file"
         className="hidden"
         id={`file-${id}`}

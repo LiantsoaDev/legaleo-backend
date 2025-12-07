@@ -12,9 +12,11 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { Onboardings } from "./Onboarding";
 import { OnboardingFormProvider } from "./OnboardingFormContext";
+import { useSession } from "next-auth/react";
 
 export const OnboardingGeneral = ({ user }: any) => {
   const dispatch = useAppDispatch();
+  const { data: session, status } = useSession();
 
   const {
     steps,
@@ -25,11 +27,30 @@ export const OnboardingGeneral = ({ user }: any) => {
     isLoading,
     error,
   } = useAppSelector((state) => state.onboarding);
-  const { id: userId } = useAppSelector((state) => state.user);
+  const { id: userId, isAuthenticated } = useAppSelector((state) => state.user);
 
+  // Vérifier que l'utilisateur est authentifié
   useEffect(() => {
+    // Attendre que la session soit chargée
+    if (status === "loading") {
+      return;
+    }
+
+    // Vérifier l'authentification via la session ou le store Redux
+    const userIsAuthenticated = status === "authenticated" || (isAuthenticated && userId);
+    
+    if (!userIsAuthenticated || !userId) {
+      // Ne pas afficher l'erreur si la session est encore en cours de chargement
+      if (status !== "loading") {
+        toast.error("Vous devez être connecté pour accéder à l'onboarding", {
+          position: "top-right",
+          theme: "colored",
+        });
+      }
+      return;
+    }
     dispatch(fetchOnboardings({ title: "Onboarding principal", userId }));
-  }, [dispatch, userId]);
+  }, [dispatch, userId, isAuthenticated, status, session]);
 
   useEffect(() => {
     const spacesFromForm = Array.isArray(formData?.workspaceSpaces)
