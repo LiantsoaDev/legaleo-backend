@@ -2,8 +2,8 @@
 
 import { TableIcon } from "lucide-react"
 
-import { useToolbarContext } from "@/components/editor/context/toolbar-context"
-import { InsertTableDialog } from "@/components/editor/plugins/table-plugin"
+import { useToolbarContext } from "@/components/Editor/context/toolbar-context"
+import { InsertTableDialog } from "@/components/Editor/plugins/table-plugin"
 import { SelectItem } from "@/components/ui/select"
 
 export function InsertTable() {

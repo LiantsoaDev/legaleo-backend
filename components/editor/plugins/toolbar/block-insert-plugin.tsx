@@ -2,7 +2,7 @@
 
 import { TableIcon } from "lucide-react";
 
-import { useEditorModal } from "@/components/editor/editor-hooks/use-modal";
+import { useEditorModal } from "@/components/Editor/editor-hooks/use-modal";
 import {
   Select,
   SelectContent,

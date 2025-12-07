@@ -33,8 +33,8 @@ import {
 import {
   $createAutocompleteNode,
   AutocompleteNode,
-} from "@/components/editor/nodes/autocomplete-node"
-import { addSwipeRightListener } from "@/components/editor/utils/swipe"
+} from "@/components/Editor/nodes/autocomplete-node"
+import { addSwipeRightListener } from "@/components/Editor/utils/swipe"
 
 const HISTORY_MERGE = { tag: HISTORY_MERGE_TAG }
 

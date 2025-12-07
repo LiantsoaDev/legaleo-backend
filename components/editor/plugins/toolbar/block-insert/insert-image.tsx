@@ -2,8 +2,8 @@
 
 import { ImageIcon } from "lucide-react"
 
-import { useToolbarContext } from "@/components/editor/context/toolbar-context"
-import { InsertImageDialog } from "@/components/editor/plugins/images-plugin"
+import { useToolbarContext } from "@/components/Editor/context/toolbar-context"
+import { InsertImageDialog } from "@/components/Editor/plugins/images-plugin"
 import { SelectItem } from "@/components/ui/select"
 
 export function InsertImage() {

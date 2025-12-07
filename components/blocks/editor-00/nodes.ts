@@ -1,10 +1,10 @@
-import { AutocompleteNode } from "@/components/editor/nodes/autocomplete-node";
+import { AutocompleteNode } from "@/components/Editor/nodes/autocomplete-node";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 
-import { DynamicParagraphNode } from "@/components/editor/DynamiqueParagraphNode";
-import { ImageNode } from "@/components/editor/nodes/image-node";
+import { DynamicParagraphNode } from "@/components/Editor/DynamiqueParagraphNode";
+import { ImageNode } from "@/components/Editor/nodes/image-node";
 import {
   Klass,
   LexicalNode,

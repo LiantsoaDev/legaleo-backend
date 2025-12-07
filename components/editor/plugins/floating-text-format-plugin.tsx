@@ -23,10 +23,10 @@ import {
 import { Dispatch, JSX, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { CommentPopup } from "@/components/editor/CommentPopup";
-import { getDOMRangeRect } from "@/components/editor/utils/get-dom-range-rect";
-import { getSelectedNode } from "@/components/editor/utils/get-selected-node";
-import { setFloatingElemPosition } from "@/components/editor/utils/set-floating-elem-position";
+import { CommentPopup } from "@/components/Editor/CommentPopup";
+import { getDOMRangeRect } from "@/components/Editor/utils/get-dom-range-rect";
+import { getSelectedNode } from "@/components/Editor/utils/get-selected-node";
+import { setFloatingElemPosition } from "@/components/Editor/utils/set-floating-elem-position";
 import { DynamiqueChampsCard } from "@/components/Pages/Projet";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useTabContext } from "@/hooks/useTabContext";

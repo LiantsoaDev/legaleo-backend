@@ -33,7 +33,7 @@ import {
   LexicalNode,
 } from "lexical"
 
-import { invariant } from "@/components/editor/shared/invariant"
+import { invariant } from "@/components/Editor/shared/invariant"
 import { Button } from "@/components/ui/button"
 import { DialogFooter } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"

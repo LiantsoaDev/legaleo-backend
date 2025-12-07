@@ -34,8 +34,8 @@ import {
   $isImageNode,
   ImageNode,
   ImagePayload,
-} from "@/components/editor/nodes/image-node";
-import { CAN_USE_DOM } from "@/components/editor/shared/can-use-dom";
+} from "@/components/Editor/nodes/image-node";
+import { CAN_USE_DOM } from "@/components/Editor/shared/can-use-dom";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";

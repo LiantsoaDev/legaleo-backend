@@ -1,5 +1,5 @@
 import { Button } from "@/components/Button";
-import { DynamicParagraphNode } from "@/components/editor/DynamiqueParagraphNode";
+import { DynamicParagraphNode } from "@/components/Editor/DynamiqueParagraphNode";
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $insertNodes } from "lexical";

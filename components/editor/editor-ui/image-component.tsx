@@ -35,9 +35,9 @@ import {
 import { JSX, Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 // import brokenImage from '@/registry/new-york-v4/editor/images/image-broken.svg';
-import { ContentEditable } from "@/components/editor/editor-ui/content-editable";
-import { ImageResizer } from "@/components/editor/editor-ui/image-resizer";
-import { $isImageNode } from "@/components/editor/nodes/image-node";
+import { ContentEditable } from "@/components/Editor/editor-ui/content-editable";
+import { ImageResizer } from "@/components/Editor/editor-ui/image-resizer";
+import { $isImageNode } from "@/components/Editor/nodes/image-node";
 
 const imageCache = new Set();
 

@@ -347,6 +347,8 @@ export const onboardingSlice = createSlice({
         state.internalStep -= 1;
       } else if (state.currentStep > 1) {
         state.currentStep -= 1;
+        // Remettre internalStep à 1 pour que le composant de l'étape précédente se remonte correctement
+        state.internalStep = 1;
       }
     },
     setStep: (state, action: PayloadAction<number>) => {
