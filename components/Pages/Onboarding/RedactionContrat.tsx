@@ -1,5 +1,5 @@
 "use client";
-import { setMaxInternalStep } from "@/lib/features/slice/onboardingSlice";
+import { setMaxInternalStep, updateFormData } from "@/lib/features/slice/onboardingSlice";
 import { useAppDispatch } from "@/lib/hook";
 import { useEffect } from "react";
 import { RadioGroup, SelectImporter } from "../../Form";
@@ -42,6 +42,10 @@ export const RedactionContrat = ({
           <RadioGroup
             options={objectif_principal}
             name="objectif_legaleo"
+            onChange={(normalizedValue, rawOption) => {
+              const value = rawOption ?? normalizedValue;
+              dispatch(updateFormData({ objectif_legaleo: value }));
+            }}
           />
         </div>
       )}

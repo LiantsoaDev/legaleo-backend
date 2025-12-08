@@ -55,12 +55,32 @@ export const OnboardingReseauEtabli = ({ user }: any) => {
     console.log("steps", steps);
   }, [dispatch, userId, status, session, onboardings, isLoading]);
 
+  // Mettre à jour le state Redux avec les données des cookies si elles changent
+  // (par exemple si l'utilisateur modifie quelque chose pendant la session)
+  // Note: Les données des cookies sont déjà fusionnées avec les données de l'API dans le reducer
+  // Ce useEffect sert uniquement à synchroniser les changements ultérieurs après le chargement initial
   useEffect(() => {
+    // Attendre que les données de l'API soient chargées
+    if (isLoading || !onboardings) {
+      return;
+    }
+
     const persistedAnswers = readJuridiqueOnboardingAnswers();
     if (persistedAnswers && Object.keys(persistedAnswers).length) {
-      dispatch(updateFormData(persistedAnswers));
+      // Vérifier si les données des cookies sont différentes de celles dans formData
+      // pour éviter des mises à jour inutiles
+      const hasChanges = Object.keys(persistedAnswers).some(
+        (key) => formData[key] !== persistedAnswers[key]
+      );
+      
+      if (hasChanges) {
+        // Fusionner les données des cookies avec les données déjà chargées depuis l'API
+        // Les données des cookies ont la priorité car elles peuvent être plus récentes
+        dispatch(updateFormData(persistedAnswers));
+      }
     }
-  }, [dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, isLoading, onboardings]); // formData est intentionnellement omis pour éviter des boucles infinies
 
   if (isLoading) {
     return (

@@ -126,6 +126,10 @@ export const VotreReseau = ({
             showLogo={true}
             options={point_ventes}
             name="points_de_vente"
+            onChange={(normalizedValue, rawOption) => {
+              const value = rawOption ?? normalizedValue;
+              storeDispatch(updateFormData({ points_de_vente: value }));
+            }}
           />
         </>
       )}
@@ -138,6 +142,10 @@ export const VotreReseau = ({
             showLogo={false}
             options={localisation}
             name="localisation"
+            onChange={(normalizedValue, rawOption) => {
+              const value = rawOption ?? normalizedValue;
+              storeDispatch(updateFormData({ localisation: value }));
+            }}
           />
         </>
       )}

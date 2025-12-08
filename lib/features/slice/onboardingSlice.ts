@@ -269,7 +269,9 @@ export const saveStepData = createAsyncThunk(
     },
     { getState }
   ) => {
-    let data: Record<string, any> = {};
+    const state = getState() as { onboarding: OnboardingState };
+    // Commencer avec les données sauvegardées du state Redux pour récupérer toutes les valeurs
+    let data: Record<string, any> = { ...state.onboarding.formData };
 
     // Récupérer le formulaire de manière synchrone d'abord
     const formElement = document.querySelector("form") as HTMLFormElement | null;
@@ -278,16 +280,8 @@ export const saveStepData = createAsyncThunk(
       // Récupérer directement depuis les inputs pour éviter les problèmes avec FormData
       const formInputs = formElement.querySelectorAll("input, textarea, select");
 
-      const appendValue = (key: string, value: any) => {
-        if (key in data) {
-          const current = data[key];
-          data[key] = Array.isArray(current)
-            ? [...current, value]
-            : [current, value];
-        } else {
-          data[key] = value;
-        }
-      };
+      // Tracker les noms de champs radio pour ne prendre que celui qui est checked
+      const radioGroups: Record<string, HTMLInputElement | null> = {};
 
       formInputs.forEach((input) => {
         const htmlInput = input as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
@@ -300,12 +294,21 @@ export const saveStepData = createAsyncThunk(
           return;
         }
 
+        // Pour les inputs radio, ne prendre que celui qui est checked
+        if (htmlInput instanceof HTMLInputElement && htmlInput.type === "radio") {
+          if (htmlInput.checked) {
+            // Si on a déjà une valeur pour ce groupe radio, la remplacer (ne garder que le checked)
+            radioGroups[name] = htmlInput;
+          }
+          return; // On traitera les radios après
+        }
+
         if (htmlInput instanceof HTMLInputElement && htmlInput.type === "file") {
           const files = htmlInput.files;
           if (files && files.length > 0) {
             const file = files[0];
             if (file.size > 0) {
-              appendValue(name, file);
+              data[name] = file; // Ne pas utiliser appendValue pour les fichiers
             }
           }
         } else {
@@ -317,19 +320,39 @@ export const saveStepData = createAsyncThunk(
             // Pour les selects, ignorer les valeurs par défaut comme "Indiquez votre fonction"
             if (htmlInput instanceof HTMLSelectElement) {
               if (value && value !== "Indiquez votre fonction" && value !== "") {
-                appendValue(name, value);
+                data[name] = value;
+              }
+            } else if (htmlInput instanceof HTMLInputElement && htmlInput.type === "checkbox") {
+              // Pour les checkboxes, gérer comme un tableau si plusieurs sont cochées
+              if (htmlInput.checked) {
+                if (Array.isArray(data[name])) {
+                  if (!data[name].includes(value)) {
+                    data[name] = [...data[name], value];
+                  }
+                } else if (data[name] !== undefined) {
+                  data[name] = [data[name], value];
+                } else {
+                  data[name] = value;
+                }
               }
             } else {
-              // Pour les autres inputs (text, email, etc.), enregistrer la valeur
+              // Pour les autres inputs (text, email, textarea, etc.), enregistrer la valeur
               // Même si elle est vide, on l'enregistre pour permettre de vider un champ
-              appendValue(name, value);
+              data[name] = value;
             }
           }
         }
       });
 
-      // Log pour déboguer
-      console.log("Données récupérées du formulaire:", data);
+      // Traiter les radios après avoir parcouru tous les inputs
+      Object.entries(radioGroups).forEach(([name, radioInput]) => {
+        if (radioInput && !(valuesOverride && name in valuesOverride)) {
+          // Pour les radios, utiliser la valeur normalisée si disponible depuis formData
+          // Sinon utiliser la valeur brute de l'input
+          const normalizedValue = state.onboarding.formData[name];
+          data[name] = normalizedValue !== undefined ? normalizedValue : radioInput.value;
+        }
+      });
 
       // Traiter les fichiers séparément avec FormData
       const formData = new FormData(formElement);
@@ -341,11 +364,11 @@ export const saveStepData = createAsyncThunk(
         if (value instanceof File) {
           if (value.size === 0) continue;
           const base64 = await fileToBase64(value);
-          appendValue(key, {
+          data[key] = {
             name: value.name,
             type: value.type,
             content: base64,
-          });
+          };
         }
       }
     }
@@ -370,7 +393,6 @@ export const saveStepData = createAsyncThunk(
     }
 
     const nextPayloadHash = getPayloadHash(data);
-    const state = getState() as { onboarding: OnboardingState };
     if (state.onboarding.lastSyncedPayloadHash === nextPayloadHash) {
       return { saved: false as const };
     }
@@ -442,8 +464,67 @@ export const onboardingSlice = createSlice({
         if (state.onboardings) {
           state.steps = state.onboardings.steps.reverse();
         }
-        state.formData =
-          (action.payload.answer as Record<string, any>) ?? {};
+        const rawAnswer = (action.payload.answer as Record<string, any>) ?? {};
+        
+        // Normaliser les données : si un champ contient un tableau mais devrait être une seule valeur,
+        // prendre la première valeur ou la valeur qui correspond à une option valide
+        const normalizedFormData: Record<string, any> = {};
+        Object.entries(rawAnswer).forEach(([key, value]) => {
+          // Si la valeur est un tableau, vérifier si c'est un champ qui devrait être une seule valeur
+          if (Array.isArray(value)) {
+            // Pour les champs radio/select qui devraient avoir une seule valeur,
+            // prendre la première valeur du tableau (probablement la valeur sélectionnée)
+            // ou la dernière valeur si c'est un tableau d'options
+            // On garde le tableau seulement si c'est intentionnel (comme pour les checkboxes multiples)
+            const shouldBeSingleValue = [
+              'points_de_vente',
+              'utilise_crm',
+              'localisation',
+              'reseau_existant',
+              'service_recrutement',
+              'accompagnement_humain',
+              'objectif_developpement',
+              'type_reseau_dip_status',
+              'has_contrat_model',
+              'objectif_legaleo', // Peut être multiple, mais vérifions
+            ].includes(key);
+            
+            if (shouldBeSingleValue && value.length > 0) {
+              // Prendre la première valeur qui n'est pas une option par défaut
+              // Si toutes les valeurs sont des options, prendre la première
+              normalizedFormData[key] = value[0];
+            } else {
+              // Garder le tableau pour les champs qui peuvent être multiples
+              normalizedFormData[key] = value;
+            }
+          } else {
+            // Pour les valeurs non-tableaux, les garder telles quelles
+            normalizedFormData[key] = value;
+          }
+        });
+        
+        // Pour l'onboarding juridique, fusionner avec les données des cookies
+        // Les données de l'API ont la priorité, mais les cookies peuvent contenir des valeurs plus récentes
+        const isJuridiqueOnboarding = (() => {
+          const title = state.onboardings?.title?.toLowerCase() ?? "";
+          const pathIsJuridique =
+            typeof window !== "undefined" &&
+            window.location.pathname.includes("/onboarding/juridique");
+          return (
+            pathIsJuridique ||
+            title.includes("juridique") ||
+            title.includes("reseau etabli")
+          );
+        })();
+        
+        if (isJuridiqueOnboarding) {
+          const cookieData = readJuridiqueOnboardingAnswers();
+          // Fusionner : les données des cookies ont la priorité pour les champs qu'elles contiennent
+          // car elles peuvent être plus récentes (saisie en cours)
+          state.formData = { ...normalizedFormData, ...cookieData };
+        } else {
+          state.formData = normalizedFormData;
+        }
       })
       .addCase(fetchOnboardings.rejected, (state, action) => {
         state.isLoading = false;

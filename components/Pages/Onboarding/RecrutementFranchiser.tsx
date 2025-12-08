@@ -1,6 +1,6 @@
 "use client";
 import { Notices } from "@/components/Typography/Tips";
-import { setMaxInternalStep } from "@/lib/features/slice/onboardingSlice";
+import { setMaxInternalStep, updateFormData } from "@/lib/features/slice/onboardingSlice";
 import { useAppDispatch } from "@/lib/hook";
 import { useEffect } from "react";
 import { RadioGroup, SelectCRM } from "../../Form";
@@ -44,6 +44,10 @@ export const RecrutementFranchiser = ({
           <RadioGroup
             options={service_recrutement}
             name="service_recrutement"
+            onChange={(normalizedValue, rawOption) => {
+              const value = rawOption ?? normalizedValue;
+              dispatch(updateFormData({ service_recrutement: value }));
+            }}
           />
           <Notices classname="mt-10">
             Nous configurons vos modèles selon la structure choisie.
@@ -60,6 +64,10 @@ export const RecrutementFranchiser = ({
           <RadioGroup
             options={accompagnement}
             name="accompagnement_humain"
+            onChange={(normalizedValue, rawOption) => {
+              const value = rawOption ?? normalizedValue;
+              dispatch(updateFormData({ accompagnement_humain: value }));
+            }}
           />
           <Notices classname="mt-10">
             Nous configurons vos modèles selon la structure choisie.
@@ -75,6 +83,10 @@ export const RecrutementFranchiser = ({
             options={object_developpement}
             name="objectif_developpement"
             showLogo
+            onChange={(normalizedValue, rawOption) => {
+              const value = rawOption ?? normalizedValue;
+              dispatch(updateFormData({ objectif_developpement: value }));
+            }}
           />
           <Notices classname="mt-10">
             Nous configurons vos modèles selon la structure choisie.
