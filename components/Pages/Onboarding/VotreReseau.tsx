@@ -3,6 +3,7 @@ import { Notices } from "@/components/Typography/Tips";
 import {
   saveStepData,
   setMaxInternalStep,
+  updateFormData,
 } from "@/lib/features/slice/onboardingSlice";
 import { useAppSelector } from "@/lib/hook";
 import { AppDispatch } from "@/lib/store";
@@ -68,6 +69,10 @@ export const VotreReseau = ({
   const handleNetworkChoice = useCallback(
     async (normalizedValue: string, rawOption?: string) => {
       const persistedValue = rawOption ?? normalizedValue;
+      
+      // Mettre à jour immédiatement le state pour que le RadioGroup affiche la valeur sélectionnée
+      storeDispatch(updateFormData({ reseau_existant: persistedValue }));
+      
       if (userId && onboardings) {
         try {
           await storeDispatch(
@@ -82,6 +87,8 @@ export const VotreReseau = ({
         }
       }
 
+      // Seulement rediriger vers dashboard si "non" est sélectionné
+      // Pour "oui", on reste dans l'onboarding général
       if (normalizedValue === "non") {
         router.push("/dashboard");
       }

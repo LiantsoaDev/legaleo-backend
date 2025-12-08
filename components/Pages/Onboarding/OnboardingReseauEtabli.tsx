@@ -40,7 +40,7 @@ export const OnboardingReseauEtabli = ({ user }: any) => {
 
     // Utiliser userId du store Redux ou de la session
     const effectiveUserId = userId || session?.user?.id;
-
+    
     if (!effectiveUserId) {
       return;
     }

@@ -65,7 +65,7 @@ export const Input = ({
   useEffect(() => {}, [value, error, showPassword]);
 
   const isMountedRef = useRef(false);
-  
+
   useEffect(() => {
     // Priorité: contextValue > defaultValue > ""
     // Au montage initial, utiliser getInitialValue
@@ -256,6 +256,8 @@ export const RadioGroup = ({
       ? onboardingFormData[name]
       : undefined);
   const [selectedValue, setSelectedValue] = useState<string>("");
+  // Garder une référence de la dernière sélection utilisateur pour éviter qu'elle soit écrasée pendant le chargement
+  const lastUserSelectionRef = useRef<string>("");
 
   const normalizeChoice = (option: string) => {
     const lowered = option.toLocaleLowerCase();
@@ -274,10 +276,20 @@ export const RadioGroup = ({
   useEffect(() => {
     if (typeof storedValue !== "string") {
       if (storedValue === undefined) {
+        // Si on a une sélection utilisateur, la préserver même si storedValue est undefined
+        if (lastUserSelectionRef.current) {
+          const match = options.find((option) => option === lastUserSelectionRef.current);
+          if (match) {
+            setSelectedValue(match);
+            return;
+          }
+        }
         setSelectedValue("");
+        lastUserSelectionRef.current = "";
       }
       return;
     }
+    
     const normalizedStored = normalizeChoice(storedValue);
     const match = options.find((option) => {
       const normalizedOption = normalizeChoice(option);
@@ -286,13 +298,35 @@ export const RadioGroup = ({
         option.toLocaleLowerCase() === storedValue.toLocaleLowerCase()
       );
     });
+    
     if (match) {
+      // Si la valeur du contexte correspond à la sélection utilisateur, on peut synchroniser
+      if (lastUserSelectionRef.current === match) {
+        // La valeur est synchronisée, on peut réinitialiser la ref pour permettre la synchronisation normale
+        lastUserSelectionRef.current = "";
+      }
+      // Si on a une sélection utilisateur différente, la préserver
+      else if (lastUserSelectionRef.current && lastUserSelectionRef.current !== match) {
+        const userMatch = options.find((option) => option === lastUserSelectionRef.current);
+        if (userMatch) {
+          setSelectedValue(userMatch);
+          return;
+        }
+      }
       setSelectedValue(match);
+    } else if (lastUserSelectionRef.current) {
+      // Si storedValue ne correspond à aucune option mais qu'on a une sélection utilisateur, la préserver
+      const userMatch = options.find((option) => option === lastUserSelectionRef.current);
+      if (userMatch) {
+        setSelectedValue(userMatch);
+        return;
+      }
     }
   }, [options, storedValue]);
 
   const handleSelect = (option: string) => {
     setSelectedValue(option);
+    lastUserSelectionRef.current = option; // Garder la référence de la sélection utilisateur
     const normalized = normalizeChoice(option);
     onChange?.(normalized, option);
     if (questionId && setAnswers) {

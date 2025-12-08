@@ -277,7 +277,7 @@ export const saveStepData = createAsyncThunk(
     if (formElement && formElement.isConnected) {
       // Récupérer directement depuis les inputs pour éviter les problèmes avec FormData
       const formInputs = formElement.querySelectorAll("input, textarea, select");
-      
+
       const appendValue = (key: string, value: any) => {
         if (key in data) {
           const current = data[key];
@@ -294,6 +294,11 @@ export const saveStepData = createAsyncThunk(
         const name = htmlInput.name;
         
         if (!name) return;
+
+        // Ignorer les champs qui sont dans valuesOverride pour éviter les conflits
+        if (valuesOverride && name in valuesOverride) {
+          return;
+        }
 
         if (htmlInput instanceof HTMLInputElement && htmlInput.type === "file") {
           const files = htmlInput.files;
@@ -329,6 +334,10 @@ export const saveStepData = createAsyncThunk(
       // Traiter les fichiers séparément avec FormData
       const formData = new FormData(formElement);
       for (const [key, value] of formData.entries()) {
+        // Ignorer les clés qui sont dans valuesOverride
+        if (valuesOverride && key in valuesOverride) {
+          continue;
+        }
         if (value instanceof File) {
           if (value.size === 0) continue;
           const base64 = await fileToBase64(value);
@@ -341,11 +350,14 @@ export const saveStepData = createAsyncThunk(
       }
     }
 
-    // Fusionner avec valuesOverride, mais les valeurs du formulaire ont la priorité
+    // Fusionner avec valuesOverride, valuesOverride a la priorité pour éviter les conflits
     if (valuesOverride && Object.keys(valuesOverride).length > 0) {
-      // Les valeurs du formulaire écrasent celles de valuesOverride
-      data = { ...valuesOverride, ...data };
+      // valuesOverride a la priorité sur les valeurs du formulaire
+      data = { ...data, ...valuesOverride };
     }
+
+    // Log pour déboguer les données finales avant envoi
+    console.log("Données finales avant envoi:", data);
 
     if (!Object.keys(data).length) {
       return { saved: false as const };
@@ -368,6 +380,8 @@ export const saveStepData = createAsyncThunk(
       onboarding_id,
       value: data,
     };
+
+    console.log("Données envoyées à l'API:", dataToSend);
 
     await postOnboardingData(dataToSend);
     return {

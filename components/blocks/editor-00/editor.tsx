@@ -28,34 +28,84 @@ const ContractContentLoader = () => {
         const root = $getRoot();
         root.clear();
 
-        contract
-          .trim()
-          .split(/\n{2,}/)
-          .forEach((block) => {
-            const paragraphNode = $createParagraphNode();
+        // Parser le markdown de manière basique
+        const lines = contract.split(/\n/);
+        let currentParagraph = $createParagraphNode();
+        let inList = false;
 
-            block.split(/\n/).forEach((line, index, lines) => {
-              const trimmedLine = line.trim();
-              if (trimmedLine.length > 0) {
-                paragraphNode.append($createTextNode(trimmedLine));
-              }
+        lines.forEach((line, lineIndex) => {
+          const trimmedLine = line.trim();
 
-              if (index < lines.length - 1) {
-                paragraphNode.append($createLineBreakNode());
-              }
-            });
-
-            if (paragraphNode.getChildrenSize() > 0) {
-              root.append(paragraphNode);
+          // Ignorer les lignes vides
+          if (trimmedLine.length === 0) {
+            if (currentParagraph.getChildrenSize() > 0) {
+              root.append(currentParagraph);
+              currentParagraph = $createParagraphNode();
             }
-          });
+            return;
+          }
+
+          // Détecter les titres (markdown #, ##, ###)
+          if (trimmedLine.match(/^#{1,6}\s+/)) {
+            if (currentParagraph.getChildrenSize() > 0) {
+              root.append(currentParagraph);
+              currentParagraph = $createParagraphNode();
+            }
+            const headingText = trimmedLine.replace(/^#{1,6}\s+/, "");
+            const headingNode = $createParagraphNode();
+            headingNode.append($createTextNode(headingText));
+            headingNode.setFormat("bold");
+            root.append(headingNode);
+            currentParagraph = $createParagraphNode();
+            return;
+          }
+
+          // Détecter les listes (markdown -, *, 1.)
+          if (trimmedLine.match(/^[-*]\s+/) || trimmedLine.match(/^\d+\.\s+/)) {
+            if (!inList && currentParagraph.getChildrenSize() > 0) {
+              root.append(currentParagraph);
+              currentParagraph = $createParagraphNode();
+            }
+            inList = true;
+            const listText = trimmedLine.replace(/^[-*]\s+/, "").replace(/^\d+\.\s+/, "");
+            const listNode = $createParagraphNode();
+            listNode.append($createTextNode("• " + listText));
+            root.append(listNode);
+            return;
+          }
+
+          // Texte normal
+          inList = false;
+          if (trimmedLine.length > 0) {
+            currentParagraph.append($createTextNode(trimmedLine));
+            // Ajouter un saut de ligne si ce n'est pas la dernière ligne
+            if (lineIndex < lines.length - 1) {
+              currentParagraph.append($createLineBreakNode());
+            }
+          }
+        });
+
+        // Ajouter le dernier paragraphe s'il contient du contenu
+        if (currentParagraph.getChildrenSize() > 0) {
+          root.append(currentParagraph);
+        }
       });
     };
 
     const fetchContract = async () => {
       try {
-        const response = await fetch("/api/contracts/generate", {
-          method: "POST",
+        // Récupérer l'ID du contrat depuis l'URL
+        const pathParts = window.location.pathname.split("/");
+        const contractId = pathParts[pathParts.length - 1];
+
+        if (!contractId || contractId === "nouveau" || contractId === "generer") {
+          console.warn("Aucun ID de contrat trouvé dans l'URL");
+          return;
+        }
+
+        // Récupérer le contrat depuis l'API
+        const response = await fetch(`/api/contracts?id=${contractId}`, {
+          method: "GET",
           cache: "no-store",
         });
 
@@ -64,7 +114,7 @@ const ContractContentLoader = () => {
           try {
             const payload = await response.json();
             details =
-              (payload as { message?: string })?.message ??
+              (payload as { error?: string })?.error ??
               JSON.stringify(payload);
           } catch {
             details = await response.text();
@@ -77,10 +127,19 @@ const ContractContentLoader = () => {
           );
         }
 
-        const { contract } = (await response.json()) as { contract?: string };
+        const { contract } = (await response.json()) as { contract?: { content?: string } };
 
-        if (contract && !cancelled) {
-          replaceContent(contract);
+        if (contract?.content && !cancelled) {
+          replaceContent(contract.content);
+        } else if (!contract?.content) {
+          console.warn("Le contrat n'a pas encore de contenu généré");
+          // Afficher un message si le contrat est en cours de génération
+          if (contract?.status === "generating") {
+            toast.info("Le contrat est en cours de génération...", {
+              position: "top-right",
+              theme: "colored",
+            });
+          }
         }
       } catch (error) {
         const message =
@@ -88,13 +147,13 @@ const ContractContentLoader = () => {
             ? error.message
             : "Erreur inconnue lors du chargement du contrat.";
         toast.error(
-          `Impossible de charger le contrat de franchise : ${message}`,
+          `Impossible de charger le contrat : ${message}`,
           {
             position: "top-right",
             theme: "colored",
           }
         );
-        console.error("Impossible de charger le contrat de franchise", error);
+        console.error("Impossible de charger le contrat", error);
       }
     };
 
